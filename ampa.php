@@ -1,69 +1,93 @@
-<?php include 'head.php'; ?>
+<?php 
+    // Incluimos el archivo head con el HTML del <head> y el inicio de la página
+    include_once 'head.php'; 
+?>
 
-<?php include("conexion.php"); ?>
-<main>
-    <section class="seccion-contenido">
-        <h2 class="seccion-contenido-h2">AMPA</h2>
+<?php 
+    // Incluimos el archivo de la conexión a la base de datos
+    include("conexion.php"); 
+?>
+<main class="ampa-pagina">
+    <!-- Sección de cabecera reutilizable para todas las páginas -->
+    <section class="seccion-hero-universal">
         <div class="contenedor-max">
+            <div class="hero-layout-universal">
+                <div class="hero-icono-universal">
+                    <!-- Icono de fontawesome para representar al AMPA -->
+                    <i class="fas fa-users" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
+                </div>
+                <div class="hero-texto-universal">
+                    <!-- Título principal de la página -->
+                    <h1 class="hero-titulo-universal">AMPA</h1>
+                    <!-- Subtítulo explicando qué es el AMPA -->
+                    <p class="hero-subtitulo-universal">Asociación de Madres y Padres del Alumnado</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección donde va el contenido que viene de la base de datos -->
+    <section class="seccion-contenido">
+        <div class="ampa-contenedor-max">
             <?php
+            // Consulta en la que sacamos solo el registro con id = 1 de la tabla ampa
             $sql = "SELECT titulo, texto, imagen, tipo_imagen, enlace_formulario, enlace_video FROM ampa WHERE id = 1";
+            
+            // Ejecutamos la consulta usando el objeto $conexion
             $resultado = $conexion->query($sql);
 
-            if ($resultado && $fila = $resultado->fetch_assoc()) {
+            // Comprobamos que la consulta devolvió algo y obtenemos la primera fila
+            if ($resultado && $fila = $resultado->fetch_assoc()) { 
+                // Variable para saber si hay imagen o vídeo
                 $hay_media = !empty($fila['imagen']) || !empty($fila['enlace_video']);
                 ?>
                 <?php if ($hay_media): ?>
-                    <!-- ✅ HAY IMAGEN O VIDEO: 2 columnas -->
-                    <div style="display: flex; gap: 2rem; padding: 2rem; background: #f8f9fa; border-radius: 10px; margin: 2rem 0;">
-                        <!-- COLUMNA MEDIA (izquierda) -->
-                        <div style="flex: 0 0 300px; text-align: center;">
+                    <!-- Si hay imagen o vídeo, usamos un layout con 2 columnas -->
+                    <article class="ampa-media-layout">
+                        <div class="ampa-media-contenedor">
                             <?php if (!empty($fila['imagen'])): ?>
-                                <!-- MOSTRAR IMAGEN -->
+                                <!-- Mostramos la imagen que viene de la BD en binario, codificada en base64 -->
                                 <img src="data:<?php echo $fila['tipo_imagen']; ?>;base64,<?php echo base64_encode($fila['imagen']); ?>" 
-                                     alt="AMPA" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                             <?php elseif (!empty($fila['enlace_video'])): ?>
-                                <!-- MOSTRAR VIDEO -->
-                                <iframe width="100%" height="200" 
-                                        src="<?php echo htmlspecialchars(str_replace('watch?v=', 'embed/', $fila['enlace_video'])); ?>" 
-                                        frameborder="0" allowfullscreen 
-                                        style="border-radius: 10px;"></iframe>
+                                     alt="AMPA" class="ampa-media-imagen">
+                            <?php elseif (!empty($fila['enlace_video'])): ?>
+                                <!-- Si no hay imagen pero sí enlace de vídeo, incrustamos el vídeo (por ejemplo de YouTube) -->
+                                <iframe src="<?php echo htmlspecialchars(str_replace('watch?v=', 'embed/', $fila['enlace_video'])); ?>" 
+                                        frameborder="0" allowfullscreen class="ampa-media-video"></iframe>
                             <?php endif; ?>
                         </div>
-
-                        <!-- COLUMNA TEXTO (derecha) -->
-                        <div style="flex: 1;">
-                            <h2 style="color: #2c3e50; margin-bottom: 1rem;"><?php echo htmlspecialchars($fila['titulo']); ?></h2>
-                            <p style="line-height: 1.6; margin-bottom: 1rem;"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></p>
-
+                        <div class="texto-contenido-layout">
+                            <!-- Título que viene de la base de datos, escapado por seguridad -->
+                            <h2 class="ampa-titulo-principal"><?php echo htmlspecialchars($fila['titulo']); ?></h2>
+                            <!-- Texto completo, respetando saltos de línea con nl2br -->
+                            <div class="ampa-texto-completo"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></div>
                             <?php if (!empty($fila['enlace_formulario'])): ?>
-                                <p style="margin-bottom: 1rem;">
-                                    <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" target="_blank" 
-                                       style="background: #28a745; color: white; padding: 0.7rem 1.5rem; text-decoration: none; border-radius: 5px; display: inline-block;">
-                                        📋 Formulario de inscripción
-                                    </a>
-                                </p>
+                                <!-- Si existe un enlace a formulario, mostramos un botón que abre en pestaña nueva -->
+                                <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" target="_blank" 
+                                   class="ampa-boton-primario">📋 Formulario de inscripción</a>
                             <?php endif; ?>
                         </div>
-                    </div>
+                    </article>
                 <?php else: ?>
-                    <!-- ❌ SIN IMAGEN NI VIDEO: texto ocupa TODO -->
-                    <div style="padding: 2rem; background: #f8f9fa; border-radius: 10px; margin: 2rem 0; max-width: 800px; margin-left: auto; margin-right: auto;">
-                        <h2 style="color: #2c3e50; margin-bottom: 1rem; text-align: center;"><?php echo htmlspecialchars($fila['titulo']); ?></h2>
-                        <div style="line-height: 1.7; text-align: justify;"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></div>
-
+                    <!-- Si no hay ni imagen ni vídeo, solo mostramos el texto centrado -->
+                    <article class="ampa-texto-centrado">
+                        <!-- Título desde la BD -->
+                        <h2 class="ampa-titulo-principal"><?php echo htmlspecialchars($fila['titulo']); ?></h2>
+                        <!-- Texto desde la BD, también escapado y con saltos de línea -->
+                        <div class="ampa-texto-completo"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></div>
                         <?php if (!empty($fila['enlace_formulario'])): ?>
-                            <div style="text-align: center; margin-top: 1.5rem;">
+                            <!-- Botón centrado para el formulario, si existe el enlace -->
+                            <div class="ampa-boton-centrado">
                                 <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" target="_blank" 
-                                   style="background: #28a745; color: white; padding: 0.8rem 2rem; text-decoration: none; border-radius: 5px; display: inline-block; font-size: 1.1rem;">
-                                    📋 Formulario de inscripción
-                                </a>
+                                   class="ampa-boton-primario">📋 Formulario de inscripción</a>
                             </div>
                         <?php endif; ?>
-                    </div>
+                    </article>
                 <?php endif; ?>
             <?php } else { ?>
-                <div style="text-align: center; padding: 3rem; color: #666;">
-                    <p>No hay datos AMPA disponibles.</p>
+                <!-- Mensaje sencillo cuando no hay datos en la tabla o la consulta falla -->
+                <div class="ampa-vacio">
+                    <i class="fas fa-info-circle" style="font-size: 3rem; color: var(--gris-medio);"></i>
+                    <p>No hay datos disponibles.</p>
                 </div>
             <?php } ?>
         </div>
@@ -71,6 +95,9 @@
 </main>
 
 <?php 
+// Cerramos la conexión con la base de datos
 $conexion->close(); 
+
+// Incluimos el footer de la página
 include 'footer.php'; 
 ?>

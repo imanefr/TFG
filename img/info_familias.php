@@ -25,7 +25,7 @@ $query_documentos = "SELECT * FROM documentos WHERE activo = TRUE ORDER BY categ
 $result_documentos = $conexion->query($query_documentos);
 $documentos_db = [];
 if ($result_documentos) {
-    while ($row = $result_documentos->fetch_assoc()) {
+    while($row = $result_documentos->fetch_assoc()) {
         $documentos_db[] = $row;
     }
 }
@@ -35,15 +35,15 @@ $query_oferta = "SELECT * FROM oferta_educativa ORDER BY orden";
 $result_oferta = $conexion->query($query_oferta);
 $oferta_educativa = [];
 if ($result_oferta) {
-    while ($row = $result_oferta->fetch_assoc()) {
+    while($row = $result_oferta->fetch_assoc()) {
         $oferta_educativa[] = $row;
     }
 }
 
 // FILTRAR ACTIVIDADES COMPLEMENTARIAS
-$actividades_doc = array_filter($documentos_db, function ($doc) {
-    return stripos($doc['titulo'], 'Actividades') !== false ||
-    stripos($doc['categoria'], 'actividades') !== false;
+$actividades_doc = array_filter($documentos_db, function($doc) {
+    return stripos($doc['titulo'], 'Actividades') !== false || 
+           stripos($doc['categoria'], 'actividades') !== false;
 });
 $actividad = !empty($actividades_doc) ? reset($actividades_doc) : null;
 ?>
@@ -64,19 +64,13 @@ $actividad = !empty($actividades_doc) ? reset($actividades_doc) : null;
     }
 
     /* MAIN */
-    .seccion-contenido {
-        padding: 4rem 0;
-    }
-    .contenedor-max {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem;
-    }
-    .seccion-contenido-h2 {
-        color: var(--verde-principal);
-        font-size: 2.2rem;
-        margin-bottom: 1rem;
-        text-align: center;
+    .seccion-contenido { padding: 4rem 0; }
+    .contenedor-max { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .seccion-contenido-h2 { 
+        color: var(--verde-principal); 
+        font-size: 2.2rem; 
+        margin-bottom: 1rem; 
+        text-align: center; 
     }
 
     .texto-intro {
@@ -203,9 +197,7 @@ $actividad = !empty($actividades_doc) ? reset($actividades_doc) : null;
         overflow: hidden;
     }
 
-    .documento-item:hover {
-        transform: translateY(-2px);
-    }
+    .documento-item:hover { transform: translateY(-2px); }
 
     .btn-documento {
         display: flex;
@@ -230,42 +222,15 @@ $actividad = !empty($actividades_doc) ? reset($actividades_doc) : null;
     }
 
     @media (max-width: 768px) {
-        .seccion-contenido-h2 {
-            font-size: 1.8rem;
-        }
-        .bloque-info {
-            padding: 1.5rem;
-        }
-        .tabla-oferta table, .tabla-contacto table {
-            font-size: 0.9rem;
-        }
-        .visor-pdf {
-            height: 60vh;
-        }
-        .visor-pdf.pequeña {
-            height: 40vh;
-        }
+        .seccion-contenido-h2 { font-size: 1.8rem; }
+        .bloque-info { padding: 1.5rem; }
+        .tabla-oferta table, .tabla-contacto table { font-size: 0.9rem; }
+        .visor-pdf { height: 60vh; }
+        .visor-pdf.pequeña { height: 40vh; }
     }
 </style>
 
-<main class="info-familias-pagina">
-    <section class="seccion-hero-universal">
-        <div class="contenedor-max">
-            <div class="hero-layout-universal">
-                <div class="hero-icono-universal">
-                    <i class="fas fa-plane" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
-                </div>
-                <div class="hero-texto-universal">
-                    <h1 class="hero-titulo-universal">información familias</h1>
-                    <p class="hero-subtitulo-universal">Proyectos de movilidad en Europa desde 2010
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
+<main>
     <section class="seccion-contenido">
         <div class="contenedor-max">
             <h2 class="seccion-contenido-h2">Información a las familias</h2>
@@ -287,40 +252,40 @@ $actividad = !empty($actividades_doc) ? reset($actividades_doc) : null;
                         <tbody>
                             <?php if (!empty($oferta_educativa)): ?>
                                 <?php foreach ($oferta_educativa as $oferta): ?>
-                                    <tr>
-                                        <td><strong><?php echo htmlspecialchars($oferta['etapa']); ?></strong>
-                                            <?php if ($oferta['etapa'] == 'ESO'): ?>
-                                                <br>1º a 4º (grupos diversificación)
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <?php if (!empty($oferta['enlace_detalles'])): ?>
-                                                <a href="<?php echo htmlspecialchars($oferta['enlace_detalles']); ?>" target="_blank">
-                                                    Ver detalles
-                                                </a>
-                                            <?php else: ?>
-                                                <?php echo htmlspecialchars($oferta['detalles']); ?>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td><?php echo htmlspecialchars($oferta['horario'] ?? '-'); ?></td>
-                                        <td>
-                                            <?php if (!empty($oferta['itinerarios'])): ?>
-                                                <?php
-                                                $itinerarios = explode("\n", $oferta['itinerarios']);
-                                                echo '<ul style="margin: 0; padding-left: 1rem;">';
-                                                foreach ($itinerarios as $itinerario) {
-                                                    $itinerario = trim($itinerario);
-                                                    if (!empty($itinerario)) {
-                                                        echo '<li>' . htmlspecialchars($itinerario) . '</li>';
-                                                    }
+                                <tr>
+                                    <td><strong><?php echo htmlspecialchars($oferta['etapa']); ?></strong>
+                                        <?php if($oferta['etapa'] == 'ESO'): ?>
+                                            <br>1º a 4º (grupos diversificación)
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if (!empty($oferta['enlace_detalles'])): ?>
+                                            <a href="<?php echo htmlspecialchars($oferta['enlace_detalles']); ?>" target="_blank">
+                                                Ver detalles
+                                            </a>
+                                        <?php else: ?>
+                                            <?php echo htmlspecialchars($oferta['detalles']); ?>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($oferta['horario'] ?? '-'); ?></td>
+                                    <td>
+                                        <?php if (!empty($oferta['itinerarios'])): ?>
+                                            <?php 
+                                            $itinerarios = explode("\n", $oferta['itinerarios']);
+                                            echo '<ul style="margin: 0; padding-left: 1rem;">';
+                                            foreach ($itinerarios as $itinerario) {
+                                                $itinerario = trim($itinerario);
+                                                if (!empty($itinerario)) {
+                                                    echo '<li>' . htmlspecialchars($itinerario) . '</li>';
                                                 }
-                                                echo '</ul>';
-                                                ?>
-                                            <?php else: ?>
-                                                -
-                                            <?php endif; ?>
-                                        </td>
-                                    </tr>
+                                            }
+                                            echo '</ul>';
+                                            ?>
+                                        <?php else: ?>
+                                            -
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
@@ -379,15 +344,15 @@ $actividad = !empty($actividades_doc) ? reset($actividades_doc) : null;
                                 <td><strong>Dirección</strong></td>
                                 <td>-</td><td>-</td><td>-</td><td>-</td>
                                 <td><a href="mailto:<?php echo htmlspecialchars($datos_centro['email_direccion']); ?>">
-                                        <?php echo htmlspecialchars($datos_centro['email_direccion']); ?>
-                                    </a></td>
+                                    <?php echo htmlspecialchars($datos_centro['email_direccion']); ?>
+                                </a></td>
                             </tr>
                             <tr>
                                 <td><strong>Secretaría</strong></td>
                                 <td>-</td><td>-</td><td>-</td><td>-</td>
                                 <td><a href="mailto:<?php echo htmlspecialchars($datos_centro['email_secretaria']); ?>">
-                                        <?php echo htmlspecialchars($datos_centro['email_secretaria']); ?>
-                                    </a></td>
+                                    <?php echo htmlspecialchars($datos_centro['email_secretaria']); ?>
+                                </a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -411,13 +376,13 @@ $actividad = !empty($actividades_doc) ? reset($actividades_doc) : null;
                 <div class="documentos-grid">
                     <?php if (!empty($documentos_db)): ?>
                         <?php foreach ($documentos_db as $doc): ?>
-                            <div class="documento-item <?php echo strpos($doc['titulo'], 'Resultados') !== false ? 'resultados' : ''; ?>">
-                                <a href="<?php echo htmlspecialchars($doc['url']); ?>" class="btn-documento" target="_blank" rel="noopener">
-                                    <i class="fas fa-file-pdf"></i>
-                                    <span><?php echo htmlspecialchars($doc['titulo']); ?></span>
-                                    <i class="fas fa-download"></i>
-                                </a>
-                            </div>
+                        <div class="documento-item <?php echo strpos($doc['titulo'], 'Resultados') !== false ? 'resultados' : ''; ?>">
+                            <a href="<?php echo htmlspecialchars($doc['url']); ?>" class="btn-documento" target="_blank" rel="noopener">
+                                <i class="fas fa-file-pdf"></i>
+                                <span><?php echo htmlspecialchars($doc['titulo']); ?></span>
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <div class="documento-item">
@@ -455,7 +420,7 @@ $actividad = !empty($actividades_doc) ? reset($actividades_doc) : null;
             <!-- 5. ACTIVIDADES COMPLEMENTARIAS - ESTILO LIBROS ESO -->
             <div class="bloque-info">
                 <h3><i class="fas fa-calendar-alt"></i> Actividades Complementarias</h3>
-
+                
                 <!-- Botón de descarga -->
                 <div class="libros-acciones">
                     <?php if ($actividad): ?>
@@ -496,9 +461,11 @@ $actividad = !empty($actividades_doc) ? reset($actividades_doc) : null;
     </section>
 </main>
 
-<?php
+<?php 
 // Cerrar conexión
 $conexion->close();
 ?>
 
 <?php include 'footer.php'; ?>
+
+
