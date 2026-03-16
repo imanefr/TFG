@@ -35,35 +35,33 @@ $conexion->close();
 </section>
 
 <!-- RESULTADOS -->
-<main class="resultados-academicos-pagina">
+<main class="resultados_academicos_pagina">
     <section class="seccion-contenido">
         <div class="contenedor-max">
-            <h2 class="seccion-contenido-h2 resultados-titulo">Nuestros Resultados 2023-2024</h2>
+            <h2 class="resultados_academicos_titulo">Nuestros Resultados 2023-2024</h2>
             
             <?php if (!empty($resultados)): ?>
-                <div class="resultados-grid">
+                <div class="resultados_academicos_grid">
                     <?php foreach ($resultados as $res): ?>
-                        <div class="resultado-card">
-                            <!-- ✅ SIEMPRE MUESTRA LA IMAGEN (sin file_exists) -->
+                        <div class="resultados_academicos_card">
                             <img src="img/<?php echo htmlspecialchars(basename($res['img'])); ?>" 
                                  alt="<?php echo htmlspecialchars($res['titulo']); ?>" 
-                                 class="resultado-imagen"
+                                 class="resultados_academicos_imagen"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             
-                            <!-- PLACEHOLDER si falla la imagen -->
-                            <div class="resultado-placeholder" style="display: none; background: #f8f9fa; border-radius: 8px; height: 200px; align-items: center; justify-content: center; margin-bottom: 1.2rem;">
+                            <div class="resultados_academicos_placeholder" style="display: none; background: #f8f9fa; border-radius: 8px; height: 200px; align-items: center; justify-content: center; margin-bottom: 1.2rem;">
                                 <i class="fas fa-image" style="font-size: 2.5rem; color: var(--gris-medio);"></i>
                             </div>
                             
-                            <h3 class="resultado-titulo"><?php echo htmlspecialchars($res['titulo']); ?></h3>
-                            <p class="resultado-descripcion"><?php echo htmlspecialchars($res['descripcion']); ?></p>
-                            <div class="resultado-anio">2023-2024</div>
+                            <h3 class="resultados_academicos_titulo_card"><?php echo htmlspecialchars($res['titulo']); ?></h3>
+                            <p class="resultados_academicos_descripcion"><?php echo htmlspecialchars($res['descripcion']); ?></p>
+                            <div class="resultados_academicos_anio">2023-2024</div>
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <div class="contenido-vacio-universal">
-                    <i class="fas fa-chart-bar" style="font-size: 3rem; color: var(--gris-medio);"></i>
+                <div class="resultados_academicos_vacio">
+                    <i class="fas fa-chart-bar"></i>
                     <p>No hay datos disponibles.</p>
                 </div>
             <?php endif; ?>

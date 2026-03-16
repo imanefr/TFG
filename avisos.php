@@ -4,46 +4,55 @@
 include("conexion.php");
 
 // Consulta para TODOS los avisos ordenados por fecha DESC
-$sql = "SELECT * FROM avisos ORDER BY fecha DESC";
+$sql = "SELECT a.*, u.nombre as ultima_edicion_usuario_nombre
+        FROM avisos a 
+        LEFT JOIN usuarios u ON a.ultima_edicion_usuario_id = u.id 
+        ORDER BY a.importante DESC, a.fecha DESC";
 $resultado = $conexion->query($sql);
 ?>
 
 <!-- HEADER AVISOS (estructura AMPA) -->
-<section class="avisos-contenido">
+<section class="seccion-hero-universal">
     <div class="contenedor-max">
-        <div class="avisos-layout">
-            <div class="avisos-logo">
-                <img src="img/avisos-icono.png" alt="Avisos del centro">
+        <div class="hero-layout-universal">
+            <div class="hero-icono-universal">
+                <i class="fas fa-users" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
             </div>
-            <div class="avisos-texto">
-                <h2>Avisos del Centro</h2>
-                <p>Comunicaciones oficiales, plazos importantes y novedades administrativas.</p>
+            <div class="hero-texto-universal">
+                <h1 class="hero-titulo-universal">Avisos del Centro</h1>
+                <p class="hero-subtitulo-universal">Comunicaciones oficiales, plazos importantes y novedades administrativas.</p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- CONTENIDO PRINCIPAL -->
-<main>
+<main class="info_avisos_pagina">
     <section class="seccion-contenido">
         <div class="contenedor-max">
-            <h2 class="seccion-contenido-h2">Todos los Avisos</h2>
+            <h2 class="info_avisos_titulo">Todos los Avisos</h2>
 
             <?php if ($resultado && $resultado->num_rows > 0): ?>
-                <div class="lista-avisos">
+                <div class="info_avisos_lista">
                     <?php while ($fila = $resultado->fetch_assoc()): ?>
-                        <div class="aviso-item <?php echo $fila['importante'] ? 'aviso-importante' : ''; ?>">
+                        <div class="info_avisos_item <?php echo $fila['importante'] ? 'info_avisos_importante' : ''; ?>">
                             <?php if ($fila['importante']): ?>
-                                <div class="aviso-badge">¡IMPORTANTE!</div>
+                                <div class="info_avisos_badge">¡IMPORTANTE!</div>
                             <?php endif; ?>
 
-                            <div class="aviso-contenido">
-                                <p class="aviso-fecha"><?php echo date('d/m/Y H:i', strtotime($fila['fecha'])); ?></p>
-                                <h3 class="aviso-titulo"><?php echo htmlspecialchars($fila['titulo']); ?></h3>
-                                <p class="aviso-texto"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></p>
+                            <div class="info_avisos_contenido">
+                                <p class="info_avisos_fecha">
+                                    <?php echo date('d/m/Y', strtotime($fila['fecha'])); ?>
+                                    <?php if (!empty($fila['ultima_edicion_usuario_nombre'])): ?>
+                                        <br><small style="color: #666;"><?php echo htmlspecialchars($fila['ultima_edicion_usuario_nombre']); ?></small>
+                                    <?php endif; ?>
+                                </p>
+
+                                <h3 class="info_avisos_titulo_item"><?php echo htmlspecialchars($fila['titulo']); ?></h3>
+                                <p class="info_avisos_texto"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></p>
 
                                 <?php if (!empty($fila['enlace'])): ?>
-                                    <a href="<?php echo htmlspecialchars($fila['enlace']); ?>" class="aviso-enlace" target="_blank">
+                                    <a href="<?php echo htmlspecialchars($fila['enlace']); ?>" class="info_avisos_enlace" target="_blank">
                                         Ver documento →
                                     </a>
                                 <?php endif; ?>
@@ -52,7 +61,7 @@ $resultado = $conexion->query($sql);
                     <?php endwhile; ?>
                 </div>
             <?php else: ?>
-                <div class="sin-contenido">
+                <div class="info_avisos_sin_contenido">
                     <i class="fas fa-info-circle"></i>
                     <h3>No hay avisos disponibles</h3>
                     <p>Revisa más tarde para nuevas comunicaciones oficiales.</p>
@@ -62,7 +71,7 @@ $resultado = $conexion->query($sql);
     </section>
 </main>
 
-<?php 
-$conexion->close(); 
-include 'footer.php'; 
+<?php
+$conexion->close();
+include 'footer.php';
 ?>

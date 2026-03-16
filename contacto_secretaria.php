@@ -1,4 +1,13 @@
-<?php include 'head.php'; ?> <!-- Cabecera -->
+<?php include 'conexion.php'; ?>
+
+<?php
+// Obtener datos de la tabla contacto_secretaria
+$sql = "SELECT telefono, fax, horario, correo, aviso FROM contacto_secretaria LIMIT 1";
+$resultado = $conexion->query($sql);
+$datos_contacto = $resultado->fetch_assoc();
+?>
+
+<?php include 'head.php'; ?>
 
 <!-- Hero principal -->
 <section class="seccion-hero-universal">
@@ -16,50 +25,44 @@
 </section>
 
 <!-- Contenido principal -->
-<main class="contacto-secretaria-pagina">
+<main class="info_contacto_pagina">
     <section class="seccion-contenido">
         <div class="contenedor-max">
-            <div class="contacto-contenido">
-                <div class="contacto-card">
-                    <h2 class="seccion-contenido-h2">Para contactar con secretaría:</h2>
+            <h2 class="info_contacto_titulo">Para contactar con secretaría</h2>
 
-                    <!-- Datos de contacto -->
-                    <div class="contacto-info">
-                        <div class="contacto-item">
-                            <i class="fas fa-phone"></i>
-                            <strong>Teléfono:</strong> 916 43 99 91
-                        </div>
-
-                        <div class="contacto-item">
-                            <i class="fas fa-fax"></i>
-                            <strong>Fax:</strong> 916 44 00 25
-                        </div>
-
-                        <div class="contacto-item">
-                            <i class="fas fa-clock"></i>
-                            <strong>Horario:</strong><br>
-                            Lunes a viernes, de 9:30 a 12:00 h.
-                        </div>
-
-                        <div class="contacto-item">
-                            <i class="fas fa-envelope"></i>
-                            <strong>Correo:</strong><br>
-                            <a href="mailto:secretaria.ies.laarboleda.alcorcon@educa.madrid.org" class="enlace-correo">
-                                secretaria.ies.laarboleda.alcorcon@educa.madrid.org
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Aviso -->
-                    <div class="aviso-importante">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>AVISO IMPORTANTE</h3>
-                        <p>No se responderán por correo solicitudes de información ya publicadas en la web.</p>
-                    </div>
+            <div class="info_contacto_lista">
+                <div class="info_contacto_item">
+                    <i class="fas fa-phone"></i>
+                    <strong>Teléfono:</strong> <?php echo htmlspecialchars($datos_contacto['telefono']); ?>
                 </div>
+
+                <div class="info_contacto_item">
+                    <i class="fas fa-fax"></i>
+                    <strong>Fax:</strong> <?php echo htmlspecialchars($datos_contacto['fax']); ?>
+                </div>
+
+                <div class="info_contacto_item">
+                    <i class="fas fa-clock"></i>
+                    <strong>Horario:</strong> <?php echo htmlspecialchars($datos_contacto['horario']); ?>
+                </div>
+
+                <div class="info_contacto_item">
+                    <i class="fas fa-envelope"></i>
+                    <strong>Correo:</strong> 
+                    <a href="mailto:<?php echo htmlspecialchars($datos_contacto['correo']); ?>" class="info_contacto_email">
+                        <?php echo htmlspecialchars($datos_contacto['correo']); ?>
+                    </a>
+                </div>
+            </div>
+
+            <div class="info_contacto_aviso">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>AVISO IMPORTANTE:</strong> <?php echo htmlspecialchars($datos_contacto['aviso']); ?>
             </div>
         </div>
     </section>
 </main>
 
-<?php include 'footer.php'; ?> <!-- Pie de página -->
+<?php $conexion->close(); ?>
+
+<?php include 'footer.php'; ?>

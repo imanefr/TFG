@@ -10,8 +10,8 @@ if (!isset($_SESSION['usuario_id'])) {
 $is_admin = ($_SESSION['usuario_rol'] === 'admin');
 
 $submenus_nuestro_centro = [
-    ['enlace' => 'relevante_ahora.php', 'titulo' => 'Relevante Ahora', 'icono' => 'fas fa-bookmark', 'descripcion' => 'Estructura organizativa del centro'],
-    ['enlace' => 'ultimas_noticias.php', 'titulo' => 'Ultimas Noticias', 'icono' => 'fas fa-bolt', 'descripcion' => 'Asociación de padres y madres'],
+    ['enlace' => 'relevante_ahora.php', 'titulo' => 'Relevante Ahora', 'icono' => 'fas fa-bookmark', 'descripcion' => 'Lista, Crea, Actualiza o Elimina las noticias marcadas como relevantes.'],
+    ['enlace' => 'ultimas_noticias.php', 'titulo' => 'Noticias', 'icono' => 'fas fa-bolt', 'descripcion' => 'Lista, Crea, Actualiza o Elimina todas las noticias.'],
 ];
 
 $colores = ['relevante_ahora' => '#10B981', 'ultimas_noticias' => '#F59E0B'];

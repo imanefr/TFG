@@ -1,7 +1,6 @@
 <?php
 include("conexion.php");
 
-// Consulta ordenada por secciones específicas
 $query = "SELECT * FROM organigrama ORDER BY 
     FIELD(seccion, 'Equipo Directivo', 'Consejo Escolar', 'Claustro'),
     id ASC";
@@ -35,15 +34,15 @@ mysqli_close($conexion);
 </section>
 
 <!-- CONTENIDO PRINCIPAL -->
-<main class="organigrama-pagina">
+<main class="organigrama_pagina">
     <section class="seccion-contenido">
-        <h2 class="seccion-contenido-h2">Organización Institucional</h2>
+        <h2 class="organigrama_titulo">Organización Institucional</h2>
 
         <?php if (!empty($datos)): ?>
             <?php foreach ($datos as $seccion => $miembros): ?>
-                <div class="seccion-bloque">
-                    <h3 class="titulo-seccion-org"><?php echo htmlspecialchars($seccion); ?></h3>
-                    <table class="tabla-organigrama">
+                <div class="organigrama_bloque">
+                    <h3 class="organigrama_seccion"><?php echo htmlspecialchars($seccion); ?></h3>
+                    <table class="organigrama_tabla">
                         <thead>
                             <tr>
                                 <th>Cargo</th>
@@ -62,17 +61,11 @@ mysqli_close($conexion);
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <div class="seccion-bloque">
-                <p style="text-align: center; padding: 2rem; color: var(--gris-medio);">
-                    No hay datos disponibles en este momento.
-                </p>
+            <div class="organigrama_vacio">
+                <p>No hay datos disponibles en este momento.</p>
             </div>
         <?php endif; ?>
     </section>
 </main>
 
 <?php include 'footer.php'; ?>
-
-<script src="script.js"></script>
-</body>
-</html>

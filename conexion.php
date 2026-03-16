@@ -1,9 +1,9 @@
 <?php
 // Variables para conectar a la base de datos MySQL
-$host = "localhost"; // El servidor donde está la base de datos, normalmente localhost
-$user = "root"; // Usuario de la base de datos, root es el por defecto
-$pass = "1234"; // Contraseña del usuario, aquí pongo 1234 aunque dice que debe estar vacío
-$db = "arboledatablas"; // Nombre de la base de datos que vamos a usar
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db = "arboledatablas";
 
 // Creamos la conexión usando mysqli, que es para MySQL mejorado
 $conexion = new mysqli($host, $user, $pass, $db);

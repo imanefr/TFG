@@ -6,7 +6,7 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
 }
-$titulo_dashboard = "Dashboard Noticias Relevantes";
+$titulo_dashboard = "Dashboard Noticias";
 
 $is_admin = ($_SESSION['usuario_rol'] === 'admin');
 
@@ -16,7 +16,7 @@ if ($_POST && isset($_POST['accion'])) {
     switch ($_POST['accion']) {
         case 'eliminar':
             $id = (int) $_POST['id'];
-            $stmt = $conexion->prepare("DELETE FROM noticias WHERE id = ? AND destacada = 1");
+            $stmt = $conexion->prepare("DELETE FROM noticias WHERE id = ?");
             $stmt->bind_param("i", $id);
             if ($stmt->execute())
                 $mensaje = 'Noticia eliminada correctamente';
@@ -52,7 +52,7 @@ if ($_POST && isset($_POST['accion'])) {
                 }
             }
 
-            $stmt = $conexion->prepare("INSERT INTO noticias (titulo, contenido, fecha, enlace, imagen, video, pdf, destacada) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
+            $stmt = $conexion->prepare("INSERT INTO noticias (titulo, contenido, fecha, enlace, imagen, video, pdf, destacada) VALUES (?, ?, ?, ?, ?, ?, ?, 0)");
             $stmt->bind_param("sssssss", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf);
             if ($stmt->execute())
                 $mensaje = 'Noticia añadida correctamente';
@@ -112,9 +112,9 @@ $stmt = $conexion->prepare("
     SELECT n.*, u.nombre AS ultima_edicion_usuario_nombre
     FROM noticias n
     LEFT JOIN usuarios u ON n.ultima_edicion_usuario_id = u.id
-    WHERE n.destacada = 1
     ORDER BY n.fecha DESC
 ");
+
 $stmt->execute();
 $resultado = $stmt->get_result();
 $noticias = [];
@@ -128,7 +128,7 @@ $modo_edit = false;
 $noticia_edit = null;
 if (isset($_GET['editar'])) {
     $id_edit = (int) $_GET['editar'];
-    $stmt = $conexion->prepare("SELECT * FROM noticias WHERE id = ? AND destacada = 1");
+    $stmt = $conexion->prepare("SELECT * FROM noticias WHERE id = ?");
     $stmt->bind_param("i", $id_edit);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -143,7 +143,7 @@ if (isset($_GET['editar'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión Noticias Relevantes - Dashboard Admin</title>
+    <title>Gestión Noticias - Dashboard Admin</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style_dashboard.css">
 </head>
@@ -171,7 +171,7 @@ if (isset($_GET['editar'])) {
                     <?php if ($modo_edit): ?>
                         <i class="fas fa-edit"></i> Editar Noticia (ID: <?php echo $noticia_edit['id']; ?>)
                     <?php else: ?>
-                        <i class="fas fa-plus"></i> Nueva Noticia Relevante
+                        <i class="fas fa-plus"></i> Nueva Noticia
                     <?php endif; ?>
                 </h2>
                 <form method="POST" class="dashboard_erasmus_form_grid" enctype="multipart/form-data">
@@ -231,6 +231,7 @@ if (isset($_GET['editar'])) {
                                placeholder="pdfs/documento.pdf">
                     </div>
 
+                    
                     <div class="dashboard_erasmus_form_group" style="grid-column: 1 / -1;">
                         <label class="dashboard_erasmus_form_label">Contenido *</label>
                         <textarea name="contenido" class="dashboard_erasmus_form_textarea" required><?php echo htmlspecialchars($modo_edit ? $noticia_edit['contenido'] : ($_POST['contenido'] ?? '')); ?></textarea>
@@ -246,7 +247,7 @@ if (isset($_GET['editar'])) {
 
             <!-- LISTA DE NOTICIAS -->
             <div class="dashboard_erasmus_seccion_lista">
-                <h2><i class="fas fa-list"></i> Noticias Destacadas (<?php echo count($noticias); ?>)</h2>
+                <h2><i class="fas fa-list"></i> Lista de Noticias (<?php echo count($noticias); ?>)</h2>
                 <?php if (!empty($noticias)): ?>
                     <div class="dashboard_erasmus_noticias_grid">
                         <?php foreach ($noticias as $noticia): ?>

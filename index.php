@@ -54,9 +54,9 @@ if (session_status() === PHP_SESSION_NONE) {
             }
 
             $sql = "SELECT r.*, u.nombre as ultima_edicion_usuario_nombre
-                    FROM noticias_relevantes r 
+                    FROM noticias r 
                     LEFT JOIN usuarios u ON r.ultima_edicion_usuario_id = u.id 
-                    WHERE r.activo = 1 
+                    WHERE r.destacada = 1 
                     ORDER BY r.fecha DESC LIMIT 8";
 
             $resultado = $conexion->query($sql);
@@ -72,14 +72,6 @@ if (session_status() === PHP_SESSION_NONE) {
                     <p><?php echo primeras15Palabras($noticia['contenido']); ?></p>
                 </a>
             <?php endforeach; ?>
-            <a href="relevante_ahora.php" class="indice_pagina_tarjeta_noticia card-un-clic">
-                <img src="img/libros_texto.jpg" alt="Libros de texto">
-                <p>Libros de texto 2025‑26</p>
-            </a>
-            <a href="relevante_ahora.php" class="indice_pagina_tarjeta_noticia card-un-clic">
-                <img src="img/matriculacion.jpg" alt="Matriculación">
-                <p>Matriculación 2024‑25</p>
-            </a>
         </div>
 
         <a href="ultimas_noticias.php" style="text-decoration: none;"><h2 class="indice_pagina_titulo_atajo" style="margin-top:3rem;">ÚLTIMAS NOTICIAS</h2></a>

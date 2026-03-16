@@ -1,103 +1,112 @@
-<?php 
-    // Incluimos el archivo head con el HTML del <head> y el inicio de la página
-    include_once 'head.php'; 
+<?php include 'head.php'; ?>
+
+<?php
+include("conexion.php");
+
+$sql = "SELECT a.*, u.nombre as ultima_edicion_usuario_nombre 
+        FROM ampa a 
+        LEFT JOIN usuarios u ON a.ultima_edicion_usuario_id = u.id 
+        WHERE a.activo = 1 
+        ORDER BY a.fecha_actualizacion DESC 
+        LIMIT 1";
+$resultado = $conexion->query($sql);
 ?>
 
-<?php 
-    // Incluimos el archivo de la conexión a la base de datos
-    include("conexion.php"); 
-?>
-<main class="ampa-pagina">
-    <!-- Sección de cabecera reutilizable para todas las páginas -->
-    <section class="seccion-hero-universal">
-        <div class="contenedor-max">
-            <div class="hero-layout-universal">
-                <div class="hero-icono-universal">
-                    <!-- Icono de fontawesome para representar al AMPA -->
-                    <i class="fas fa-users" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
-                </div>
-                <div class="hero-texto-universal">
-                    <!-- Título principal de la página -->
-                    <h1 class="hero-titulo-universal">AMPA</h1>
-                    <!-- Subtítulo explicando qué es el AMPA -->
-                    <p class="hero-subtitulo-universal">Asociación de Madres y Padres del Alumnado</p>
-                </div>
+<!-- HEADER AMPA -->
+<section class="seccion-hero-universal">
+    <div class="contenedor-max">
+        <div class="hero-layout-universal">
+            <div class="hero-icono-universal">
+                <i class="fas fa-users" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
+            </div>
+            <div class="hero-texto-universal">
+                <h1 class="hero-titulo-universal">Avisos del AMPA</h1>
+                <p class="hero-subtitulo-universal">Comunicaciones oficiales, inscripciones y actividades.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Sección donde va el contenido que viene de la base de datos -->
+<main class="info_ampa_pagina">
     <section class="seccion-contenido">
-        <div class="ampa-contenedor-max">
-            <?php
-            // Consulta en la que sacamos solo el registro con id = 1 de la tabla ampa
-            $sql = "SELECT titulo, texto, imagen, tipo_imagen, enlace_formulario, enlace_video FROM ampa WHERE id = 1";
-            
-            // Ejecutamos la consulta usando el objeto $conexion
-            $resultado = $conexion->query($sql);
+        <div class="contenedor-max">
+            <h2 class="info_ampa_titulo">Último Aviso AMPA</h2>
 
-            // Comprobamos que la consulta devolvió algo y obtenemos la primera fila
-            if ($resultado && $fila = $resultado->fetch_assoc()) { 
-                // Variable para saber si hay imagen o vídeo
-                $hay_media = !empty($fila['imagen']) || !empty($fila['enlace_video']);
-                ?>
+            <?php if ($resultado && $resultado->num_rows > 0): ?>
+                <?php $fila = $resultado->fetch_assoc(); 
+                $hay_media = !empty($fila['imagen']) || !empty($fila['enlace_video']); ?>
+                
                 <?php if ($hay_media): ?>
-                    <!-- Si hay imagen o vídeo, usamos un layout con 2 columnas -->
-                    <article class="ampa-media-layout">
-                        <div class="ampa-media-contenedor">
+                    <!-- ✅ CON FOTO/VIDEO A LA IZQUIERDA -->
+                    <div class="info_ampa_item info_ampa_con_media">
+                        <div class="info_ampa_media_contenedor">
                             <?php if (!empty($fila['imagen'])): ?>
-                                <!-- Mostramos la imagen que viene de la BD en binario, codificada en base64 -->
-                                <img src="data:<?php echo $fila['tipo_imagen']; ?>;base64,<?php echo base64_encode($fila['imagen']); ?>" 
-                                     alt="AMPA" class="ampa-media-imagen">
+                                <?php if (strpos($fila['imagen'], 'img/') === 0): ?>
+                                    <img src="<?php echo htmlspecialchars($fila['imagen']); ?>" 
+                                         alt="AMPA" class="info_ampa_media_izquierda">
+                                <?php else: ?>
+                                    <img src="data:<?php echo $fila['tipo_imagen']; ?>;base64,<?php echo base64_encode($fila['imagen']); ?>" 
+                                         alt="AMPA" class="info_ampa_media_izquierda">
+                                <?php endif; ?>
                             <?php elseif (!empty($fila['enlace_video'])): ?>
-                                <!-- Si no hay imagen pero sí enlace de vídeo, incrustamos el vídeo (por ejemplo de YouTube) -->
                                 <iframe src="<?php echo htmlspecialchars(str_replace('watch?v=', 'embed/', $fila['enlace_video'])); ?>" 
-                                        frameborder="0" allowfullscreen class="ampa-media-video"></iframe>
+                                        frameborder="0" allowfullscreen class="info_ampa_media_izquierda_video"></iframe>
                             <?php endif; ?>
                         </div>
-                        <div class="texto-contenido-layout">
-                            <!-- Título que viene de la base de datos, escapado por seguridad -->
-                            <h2 class="ampa-titulo-principal"><?php echo htmlspecialchars($fila['titulo']); ?></h2>
-                            <!-- Texto completo, respetando saltos de línea con nl2br -->
-                            <div class="ampa-texto-completo"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></div>
+                        
+                        <div class="info_ampa_contenido">
+                            <!-- ✅ FECHA + USUARIO ARRIBA -->
+                            <p class="info_ampa_fecha">
+                                <?php echo date('d/m/Y', strtotime($fila['fecha_actualizacion'])); ?>
+                                <?php if (!empty($fila['ultima_edicion_usuario_nombre'])): ?>
+                                    <br><small style="color: #666;"><?php echo htmlspecialchars($fila['ultima_edicion_usuario_nombre']); ?></small>
+                                <?php endif; ?>
+                            </p>
+
+                            <!-- ✅ TÍTULO + TEXTO -->
+                            <h3 class="info_ampa_titulo_item"><?php echo htmlspecialchars($fila['titulo']); ?></h3>
+                            <p class="info_ampa_texto"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></p>
+
+                            <!-- ✅ BOTONES -->
                             <?php if (!empty($fila['enlace_formulario'])): ?>
-                                <!-- Si existe un enlace a formulario, mostramos un botón que abre en pestaña nueva -->
-                                <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" target="_blank" 
-                                   class="ampa-boton-primario">📋 Formulario de inscripción</a>
+                                <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" class="info_ampa_enlace" target="_blank">
+                                    📋 Formulario de inscripción →
+                                </a>
                             <?php endif; ?>
                         </div>
-                    </article>
+                    </div>
                 <?php else: ?>
-                    <!-- Si no hay ni imagen ni vídeo, solo mostramos el texto centrado -->
-                    <article class="ampa-texto-centrado">
-                        <!-- Título desde la BD -->
-                        <h2 class="ampa-titulo-principal"><?php echo htmlspecialchars($fila['titulo']); ?></h2>
-                        <!-- Texto desde la BD, también escapado y con saltos de línea -->
-                        <div class="ampa-texto-completo"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></div>
-                        <?php if (!empty($fila['enlace_formulario'])): ?>
-                            <!-- Botón centrado para el formulario, si existe el enlace -->
-                            <div class="ampa-boton-centrado">
-                                <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" target="_blank" 
-                                   class="ampa-boton-primario">📋 Formulario de inscripción</a>
-                            </div>
-                        <?php endif; ?>
-                    </article>
+                    <!-- ✅ SIN MEDIA -->
+                    <div class="info_ampa_item">
+                        <div class="info_ampa_contenido">
+                            <p class="info_ampa_fecha">
+                                <?php echo date('d/m/Y', strtotime($fila['fecha_actualizacion'])); ?>
+                                <?php if (!empty($fila['ultima_edicion_usuario_nombre'])): ?>
+                                    <br><small style="color: #666;"><?php echo htmlspecialchars($fila['ultima_edicion_usuario_nombre']); ?></small>
+                                <?php endif; ?>
+                            </p>
+                            <h3 class="info_ampa_titulo_item"><?php echo htmlspecialchars($fila['titulo']); ?></h3>
+                            <p class="info_ampa_texto"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></p>
+                            <?php if (!empty($fila['enlace_formulario'])): ?>
+                                <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" class="info_ampa_enlace" target="_blank">
+                                    📋 Formulario de inscripción →
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 <?php endif; ?>
-            <?php } else { ?>
-                <!-- Mensaje sencillo cuando no hay datos en la tabla o la consulta falla -->
-                <div class="ampa-vacio">
-                    <i class="fas fa-info-circle" style="font-size: 3rem; color: var(--gris-medio);"></i>
-                    <p>No hay datos disponibles.</p>
+            <?php else: ?>
+                <div class="info_ampa_sin_contenido">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>No hay avisos AMPA activos</h3>
+                    <p>El administrador aún no ha publicado comunicaciones.</p>
                 </div>
-            <?php } ?>
+            <?php endif; ?>
         </div>
     </section>
 </main>
 
-<?php 
-// Cerramos la conexión con la base de datos
-$conexion->close(); 
-
-// Incluimos el footer de la página
-include 'footer.php'; 
+<?php
+$conexion->close();
+include 'footer.php';
 ?>

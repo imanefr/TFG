@@ -10,9 +10,9 @@ if ($id <= 0) {
 
 // Consulta completa con prepared statement
 $sql = "SELECT r.*, u.nombre as ultima_edicion_usuario_nombre
-        FROM noticias_relevantes r 
+        FROM noticias r 
         LEFT JOIN usuarios u ON r.ultima_edicion_usuario_id = u.id 
-        WHERE r.id = ? AND r.activo = 1";
+        WHERE r.id = ? AND r.destacada = 1";
 
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("i", $id);

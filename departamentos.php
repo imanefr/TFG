@@ -1,8 +1,6 @@
 <?php
 include("conexion.php"); // Conexión a la base de datos (por si en el futuro se añade contenido dinámico)
 
-// Array con los departamentos del centro y su información de ruta e icono.
-// Cada elemento contiene: nombre visible, archivo de destino y clase del icono (Font Awesome)
 $departamentos = [
     ['nombre' => 'Actividades Extraescolares', 'pagina' => 'actividades_extraescolares.php', 'icono' => 'fas fa-star'],
     ['nombre' => 'Biblioteca', 'pagina' => 'biblioteca.php', 'icono' => 'fas fa-book'],
@@ -33,33 +31,31 @@ $departamentos = [
 ];
 ?>
 
-<?php include 'head.php'; ?> <!-- Cabecera común (metaetiquetas, estilos y scripts) -->
+<?php include 'head.php'; ?>
 
-<main class="departamentos-pagina">
-    <!-- Sección de cabecera del bloque de departamentos -->
-    <section class="seccion-hero-universal departamentos-hero">
-        <div class="contenedor-max">
-            <div class="hero-layout-universal">
-                <div class="hero-icono-universal">
-                    <!-- Icono general para la página de departamentos -->
-                    <i class="fas fa-users" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
-                </div>
-                <div class="hero-texto-universal">
-                    <h1 class="hero-titulo-universal">Departamentos</h1>
-                    <p class="hero-subtitulo-universal">Asociación de Madres y Padres del Alumnado</p>
-                </div>
+<!-- HERO -->
+<section class="seccion-hero-universal departamentos_hero">
+    <div class="contenedor-max">
+        <div class="hero-layout-universal">
+            <div class="hero-icono-universal">
+                <i class="fas fa-users" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
+            </div>
+            <div class="hero-texto-universal">
+                <h1 class="hero-titulo-universal">Departamentos</h1>
+                <p class="hero-subtitulo-universal">Departamentos didácticos del centro</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Sección principal que muestra el grid de departamentos (4 columnas adaptables) -->
-    <section class="seccion-contenido departamentos-contenido">
+<!-- CONTENIDO PRINCIPAL -->
+<main class="departamentos_pagina">
+    <section class="seccion-contenido">
         <div class="contenedor-max">
-            <div class="grid-departamentos">
-                <!-- Bucle que genera automáticamente cada tarjeta de departamento -->
+            <div class="departamentos_grid">
                 <?php foreach ($departamentos as $dep): ?>
-                    <a href="<?php echo htmlspecialchars($dep['pagina']); ?>" class="card-departamento">
-                        <i class="<?php echo $dep['icono']; ?> icono-departamento"></i>
+                    <a href="<?php echo htmlspecialchars($dep['pagina']); ?>" class="departamentos_card">
+                        <i class="<?php echo $dep['icono']; ?> departamentos_icono"></i>
                         <h3><?php echo htmlspecialchars($dep['nombre']); ?></h3>
                     </a>
                 <?php endforeach; ?>
@@ -68,7 +64,4 @@ $departamentos = [
     </section>
 </main>
 
-<?php include 'footer.php'; ?> <!-- Pie de página común -->
-
-<!-- Script adicional general (interactividad o animaciones) -->
-<script src="script.js"></script>
+<?php include 'footer.php'; ?>

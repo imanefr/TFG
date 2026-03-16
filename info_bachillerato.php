@@ -17,101 +17,7 @@ $conexion->close();
     <?php include 'head.php'; ?>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --verde-principal: #2e7d32;
-            --verde-claro: #4caf50;
-            --blanco: #ffffff;
-            --gris-fondo: #f8f9fa;
-            --gris-oscuro: #333;
-            --gris-claro: #a0a0a0;
-            --sombra-suave: 0 10px 25px rgba(0,0,0,0.05);
-            --sombra-fuerte: 0 20px 40px rgba(0,0,0,0.15);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--gris-oscuro);
-            background: var(--gris-fondo);
-        }
-
-        .bach-contenido {
-            padding: 2rem 0 4rem;
-        }
-
-        .seccion-contenido-h2 {
-            text-align: center;
-            text-transform: uppercase;
-            color: var(--verde-principal);
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 3rem 0 2rem 0;
-            letter-spacing: 0.1em;
-            position: relative;
-        }
-
-        .seccion-contenido-h2::after {
-            content: "";
-            display: block;
-            width: 45px;
-            height: 3px;
-            background-color: var(--verde-principal);
-            margin: 10px auto 0;
-        }
-
-        /* Imagen */
-        .bach-imagen {
-            width: 100%;
-            height: auto;
-            max-height: 800px;
-            object-fit: contain;
-            object-position: center;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Texto descriptivo */
-        .bach-texto {
-            font-size: 0.95rem;
-            color: var(--gris-oscuro);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        /* Botón PDF */
-        .btn-pdf {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--verde-principal);
-            color: var(--blanco);
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .btn-pdf:hover {
-            background: var(--verde-claro);
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 768px) {
-            .bach-texto {
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -150,22 +56,22 @@ $conexion->close();
     </section>
 
     <!-- MODALIDADES -->
-    <main class="bach-contenido">
+    <main class="info_bachillerato_pagina">
         <?php foreach ($modalidades as $modalidad): ?>
             <?php if ($modalidad['nombre'] == 'Modalidad de Ciencias'): ?>
                 <section class="seccion-contenido">
                     <div class="contenedor-max">
-                        <h2 class="seccion-contenido-h2">Modalidad de Ciencias</h2>
+                        <h2 class="info_bachillerato_titulo">Modalidad de Ciencias</h2>
                         <div style="max-width: 600px; margin: 0 auto;">
                             <?php if (!empty($modalidad['descripcion'])): ?>
-                                <p class="bach-texto"><?php echo htmlspecialchars($modalidad['descripcion']); ?></p>
+                                <p class="info_bachillerato_texto"><?php echo htmlspecialchars($modalidad['descripcion']); ?></p>
                             <?php endif; ?>
                             <?php if (!empty($modalidad['imagen'])): ?>
-                                <img src="<?php echo htmlspecialchars($modalidad['imagen']); ?>" alt="<?php echo htmlspecialchars($modalidad['nombre']); ?>" class="bach-imagen">
+                                <img src="<?php echo htmlspecialchars($modalidad['imagen']); ?>" alt="<?php echo htmlspecialchars($modalidad['nombre']); ?>" class="info_bachillerato_imagen">
                             <?php endif; ?>
                             <?php if (!empty($modalidad['pdf_url'])): ?>
                                 <div style="text-align: center;">
-                                    <a href="<?php echo htmlspecialchars($modalidad['pdf_url']); ?>" class="btn-pdf" target="_blank">
+                                    <a href="<?php echo htmlspecialchars($modalidad['pdf_url']); ?>" class="info_bachillerato_btn_pdf" target="_blank">
                                         <i class="fas fa-file-pdf"></i>
                                         Descargar PDF
                                     </a>
@@ -179,17 +85,17 @@ $conexion->close();
             <?php if ($modalidad['nombre'] == 'Modalidad de Humanidades y Ciencias Sociales'): ?>
                 <section class="seccion-contenido">
                     <div class="contenedor-max">
-                        <h2 class="seccion-contenido-h2">Modalidad de Humanidades y Ciencias Sociales</h2>
+                        <h2 class="info_bachillerato_titulo">Modalidad de Humanidades y Ciencias Sociales</h2>
                         <div style="max-width: 600px; margin: 0 auto;">
                             <?php if (!empty($modalidad['descripcion'])): ?>
-                                <p class="bach-texto"><?php echo htmlspecialchars($modalidad['descripcion']); ?></p>
+                                <p class="info_bachillerato_texto"><?php echo htmlspecialchars($modalidad['descripcion']); ?></p>
                             <?php endif; ?>
                             <?php if (!empty($modalidad['imagen'])): ?>
-                                <img src="<?php echo htmlspecialchars($modalidad['imagen']); ?>" alt="<?php echo htmlspecialchars($modalidad['nombre']); ?>" class="bach-imagen">
+                                <img src="<?php echo htmlspecialchars($modalidad['imagen']); ?>" alt="<?php echo htmlspecialchars($modalidad['nombre']); ?>" class="info_bachillerato_imagen">
                             <?php endif; ?>
                             <?php if (!empty($modalidad['pdf_url'])): ?>
                                 <div style="text-align: center;">
-                                    <a href="<?php echo htmlspecialchars($modalidad['pdf_url']); ?>" class="btn-pdf" target="_blank">
+                                    <a href="<?php echo htmlspecialchars($modalidad['pdf_url']); ?>" class="info_bachillerato_btn_pdf" target="_blank">
                                         <i class="fas fa-file-pdf"></i>
                                         Descargar PDF
                                     </a>
