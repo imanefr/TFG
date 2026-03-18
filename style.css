@@ -3883,3 +3883,64 @@ body {
     object-fit: contain; 
     z-index: 10;
 }
+
+/* ==========================================================================
+    PLAN DE IGUALDAD
+   ========================================================================== */
+
+.plan_igualdad_pagina {
+    padding: 2rem 3rem 4rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.plan_igualdad_titulo {
+    text-align: center;
+    color: var(--verde-principal);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 1rem 0 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+}
+
+.plan_igualdad_titulo::after {
+    content: "";
+    display: block;
+    width: 45px;
+    height: 3px;
+    background: var(--verde-principal);
+    margin: 10px auto 0;
+}
+
+.plan_igualdad_subtitulo {
+    text-align: center;
+    color: var(--gris-texto);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.plan_igualdad_texto {
+    text-align: center;
+    color: var(--gris-medio);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.plan_igualdad_pdf_titulo {
+    text-align: center;
+    color: var(--verde-principal);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+    
