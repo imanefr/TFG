@@ -16,11 +16,11 @@
 </section>
 
 <!-- CONTENIDO PRINCIPAL -->
-<main class="erasmus_pagina">
+<main class="bolsa_empleo_pagina">
     <!-- ÚLTIMAS MOVILIDADES -->
     <section class="seccion-contenido">
         <div class="contenedor-max">
-            <h2 class="erasmus_titulo">Bolsa de Empleo</h2>
+            <h2 class="bolsa_empleo_titulo">Bolsa de Empleo</h2>
             <div class="imagen-bolsa-empleo">
                 <a href="https://www.empleafp.com/site/index.html#!/">
                     <img src="./img/bolsa_de_empleo.png" alt="Bolsa de Empleo EmpleaFP"> 
