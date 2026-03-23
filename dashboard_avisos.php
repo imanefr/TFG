@@ -7,298 +7,254 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
+// Título dinámico para el header global
+$titulo_dashboard = "Dashboard Avisos";
+
 $is_admin = ($_SESSION['usuario_rol'] === 'admin');
 $mensaje = '';
 
-// 🔒 PROCESAR SOLO ADMIN + POST
+// PROCESAR SOLO ADMIN + POST
 if ($is_admin && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
     switch ($_POST['accion']) {
         case 'eliminar':
-            $id = (int)$_POST['id'];
-            // Buscar en las 3 tablas y eliminar
-            $tablas = ['matriculacion_bachillerato', 'matriculacion_eso', 'matriculacion_fp'];
-            foreach ($tablas as $tabla) {
-                $stmt = $conexion->prepare("DELETE FROM $tabla WHERE id = ? AND activo = 1");
-                $stmt->bind_param("i", $id);
-                if ($stmt->execute() && $stmt->affected_rows > 0) {
-                    $mensaje = 'Matrícula eliminada correctamente';
-                    break;
-                }
-                $stmt->close();
+            $id = (int) $_POST['id'];
+            $stmt = $conexion->prepare("DELETE FROM avisos WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            if ($stmt->execute() && $stmt->affected_rows > 0) {
+                $mensaje = 'Aviso eliminado correctamente';
             }
+            $stmt->close();
             break;
-            
+
         case 'nueva':
             $titulo = trim($_POST['titulo'] ?? '');
-            $descripcion = trim($_POST['descripcion'] ?? '');
-            $ruta_pdf = trim($_POST['ruta_pdf'] ?? '');
-            $fecha = $_POST['fecha'] ?? date('Y-m-d');
-            
-            if ($titulo && $descripcion && $ruta_pdf) {
-                // Insertar en Bachillerato por defecto (puedes añadir selector de tabla)
-                $stmt = $conexion->prepare("INSERT INTO matriculacion_bachillerato (titulo, descripcion, ruta_pdf, fecha, activo) VALUES (?, ?, ?, ?, 1)");
-                $stmt->bind_param("ssss", $titulo, $descripcion, $ruta_pdf, $fecha);
-                if ($stmt->execute()) $mensaje = 'Matrícula añadida correctamente';
-                $stmt->close();
-            } else {
-                $mensaje = 'Todos los campos son obligatorios';
-            }
-            break;
-            
-        case 'editar':
-            $id = (int)$_POST['id'];
-            $titulo = trim($_POST['titulo'] ?? '');
-            $descripcion = trim($_POST['descripcion'] ?? '');
-            $ruta_pdf = trim($_POST['ruta_pdf'] ?? '');
-            $fecha = $_POST['fecha'] ?? date('Y-m-d');
-            
-            // Actualizar en la tabla correcta
-            $tablas = ['matriculacion_bachillerato', 'matriculacion_eso', 'matriculacion_fp'];
-            foreach ($tablas as $tabla) {
-                $stmt = $conexion->prepare("UPDATE $tabla SET titulo=?, descripcion=?, ruta_pdf=?, fecha=? WHERE id=? AND activo=1");
-                $stmt->bind_param("ssssi", $titulo, $descripcion, $ruta_pdf, $fecha, $id);
-                if ($stmt->execute() && $stmt->affected_rows > 0) {
-                    $mensaje = 'Matrícula actualizada correctamente';
-                    break;
+            $texto = trim($_POST['texto'] ?? '');
+            $enlace = trim($_POST['enlace'] ?? '');
+            $fecha = $_POST['fecha'] ?? date('Y-m-d H:i:s');
+            $importante = isset($_POST['importante']) ? 1 : 0;
+
+            if ($titulo && $texto) {
+                $stmt = $conexion->prepare("
+                    INSERT INTO avisos (titulo, texto, enlace, fecha, importante, ultima_edicion_fecha, ultima_edicion_usuario_id) 
+                    VALUES (?, ?, ?, ?, ?, NOW(), ?)
+                ");
+                $stmt->bind_param("sssssi", $titulo, $texto, $enlace, $fecha, $importante, $_SESSION['usuario_id']);
+                if ($stmt->execute()) {
+                    $mensaje = 'Aviso añadido correctamente';
                 }
                 $stmt->close();
+            } else {
+                $mensaje = 'Título y texto son obligatorios';
             }
+            break;
+
+        case 'editar':
+            $id = (int) $_POST['id'];
+            $titulo = trim($_POST['titulo'] ?? '');
+            $texto = trim($_POST['texto'] ?? '');
+            $enlace = trim($_POST['enlace'] ?? '');
+            $fecha = $_POST['fecha'] ?? date('Y-m-d H:i:s');
+            $importante = isset($_POST['importante']) ? 1 : 0;
+
+            $stmt = $conexion->prepare("
+                UPDATE avisos 
+                SET titulo=?, texto=?, enlace=?, fecha=?, importante=?, 
+                    ultima_edicion_fecha=NOW(), ultima_edicion_usuario_id=? 
+                WHERE id=?
+            ");
+            $stmt->bind_param("sssssii", $titulo, $texto, $enlace, $fecha, $importante, $_SESSION['usuario_id'], $id);
+            if ($stmt->execute() && $stmt->affected_rows > 0) {
+                $mensaje = 'Aviso actualizado correctamente';
+            }
+            $stmt->close();
             break;
     }
 }
 
-// 📋 CARGAR MATRÍCULAS (UNION OPTIMIZADA)
+// CARGAR AVISOS (con JOIN usuario)
 $stmt = $conexion->prepare("
-    SELECT 'bachillerato' as tipo, id, titulo, descripcion, ruta_pdf, fecha, activo 
-    FROM matriculacion_bachillerato WHERE activo = 1
-    UNION ALL
-    SELECT 'eso' as tipo, id, titulo, descripcion, ruta_pdf, fecha, activo 
-    FROM matriculacion_eso WHERE activo = 1
-    UNION ALL
-    SELECT 'fp' as tipo, id, titulo, descripcion, ruta_pdf, fecha, activo 
-    FROM matriculacion_fp WHERE activo = 1
-    ORDER BY fecha DESC
+    SELECT a.*, u.nombre as ultima_edicion_usuario_nombre
+    FROM avisos a 
+    LEFT JOIN usuarios u ON a.ultima_edicion_usuario_id = u.id
+    ORDER BY a.importante DESC, a.fecha DESC
 ");
 $stmt->execute();
-$matriculas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$avisos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
 // ✏️ MODO EDICIÓN
 $modo_edit = false;
-$matricula_edit = null;
+$aviso_edit = null;
 if ($is_admin && isset($_GET['editar'])) {
-    $id_edit = (int)$_GET['editar'];
-    $tablas = ['matriculacion_bachillerato', 'matriculacion_eso', 'matriculacion_fp'];
-    foreach ($tablas as $tabla) {
-        $stmt = $conexion->prepare("SELECT * FROM $tabla WHERE id = ? AND activo = 1");
-        $stmt->bind_param("i", $id_edit);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($matricula_edit = $result->fetch_assoc()) {
-            $modo_edit = true;
-            break;
-        }
-        $stmt->close();
+    $id_edit = (int) $_GET['editar'];
+    $stmt = $conexion->prepare("
+        SELECT a.*, u.nombre as ultima_edicion_usuario_nombre
+        FROM avisos a 
+        LEFT JOIN usuarios u ON a.ultima_edicion_usuario_id = u.id
+        WHERE a.id = ?
+    ");
+    $stmt->bind_param("i", $id_edit);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($aviso_edit = $result->fetch_assoc()) {
+        $modo_edit = true;
     }
+    $stmt->close();
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión Matriculación - Dashboard Admin</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --morado: #8B5CF6; --morado-oscuro: #7C3AED; --morado-claro: #C4B5FD;
-            --blanco: #FFFFFF; --gris: #6B7280; --gris-oscuro: #1F2937; --verde: #10B981;
-            --naranja: #F59E0B; --rojo: #EF4444;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, sans-serif; background: linear-gradient(135deg, #F8FAFC, #EDE9FE); min-height: 100vh; padding: 2rem; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        
-        .header-actions { position: absolute; top: 2.5rem; left: 2rem; z-index: 1000; display: flex; gap: 1rem; }
-        .btn-volver { background: linear-gradient(135deg, var(--morado-oscuro), var(--morado)); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139,92,246,0.3); }
-        .btn-volver:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139,92,246,0.4); }
-        
-        .header { background: var(--blanco); padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(139,92,246,0.1); margin-bottom: 2rem; text-align: center; border: 1px solid var(--morado-claro); position: relative; }
-        .saludo { background: linear-gradient(135deg, var(--morado), var(--morado-oscuro)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-        .info-usuario { background: var(--morado-claro); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.1rem; font-weight: 600; }
-        
-        .seccion-form { background: var(--blanco); border-radius: 20px; padding: 2.5rem; box-shadow: 0 10px 30px rgba(139,92,246,0.08); margin-bottom: 2rem; border-top: 5px solid var(--verde); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .form-label { font-weight: 600; color: var(--gris-oscuro); }
-        .form-input, .form-textarea { padding: 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.3s; background: #f9fafb; }
-        .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--verde); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
-        .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
-        .btn { padding: 1rem 2rem; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; }
-        .btn-primary { background: linear-gradient(135deg, var(--verde), #059669); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(16,185,129,0.3); }
-        .btn-secondary { background: linear-gradient(135deg, var(--morado), var(--morado-oscuro)); color: white; }
-        
-        .noticias-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; }
-        .noticia-card { background: var(--blanco); border-radius: 15px; padding: 2rem; box-shadow: 0 8px 25px rgba(139,92,246,0.08); border-left: 5px solid var(--verde); }
-        .noticia-titulo { font-size: 1.3rem; font-weight: 700; color: var(--gris-oscuro); margin-bottom: 0.5rem; }
-        .noticia-fecha { color: var(--gris); font-size: 0.9rem; margin-bottom: 1rem; }
-        .noticia-contenido { color: var(--gris-oscuro); margin-bottom: 1rem; line-height: 1.6; }
-        .noticia-enlace { color: var(--morado); text-decoration: none; font-weight: 600; }
-        .noticia-enlace:hover { text-decoration: underline; }
-        
-        .acciones-botones { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
-        .btn-small { padding: 0.75rem 1.5rem; font-size: 0.95rem; border-radius: 8px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s; border: none; cursor: pointer; }
-        .btn-editar { background: linear-gradient(135deg, var(--naranja), #f97316); color: white; }
-        .btn-editar:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,158,11,0.4); }
-        .btn-delete { background: linear-gradient(135deg, var(--rojo), #dc2626); color: white; }
-        .btn-delete:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(239,68,68,0.4); }
-        
-        .modo-edit { background: linear-gradient(135deg, #fef3c7, #fde68a) !important; border-top-color: var(--naranja) !important; }
-        .form-textarea { min-height: 100px; resize: vertical; font-family: inherit; }
-        .alert { padding: 1rem 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; }
-        .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        .no-admin { text-align: center; padding: 4rem; background: var(--blanco); border-radius: 20px; color: var(--gris); margin: 2rem 0; border: 1px solid var(--morado-claro); }
-        .btn-logout { background: linear-gradient(135deg, var(--morado-oscuro), var(--morado)); color: white; border: none; padding: 1.2rem 2.5rem; border-radius: 15px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: block; margin: 3rem auto 0; transition: all 0.3s ease; }
-        .btn-logout:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(139,92,246,0.4); }
-        
-        @media (max-width: 768px) { 
-            .header-actions { left: 1rem; top: 1rem; }
-            .form-grid, .noticias-grid { grid-template-columns: 1fr; } 
-            .btn-group, .acciones-botones { flex-direction: column; align-items: center; }
-            .btn-small { width: 100%; max-width: 250px; justify-content: center; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="header-actions">
-                <a href="dashboard_secretaria.php" class="btn-volver" title="Volver a Secretaría">
-                    <i class="fas fa-arrow-left"></i> Secretaría
-                </a>
-            </div>
-            <h1 class="saludo">
-                <i class="fas fa-file-signature"></i>
-                Gestión Matriculación
-                <span class="info-usuario"><?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?> (<?php echo ucfirst($_SESSION['usuario_rol']); ?>)</span>
-            </h1>
-        </div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestión Avisos - Dashboard Admin</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="style_dashboard.css">
+    </head>
+    <body>
+        <div class="dashboard_avisos_container">
+            <!-- HEADER -->
+            <?php include 'dashboard_head.php'; ?>
 
-        <?php if (!$is_admin): ?>
-            <div class="no-admin">
-                <i class="fas fa-lock" style="font-size: 4rem; color: var(--morado-claro); margin-bottom: 1rem;"></i>
-                <h2>Solo administradores pueden gestionar el contenido</h2>
-            </div>
-        <?php else: ?>
-            
-            <?php if ($mensaje): ?>
-                <div class="alert <?php echo strpos($mensaje, 'eliminada') !== false || strpos($mensaje, 'añadida') !== false || strpos($mensaje, 'actualizada') !== false ? 'alert-success' : 'alert-error'; ?>">
-                    <?php echo htmlspecialchars($mensaje); ?>
+
+            <?php if (!$is_admin): ?>
+                <div class="dashboard_avisos_no_admin">
+                    <i class="fas fa-lock" style="font-size: 4rem; color: var(--morado-claro); margin-bottom: 1rem;"></i>
+                    <h2>Solo administradores pueden gestionar los avisos</h2>
+                </div>
+            <?php else: ?>
+
+                <!-- ALERTA DE MENSAJE -->
+                <?php if ($mensaje): ?>
+                    <div class="dashboard_avisos_alert <?php echo strpos($mensaje, 'eliminado') !== false || strpos($mensaje, 'añadido') !== false || strpos($mensaje, 'actualizado') !== false ? 'dashboard_avisos_alert_success' : 'dashboard_avisos_alert_error'; ?>">
+                        <?php echo htmlspecialchars($mensaje); ?>
+                    </div>
+                <?php endif; ?>
+
+                <!-- FORMULARIO NUEVA / EDITAR -->
+                <div class="dashboard_avisos_seccion_form <?php echo $modo_edit ? 'dashboard_avisos_modo_edit' : ''; ?>">
+                    <h2>
+                        <?php if ($modo_edit): ?>
+                            <i class="fas fa-edit"></i> Editar Aviso (ID: <?php echo $aviso_edit['id']; ?>)
+                        <?php else: ?>
+                            <i class="fas fa-plus"></i> Nuevo Aviso
+                        <?php endif; ?>
+                    </h2>
+
+                    <form method="POST" class="dashboard_avisos_form_grid">
+                        <?php if ($modo_edit): ?>
+                            <input type="hidden" name="accion" value="editar">
+                            <input type="hidden" name="id" value="<?php echo $aviso_edit['id']; ?>">
+                        <?php else: ?>
+                            <input type="hidden" name="accion" value="nueva">
+                        <?php endif; ?>
+
+                        <div class="dashboard_avisos_form_group">
+                            <label class="dashboard_avisos_form_label">Título *</label>
+                            <input type="text" name="titulo" class="dashboard_avisos_form_input" required 
+                                   value="<?php echo htmlspecialchars($modo_edit ? $aviso_edit['titulo'] : ($_POST['titulo'] ?? '')); ?>"
+                                   placeholder="Ej: Reunión Consejo Escolar">
+                        </div>
+
+                        <div class="dashboard_avisos_form_group">
+                            <label class="dashboard_avisos_form_label">Fecha y Hora *</label>
+                            <input type="datetime-local" name="fecha" class="dashboard_avisos_form_input" required 
+                                   value="<?php echo $modo_edit ? str_replace(' ', 'T', $aviso_edit['fecha']) : ($_POST['fecha'] ?? date('Y-m-d\TH:i')); ?>">
+                        </div>
+
+                        <div class="dashboard_avisos_form_group">
+                            <label class="dashboard_avisos_form_label">Enlace (opcional)</label>
+                            <input type="url" name="enlace" class="dashboard_avisos_form_input" 
+                                   value="<?php echo htmlspecialchars($modo_edit ? $aviso_edit['enlace'] : ($_POST['enlace'] ?? '')); ?>"
+                                   placeholder="documentos/matriculacion.pdf">
+                        </div>
+
+                        <div class="dashboard_avisos_form_group">
+                            <label class="dashboard_avisos_form_label">
+                                <input type="checkbox" name="importante" <?php echo ($modo_edit && $aviso_edit['importante']) || isset($_POST['importante']) ? 'checked' : ''; ?>>
+                                Marcar como IMPORTANTE
+                            </label>
+                        </div>
+
+                        <div class="dashboard_avisos_form_group" style="grid-column: 1 / -1;">
+                            <label class="dashboard_avisos_form_label">Texto del Aviso *</label>
+                            <textarea name="texto" class="dashboard_avisos_form_textarea" required><?php echo htmlspecialchars($modo_edit ? $aviso_edit['texto'] : ($_POST['texto'] ?? '')); ?></textarea>
+                        </div>
+
+                        <div class="dashboard_avisos_btn_group">
+                            <button type="submit" class="dashboard_avisos_btn dashboard_avisos_btn_primary">
+                                <i class="fas fa-save"></i> <?php echo $modo_edit ? 'Actualizar' : 'Añadir'; ?> Aviso
+                            </button>
+                            <?php if ($modo_edit): ?>
+                                <a href="dashboard_avisos.php" class="dashboard_avisos_btn dashboard_avisos_btn_secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- LISTA DE AVISOS -->
+                <div class="dashboard_avisos_seccion_form">
+                    <h2><i class="fas fa-list"></i> Avisos Publicados (<?php echo count($avisos); ?>)</h2>
+                    <?php if (!empty($avisos)): ?>
+                        <div class="dashboard_avisos_noticias_grid">
+                            <?php foreach ($avisos as $aviso): ?>
+                                <div class="dashboard_avisos_noticia_card <?php echo $aviso['importante'] ? 'dashboard_avisos_importante' : ''; ?>">
+                                    <h3 class="dashboard_avisos_noticia_titulo">
+                                        <?php echo htmlspecialchars($aviso['titulo']); ?>
+                                        <?php if ($aviso['importante']): ?>
+                                            <span style="color: var(--rojo); font-weight: 700;">IMPORTANTE</span>
+                                        <?php endif; ?>
+                                    </h3>
+                                    <div class="dashboard_avisos_noticia_fecha">
+                                        <i class="fas fa-calendar"></i> <?php echo date('d/m/Y', strtotime($aviso['fecha'])); ?>
+                                        <?php if (!empty($aviso['ultima_edicion_usuario_nombre'])): ?>
+                                            <br><small style="color: #666; font-size: 0.85rem;"><?php echo htmlspecialchars($aviso['ultima_edicion_usuario_nombre']); ?></small>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div class="dashboard_avisos_noticia_contenido">
+                                        <?php echo htmlspecialchars(substr($aviso['texto'], 0, 150)); ?>...
+                                    </div>
+                                    <?php if ($aviso['enlace']): ?>
+                                        <a href="<?php echo htmlspecialchars($aviso['enlace']); ?>" class="dashboard_avisos_noticia_enlace" target="_blank">
+                                            <i class="fas fa-external-link-alt"></i> Ver documento
+                                        </a>
+                                    <?php endif; ?>
+
+                                    <div class="dashboard_avisos_acciones_botones">
+                                        <a href="?editar=<?php echo $aviso['id']; ?>" class="dashboard_avisos_btn_small dashboard_avisos_btn_editar" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar este aviso?')">
+                                            <input type="hidden" name="accion" value="eliminar">
+                                            <input type="hidden" name="id" value="<?php echo $aviso['id']; ?>">
+                                            <button type="submit" class="dashboard_avisos_btn_small dashboard_avisos_btn_delete" title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <div style="text-align: center; padding: 3rem; color: var(--gris);">
+                            <i class="fas fa-bell-slash" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                            <h3>No hay avisos</h3>
+                            <p>Añade el primer aviso con el formulario de arriba</p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
 
-            <!-- FORMULARIO NUEVA / EDITAR -->
-            <div class="seccion-form <?php echo $modo_edit ? 'modo-edit' : ''; ?>">
-                <h2>
-                    <?php if ($modo_edit): ?>
-                        <i class="fas fa-edit"></i> Editar Matrícula (ID: <?php echo $matricula_edit['id']; ?>)
-                    <?php else: ?>
-                        <i class="fas fa-plus"></i> Nueva Matrícula (Bachillerato)
-                    <?php endif; ?>
-                </h2>
-                <form method="POST" class="form-grid">
-                    <?php if ($modo_edit): ?>
-                        <input type="hidden" name="accion" value="editar">
-                        <input type="hidden" name="id" value="<?php echo $matricula_edit['id']; ?>">
-                    <?php else: ?>
-                        <input type="hidden" name="accion" value="nueva">
-                    <?php endif; ?>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Título *</label>
-                        <input type="text" name="titulo" class="form-input" required 
-                               value="<?php echo htmlspecialchars($modo_edit ? $matricula_edit['titulo'] : ($_POST['titulo'] ?? '')); ?>"
-                               placeholder="Ej: Matrícula ESO 2025-26">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Fecha *</label>
-                        <input type="date" name="fecha" class="form-input" required 
-                               value="<?php echo $modo_edit ? $matricula_edit['fecha'] : ($_POST['fecha'] ?? date('Y-m-d')); ?>">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Ruta PDF *</label>
-                        <input type="text" name="ruta_pdf" class="form-input" required 
-                               value="<?php echo htmlspecialchars($modo_edit ? $matricula_edit['ruta_pdf'] : ($_POST['ruta_pdf'] ?? '')); ?>"
-                               placeholder="pdfs/matricula_eso_25_26.pdf">
-                    </div>
-                    
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label class="form-label">Descripción *</label>
-                        <textarea name="descripcion" class="form-textarea" required><?php echo htmlspecialchars($modo_edit ? $matricula_edit['descripcion'] : ($_POST['descripcion'] ?? '')); ?></textarea>
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> <?php echo $modo_edit ? 'Actualizar' : 'Añadir'; ?> Matrícula
-                        </button>
-                        <a href="dashboard_matricula.php" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> <?php echo $modo_edit ? 'Cancelar' : 'Volver'; ?>
-                        </a>
-                    </div>
-                </form>
-            </div>
-
-            <!-- LISTA DE MATRÍCULAS -->
-            <div class="seccion-form">
-                <h2><i class="fas fa-list"></i> Matrículas Publicadas (<?php echo count($matriculas); ?>)</h2>
-                <?php if (!empty($matriculas)): ?>
-                    <div class="noticias-grid">
-                        <?php foreach ($matriculas as $matricula): ?>
-                            <div class="noticia-card">
-                                <h3 class="noticia-titulo"><?php echo htmlspecialchars($matricula['titulo']); ?> <span style="color: var(--verde); font-weight: 600;">(<?php echo strtoupper($matricula['tipo']); ?>)</span></h3>
-                                <div class="noticia-fecha">
-                                    <i class="fas fa-calendar"></i> <?php echo date('d/m/Y', strtotime($matricula['fecha'])); ?>
-                                </div>
-                                <div class="noticia-contenido"><?php echo htmlspecialchars(substr($matricula['descripcion'], 0, 150)); ?>...</div>
-                                <a href="<?php echo htmlspecialchars($matricula['ruta_pdf']); ?>" class="noticia-enlace" target="_blank">
-                                    <i class="fas fa-file-pdf"></i> Descargar PDF
-                                </a>
-                                
-                                <div class="acciones-botones">
-                                    <a href="?editar=<?php echo $matricula['id']; ?>" class="btn btn-small btn-editar" title="Editar">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-                                    <form method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar esta matrícula?')">
-                                        <input type="hidden" name="accion" value="eliminar">
-                                        <input type="hidden" name="id" value="<?php echo $matricula['id']; ?>">
-                                        <button type="submit" class="btn btn-small btn-delete" title="Eliminar">
-                                            <i class="fas fa-trash"></i> Eliminar
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php else: ?>
-                    <div style="text-align: center; padding: 3rem; color: var(--gris);">
-                        <i class="fas fa-file-signature" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-                        <h3>No hay matrículas</h3>
-                        <p>Añade la primera matrícula con el formulario de arriba</p>
-                    </div>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
-
-        <form method="POST" action="logout.php" style="text-align: center;">
-            <button type="submit" class="btn-logout">
-                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-            </button>
-        </form>
-    </div>
-</body>
+            <!-- LOGOUT -->
+            <form method="POST" action="dashboard_secretaria.php" class="dashboard_universal_volver">
+                <button type="submit" class="dashboard_universal_btn_volver">
+                    <i class="fas fa-arrow-left"> </i>  Volver
+                </button>
+            </form>
+        </div>
+    </body>
 </html>

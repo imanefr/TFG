@@ -1,76 +1,112 @@
 <?php include 'head.php'; ?>
 
-<?php include("conexion.php"); ?>
-<main>
-    <section class="seccion-contenido">
-        <h2 class="seccion-contenido-h2">AMPA</h2>
-        <div class="contenedor-max">
-            <?php
-            $sql = "SELECT titulo, texto, imagen, tipo_imagen, enlace_formulario, enlace_video FROM ampa WHERE id = 1";
-            $resultado = $conexion->query($sql);
+<?php
+include("conexion.php");
 
-            if ($resultado && $fila = $resultado->fetch_assoc()) {
-                $hay_media = !empty($fila['imagen']) || !empty($fila['enlace_video']);
-                ?>
+$sql = "SELECT a.*, u.nombre as ultima_edicion_usuario_nombre 
+        FROM ampa a 
+        LEFT JOIN usuarios u ON a.ultima_edicion_usuario_id = u.id 
+        WHERE a.activo = 1 
+        ORDER BY a.fecha_actualizacion DESC 
+        LIMIT 1";
+$resultado = $conexion->query($sql);
+?>
+
+<!-- HEADER AMPA -->
+<section class="seccion-hero-universal">
+    <div class="contenedor-max">
+        <div class="hero-layout-universal">
+            <div class="hero-icono-universal">
+                <i class="fas fa-users" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
+            </div>
+            <div class="hero-texto-universal">
+                <h1 class="hero-titulo-universal">Avisos del AMPA</h1>
+                <p class="hero-subtitulo-universal">Comunicaciones oficiales, inscripciones y actividades.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main class="info_ampa_pagina">
+    <section class="seccion-contenido">
+        <div class="contenedor-max">
+            <h2 class="info_ampa_titulo">Último Aviso AMPA</h2>
+
+            <?php if ($resultado && $resultado->num_rows > 0): ?>
+                <?php $fila = $resultado->fetch_assoc(); 
+                $hay_media = !empty($fila['imagen']) || !empty($fila['enlace_video']); ?>
+                
                 <?php if ($hay_media): ?>
-                    <!-- ✅ HAY IMAGEN O VIDEO: 2 columnas -->
-                    <div style="display: flex; gap: 2rem; padding: 2rem; background: #f8f9fa; border-radius: 10px; margin: 2rem 0;">
-                        <!-- COLUMNA MEDIA (izquierda) -->
-                        <div style="flex: 0 0 300px; text-align: center;">
+                    <!-- ✅ CON FOTO/VIDEO A LA IZQUIERDA -->
+                    <div class="info_ampa_item info_ampa_con_media">
+                        <div class="info_ampa_media_contenedor">
                             <?php if (!empty($fila['imagen'])): ?>
-                                <!-- MOSTRAR IMAGEN -->
-                                <img src="data:<?php echo $fila['tipo_imagen']; ?>;base64,<?php echo base64_encode($fila['imagen']); ?>" 
-                                     alt="AMPA" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                             <?php elseif (!empty($fila['enlace_video'])): ?>
-                                <!-- MOSTRAR VIDEO -->
-                                <iframe width="100%" height="200" 
-                                        src="<?php echo htmlspecialchars(str_replace('watch?v=', 'embed/', $fila['enlace_video'])); ?>" 
-                                        frameborder="0" allowfullscreen 
-                                        style="border-radius: 10px;"></iframe>
+                                <?php if (strpos($fila['imagen'], 'img/') === 0): ?>
+                                    <img src="<?php echo htmlspecialchars($fila['imagen']); ?>" 
+                                         alt="AMPA" class="info_ampa_media_izquierda">
+                                <?php else: ?>
+                                    <img src="data:<?php echo $fila['tipo_imagen']; ?>;base64,<?php echo base64_encode($fila['imagen']); ?>" 
+                                         alt="AMPA" class="info_ampa_media_izquierda">
+                                <?php endif; ?>
+                            <?php elseif (!empty($fila['enlace_video'])): ?>
+                                <iframe src="<?php echo htmlspecialchars(str_replace('watch?v=', 'embed/', $fila['enlace_video'])); ?>" 
+                                        frameborder="0" allowfullscreen class="info_ampa_media_izquierda_video"></iframe>
                             <?php endif; ?>
                         </div>
+                        
+                        <div class="info_ampa_contenido">
+                            <!-- ✅ FECHA + USUARIO ARRIBA -->
+                            <p class="info_ampa_fecha">
+                                <?php echo date('d/m/Y', strtotime($fila['fecha_actualizacion'])); ?>
+                                <?php if (!empty($fila['ultima_edicion_usuario_nombre'])): ?>
+                                    <br><small style="color: #666;"><?php echo htmlspecialchars($fila['ultima_edicion_usuario_nombre']); ?></small>
+                                <?php endif; ?>
+                            </p>
 
-                        <!-- COLUMNA TEXTO (derecha) -->
-                        <div style="flex: 1;">
-                            <h2 style="color: #2c3e50; margin-bottom: 1rem;"><?php echo htmlspecialchars($fila['titulo']); ?></h2>
-                            <p style="line-height: 1.6; margin-bottom: 1rem;"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></p>
+                            <!-- ✅ TÍTULO + TEXTO -->
+                            <h3 class="info_ampa_titulo_item"><?php echo htmlspecialchars($fila['titulo']); ?></h3>
+                            <p class="info_ampa_texto"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></p>
 
+                            <!-- ✅ BOTONES -->
                             <?php if (!empty($fila['enlace_formulario'])): ?>
-                                <p style="margin-bottom: 1rem;">
-                                    <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" target="_blank" 
-                                       style="background: #28a745; color: white; padding: 0.7rem 1.5rem; text-decoration: none; border-radius: 5px; display: inline-block;">
-                                        📋 Formulario de inscripción
-                                    </a>
-                                </p>
+                                <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" class="info_ampa_enlace" target="_blank">
+                                    📋 Formulario de inscripción →
+                                </a>
                             <?php endif; ?>
                         </div>
                     </div>
                 <?php else: ?>
-                    <!-- ❌ SIN IMAGEN NI VIDEO: texto ocupa TODO -->
-                    <div style="padding: 2rem; background: #f8f9fa; border-radius: 10px; margin: 2rem 0; max-width: 800px; margin-left: auto; margin-right: auto;">
-                        <h2 style="color: #2c3e50; margin-bottom: 1rem; text-align: center;"><?php echo htmlspecialchars($fila['titulo']); ?></h2>
-                        <div style="line-height: 1.7; text-align: justify;"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></div>
-
-                        <?php if (!empty($fila['enlace_formulario'])): ?>
-                            <div style="text-align: center; margin-top: 1.5rem;">
-                                <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" target="_blank" 
-                                   style="background: #28a745; color: white; padding: 0.8rem 2rem; text-decoration: none; border-radius: 5px; display: inline-block; font-size: 1.1rem;">
-                                    📋 Formulario de inscripción
+                    <!-- ✅ SIN MEDIA -->
+                    <div class="info_ampa_item">
+                        <div class="info_ampa_contenido">
+                            <p class="info_ampa_fecha">
+                                <?php echo date('d/m/Y', strtotime($fila['fecha_actualizacion'])); ?>
+                                <?php if (!empty($fila['ultima_edicion_usuario_nombre'])): ?>
+                                    <br><small style="color: #666;"><?php echo htmlspecialchars($fila['ultima_edicion_usuario_nombre']); ?></small>
+                                <?php endif; ?>
+                            </p>
+                            <h3 class="info_ampa_titulo_item"><?php echo htmlspecialchars($fila['titulo']); ?></h3>
+                            <p class="info_ampa_texto"><?php echo nl2br(htmlspecialchars($fila['texto'])); ?></p>
+                            <?php if (!empty($fila['enlace_formulario'])): ?>
+                                <a href="<?php echo htmlspecialchars($fila['enlace_formulario']); ?>" class="info_ampa_enlace" target="_blank">
+                                    📋 Formulario de inscripción →
                                 </a>
-                            </div>
-                        <?php endif; ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 <?php endif; ?>
-            <?php } else { ?>
-                <div style="text-align: center; padding: 3rem; color: #666;">
-                    <p>No hay datos AMPA disponibles.</p>
+            <?php else: ?>
+                <div class="info_ampa_sin_contenido">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>No hay avisos AMPA activos</h3>
+                    <p>El administrador aún no ha publicado comunicaciones.</p>
                 </div>
-            <?php } ?>
+            <?php endif; ?>
         </div>
     </section>
 </main>
 
-<?php 
-$conexion->close(); 
-include 'footer.php'; 
+<?php
+$conexion->close();
+include 'footer.php';
 ?>

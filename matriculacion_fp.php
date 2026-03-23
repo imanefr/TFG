@@ -1,134 +1,124 @@
-<?php
-include("conexion.php");
+<?php include("head.php"); ?>
 
-// ✅ TODOS los registros activos de FP (SIN LIMIT 1)
-$sql = "SELECT id, titulo, ruta_pdf, fecha FROM matriculacion_fp WHERE activo = 1 ORDER BY fecha DESC";
-$resultado = $conexion->query($sql);
-$conexion->close();
-?>
-
-<?php include 'head.php'; ?>
-
-<!-- HEADER FP -->
-<section class="matricula-contenido">
+<section class="seccion-hero-universal">
     <div class="contenedor-max">
-        <div class="avisos-layout">
-            <div class="avisos-logo">
-                <!-- ✅ Icono FP -->
-                <i class="fas fa-tools" style="font-size: 3rem; color: var(--verde-principal);"></i>
+        <div class="hero-layout-universal">
+            <div class="hero-icono-universal">
+                <i class="fas fa-file-invoice" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
             </div>
-            <div class="avisos-texto">
-                <h2>Matriculación Formación Profesional</h2>
+            <div class="hero-texto-universal">
+                <h1 class="hero-titulo-universal">Matriculación FP</h1>
+                <p class="hero-subtitulo-universal">Información sobre la matriculación en Formación Profesional</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- CONTENIDO - MÚLTIPLES DOCUMENTOS FP -->
 <main>
-    <?php if ($resultado && $resultado->num_rows > 0): ?>
-        <section class="seccion-contenido">
-            <div class="contenedor-max">
-                <h3 style="color: var(--verde-principal); margin-bottom: 1.5rem;">Documentos Oficiales FP</h3>
-                <div class="lista-avisos">
-                    <?php while ($fp = $resultado->fetch_assoc()): ?>
-                        <div class="aviso-item">
-                            <div class="aviso-contenido">
-                                <!-- FECHA DESDE BD -->
-                                <p class="aviso-fecha">
-                                    <i class="fas fa-calendar"></i> 
-                                    <?php echo date('d/m/Y', strtotime($fp['fecha'])); ?>
-                                </p>
-                                
-                                <!-- TÍTULO DESDE BD -->
-                                <h3 class="aviso-titulo">
-                                    📄 <?php echo htmlspecialchars($fp['titulo']); ?>
-                                </h3>
-                                
-                                <!-- PDF DESDE BD -->
-                                <div class="pdf-actions">
-                                    <a href="<?php echo htmlspecialchars($fp['ruta_pdf']); ?>" class="aviso-enlace" target="_blank">
-                                        <i class="fas fa-external-link-alt"></i> Abrir PDF Oficial
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
-                </div>
-            </div>
-        </section>
-
-        <section class="seccion-contenido">
-            <div class="contenedor-max">
-                <h2 class="seccion-contenido-h2">Información Matriculación FP</h2>
-                <div class="info-grid">
-                    <div class="info-card">
-                        <i class="fas fa-clock"></i>
-                        <h4>Horario Secretaría</h4>
-                        <p>Lunes a Viernes<br><strong>09:30 - 12:00 h</strong></p>
+    <section class="seccion-contenido">
+        <div class="contenedor-max">
+            <h1 class="matriculacion_fp_titulo">Información general matrícula para alumnos de FP</h1>
+            <div class="horario-secretaria">
+                <h2 class="matriculacion_fp_subtitulo">HORARIO DE SECRETARÍA:</h2>
+                <p class="matriculacion_fp_texto">
+                    <strong>De lunes a viernes de 09:30 a 12:00</strong>
+                    <div class="secretaria_contacto">
+                        <p><strong>Teléfono:</strong> 916 43 99 91</p>
+                        <p><strong>Fax:</strong> 916 44 00 25</p>
+                        <p><strong>Correo:</strong> <a href="mailto:secretaria.ies.laarboleda.alcorcon@educa.madrid.org">secretaria.ies.laarboleda.alcorcon@educa.madrid.org</a></p>
                     </div>
-                    <div class="info-card">
-                        <i class="fas fa-university"></i>
-                        <h4>Cuenta Pagos</h4>
-                        <p><strong>CAIXABANK</strong><br>ES09 2100 6366 9713 0018 0224</p>
-                    </div>
-                    <div class="info-card">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h4>Importante</h4>
-                        <p><strong>Importe exacto</strong><br>No se devuelve dinero sobrante</p>
-                    </div>
-                </div>
+                </p>
             </div>
-        </section>
-    <?php else: ?>
-        <section class="seccion-contenido">
-            <div class="contenedor-max">
-                <div class="sin-contenido">
-                    <i class="fas fa-info-circle"></i>
-                    <h3>No hay documentos FP disponibles</h3>
-                    <p>Contacta con secretaría para información de matrícula.</p>
-                </div>
+            <div class="documentacion-necesaria-fp">
+                <h2 class="documentacion_necesaria_titulo">CONVALIDACIONES DE MÓDULOS PROFESIONALES.</h2>
+                <ul class="lista_documentacion_fp">
+                    <li class="lista_documentacion_fp_item">
+                        <h2 class="lista_documentacion_fp_item_titulo"><strong>1.</strong> Tipos de Convalidación Generales</h2>
+                        <p class="lista_documentacion_fp_item_texto">
+                            Existen 3 tipos de convalidaciones en función del órgano competente para su concesión:
+                            <br/>* <strong>Centro Educativo: </strong>Dirección del Centro educativo.
+                            <br/>* <strong>Comunidad: </strong>Dirección General de Educación Secundaria, Formación Profesional y Régimen Especial.
+                            <br/>* <strong>Ministerio: </strong>Subdirección General de Ordenación e Innovación de la Formación Profesional del MEFP
+                        </p>
+                    </li>
+                    <li class="lista_documentacion_fp_item">
+                        <h2 class="lista_documentacion_fp_item_titulo"><strong>2.</strong> Consideraciones Previas</h2>
+                        <p class="lista_documentacion_fp_item_texto">
+                            Para poder convalidar un módulo formativo se debe estar 
+                            previamente matriculado del mismo.
+                            <br/>
+                            Mientras no esté resuelta la convalidación, 
+                            los alumnos no están exentos de los módulos profesionales cuya convalidación
+                            solicitaron y por tanto deben asistir a clase.
+                        </p>
+                    </li>
+                    <li class="lista_documentacion_fp_item">
+                        <h2 class="lista_documentacion_fp_item_titulo"><strong>3.</strong> Procedimiento</h2>
+                        <p class="lista_documentacion_fp_item_texto">
+                            <h3 class="lista_documentacion_fp_item_titulo">En el Centro Educativo:</h3>
+                            <strong>Para Módulos LOE: </strong> Ir a la sección "Formularios".
+                            <br/>
+                            <br/>
+                            <h3 class="lista_documentacion_fp_item_titulo">Documentación Acreditativa:</h3>
+                            <strong>Convalidación otros estudios cursados: </strong> Certificación de Estudios cursados.
+                            <br/>
+                            <strong>Convalidación unidades de Competencia: </strong> Certificado de profesionalidad / Otros según en modo de obtención de las UC.
+                            <br/>
+                            <br/>
+                            <strong>(*) En todos los casos debe presentarse original y copia del certificado para cotejar.</strong>
+                        </p>
+                    </li>
+                    <li class="lista_documentacion_fp_item">
+                        <h2 class="lista_documentacion_fp_item_titulo"><strong>4.</strong> Plazos</h2>
+                        <p class="lista_documentacion_fp_item_texto">
+                            Las convalidaciones pueden ser solicitadas <strong>desde la formalización de matricula hasta transcurridos 15 días lectivos del curso escolar.</strong>
+                            <br/>
+                            Si se trata convalidaciones competencia del MEFP el plazo de solicitud es <strong>durante todo el curso.</strong>
+                            <br/>
+                            <br/>
+                            <strong>(*) Si no se han solicitado en el momento de la matriculación, se recomienda realizar la solicitud de las convalidaciones al comenzar el curso a la mayor brevedad posible en Septiembre.</strong>
+                        </p>
+                    </li>
+                    <li class="lista_documentacion_fp_item">
+                        <h2 class="lista_documentacion_fp_item_titulo"><strong>5.</strong> Resolución</h2>
+                        <p class="lista_documentacion_fp_item_texto">
+                            El plazo de resolución depende del órgano competente:
+                            <br/>
+                            <strong>Centro educativo:</strong> Es la más rápida en resolver.
+                            <br/>
+                            <strong>Comunidad:</strong>  Tarda más en resolverse.
+                            <br/>
+                            <strong>MEFP:</strong>  Es la que tiene plazos más largos.
+                            <br/>
+                            <br/>
+                            Mientras no esté resuelta la convalidación, <strong>los alumnos no están exentos de los módulos profesionales cuya convalidación solicitaron y por tanto deben asistir a clase.</strong>
+                            <br/>
+                            El silencio administrativo <strong>en todos los casos se considera desestimatorio.</strong>
+                        </p>
+                    </li>
+                </ul>
             </div>
-        </section>
-    <?php endif; ?>
+            <div class="documentacion-necesaria-fp">
+                <h2 class="documentacion_necesaria_titulo">FORMULARIOS:</h2>
+                <h3 class="documentacion_necesaria_subtitulo">
+                    A continuación encontrará todos los formularios para realizar la matriculación.
+                    Pinche sobre el enlace y se abrirá una nueva ventana donde 
+                    encontrará el icono para descargar. 
+                    Tras la descarga, se abrirá el fichero PDF y se rellenará.
+                    <br/><strong>NO SE RECOGERÁ NINGÚN FORMULARIO ESCRITO A MANO.</strong>
+                </h3>
+                <ul class="lista_formularios_fp">
+                    <li class="lista_formularios_fp_item">
+                        <p class="lista_formularios_fp_item_texto">
+                            <a class="matriculacion_fp_link" href="https://site.educa.madrid.org/ies.laarboleda.alcorcon//wp-content/uploads/ies.laarboleda.alcorcon/2022/09/ANEXO-V-CONVALIDACIONES.docx">
+                                Anexo V - Solicitud de Convalidación (Módulos LOE)
+                            </a>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
 </main>
 
-<?php include 'footer.php'; ?>
-
-<style>
-.pdf-actions .aviso-enlace { 
-    background: linear-gradient(135deg, var(--verde-principal), var(--verde-oscuro));
-    color: var(--blanco) !important; 
-    padding: 1rem 2rem; 
-    border-radius: 25px; 
-    text-decoration: none; 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 0.5rem; 
-    font-weight: 600; 
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(19,139,60,0.3);
-    border: 2px solid transparent;
-}
-
-.pdf-actions .aviso-enlace:hover { 
-    transform: translateY(-3px); 
-    box-shadow: 0 8px 25px rgba(19,139,60,0.4);
-    background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-principal));
-}
-
-.info-card i {
-    color: var(--verde-principal);
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    display: block;
-}
-
-.info-card h4 {
-    color: var(--verde-principal);
-}
-</style>
-
-<script src="script.js"></script>
-</body>
-</html>
+<?php include("footer.php"); ?>

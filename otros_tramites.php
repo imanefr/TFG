@@ -1,78 +1,107 @@
-<?php
-include("conexion.php");
+<?php include("head.php"); ?>
 
-// Consulta otros trámites (por ejemplo, últimos 8)
-$sql = "SELECT titulo, contenido, fecha, enlace 
-        FROM otros_tramites 
-        ORDER BY fecha DESC 
-        LIMIT 8";
-$resultado = $conexion->query($sql);
-
-$tramites = [];
-while ($fila = $resultado->fetch_assoc()) {
-    $tramites[] = $fila;
-}
-?>
-               <?php include 'head.php'; ?>
-
-
-    <!-- CABECERA DE SECCIÓN -->
-    <section class="erasmus-contenido">
-        <div class="contenedor-max">
-            <div class="avisos-layout">
-                <div class="avisos-logo">
-                    <i class="fas fa-file-signature" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
-                </div>
-                <div class="avisos-texto">
-                    <h2>OTROS TRÁMITES</h2>
-                    <p>Gestiones administrativas de secretaría</p>
-                </div>
+<section class="seccion-hero-universal">
+    <div class="contenedor-max">
+        <div class="hero-layout-universal">
+            <div class="hero-icono-universal">
+                <i class="fas fa-bookmark" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
+            </div>
+            <div class="hero-texto-universal">
+                <h1 class="hero-titulo-universal">Otros Trámites</h1>
+                <p class="hero-subtitulo-universal">Encuentra aquí los trámites no previamente listados</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- LISTA DE TRÁMITES (mismo estilo que Últimas Movilidades) -->
-    <section class="seccion-contenido">
-        <div class="contenedor-max">
-            <h2 class="seccion-contenido-h2">Información y procedimientos</h2>
-            
-            <?php if (!empty($tramites)): ?>
-                <div class="lista-avisos">
-                    <?php foreach ($tramites as $tramite): ?>
-                        <div class="aviso-item">
-                            <div class="aviso-contenido">
-                                <p class="aviso-fecha">
-                                    <?php echo date('d/m/Y', strtotime($tramite['fecha'])); ?>
-                                </p>
-                                <h3 class="aviso-titulo">
-                                    <?php echo htmlspecialchars($tramite['titulo']); ?>
-                                </h3>
-                                <p class="aviso-texto">
-                                    <?php echo substr(strip_tags($tramite['contenido']), 0, 200); ?>...
-                                </p>
-                                <?php if (!empty($tramite['enlace'])): ?>
-                                    <a href="<?php echo htmlspecialchars($tramite['enlace']); ?>" 
-                                       class="aviso-enlace" target="_blank">
-                                        Leer completo →
-                                    </a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <div class="sin-contenido">
-                    <i class="fas fa-info-circle"></i>
-                    <h3>No hay trámites disponibles</h3>
-                    <p>Próximamente se publicará información sobre otros trámites de secretaría.</p>
-                </div>
-            <?php endif; ?>
+<section class="seccion-contenido">
+    <div class="contenedor-max">
+        <h1 class="otros_tramites_titulo">Otros Trámites</h1>
+        <h2 class="otros_tramites_subtitulo">Encuentra aquí los trámites no previamente listados</h2>
+        <div class="otros_tramites_info">
+            <div class="otros_tramites_info_links">
+                <h2 class="lista_formularios_otros_tramites_item_titulo">Becas</h2>
+                <ul class="lista_formularios_otros_tramites">
+                    <li class="lista_formularios_otros_tramites_item">
+                        <p class="lista_formularios_otros_tramites_item_texto">
+                            <a class="otros_tramites_link" href="https://site.educa.madrid.org/ies.laarboleda.alcorcon//wp-content/uploads/ies.laarboleda.alcorcon/2025/05/FormularioMatricula1ESO25.pdf">
+                                Formulario de Matriculación 1º de E.S.O (2025/2026).
+                            </a>
+                        </p>
+                    </li>
+                    <li class="lista_formularios_otros_tramites_item">
+                        <p class="lista_formularios_otros_tramites_item_texto">
+                            <a class="otros_tramites_link" href="http://www.educacionyfp.gob.es/gl/servicios-al-ciudadano/catalogo/estudiantes/becas-ayudas/para-estudiar/primaria-secundaria/necesidad-especifica-apoyo-educativo.html">
+                                Becas y ayudas para alumnos con necesidad específica de apoyo educativo
+                            </a>
+                        </p>
+                    </li>
+                    <li class="lista_formularios_otros_tramites_item">
+                        <p class="lista_formularios_otros_tramites_item_texto">
+                            <a class="otros_tramites_link" href="https://www.comunidad.madrid/servicios/educacion/becas-estudio-programas-segunda-oportunidad">
+                                Becas para el estudio de Programas de Segunda Oportunidad
+                            </a>
+                        </p>
+                    </li>
+                    <li class="lista_formularios_otros_tramites_item">
+                        <p class="lista_formularios_otros_tramites_item_texto">
+                            <a class="otros_tramites_link" href="http://www.educacionyfp.gob.es/servicios-al-ciudadano/catalogo/estudiantes/becas-ayudas/para-estudiar.html">
+                                Becas, ayudas y subvenciones del Ministerio de Educación
+                            </a>
+                        </p>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </section>
+        <div class="otros_tramites_info">
+            <div class="otros_tramites_info_links">
+                <h2 class="lista_formularios_otros_tramites_item_titulo">Procesos de baja y cancelación de matrículas</h2>
+                <ul class="lista_formularios_otros_tramites">
+                    <li class="lista_formularios_otros_tramites_item">
+                        <p class="lista_formularios_otros_tramites_item_texto">
+                            <strong>Proceso de baja Bachillerato:</strong> <br/>
+                            A continuación encontrar el formulario a entregar para completar el proceso de baja en Bachillerato
+                            <br/>
+                            <a class="otros_tramites_link" href="https://site.educa.madrid.org/ies.laarboleda.alcorcon//wp-content/uploads/ies.laarboleda.alcorcon/2022/05/Baja-Bachillerato-n.pdf">
+                                Baja Bachillerato
+                            </a>
+                        </p>
+                    </li>
+                    <li class="lista_formularios_otros_tramites_item">
+                        <p class="lista_formularios_otros_tramites_item_texto">
+                            <strong>Proceso de cancelación matricula FP:</strong> <br/>
+                            A continuación encontrar el formulario a entregar para completar el proceso de cancelación matricula en FP
+                            <br/>
+                            <a class="otros_tramites_link" href="https://site.educa.madrid.org/ies.laarboleda.alcorcon//wp-content/uploads/ies.laarboleda.alcorcon/2022/05/Solicituddecancelaciondematricula-fp.pdf">
+                                Solicitud de cancelación de matrícula de Formación Profesional
+                            </a>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="otros_tramites_info">
+            <div class="otros_tramites_info_links">
+                <h2 class="lista_formularios_otros_tramites_item_titulo">Formularios Genéricos</h2>
+                <ul class="lista_formularios_otros_tramites">
+                    <li class="lista_formularios_otros_tramites_item">
+                        <p class="lista_formularios_otros_tramites_item_texto">
+                            <a class="otros_tramites_link" href="https://site.educa.madrid.org/ies.laarboleda.alcorcon//wp-content/uploads/ies.laarboleda.alcorcon/2022/05/Instancia-Solicitud-general_v2.pdf">
+                                Instancia Solicitud General
+                            </a>
+                        </p>
+                    </li>
+                    <li class="lista_formularios_otros_tramites_item">
+                        <p class="lista_formularios_otros_tramites_item_texto">
+                            <a class="otros_tramites_link" href="https://site.educa.madrid.org/ies.laarboleda.alcorcon//wp-content/uploads/ies.laarboleda.alcorcon/2022/05/IMPRESO-SOLICITUD-CERTIFICACIONES.pdf">
+                                Impreso de Solicitud de Certificaciones
+                            </a>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
 
-                  <?php include 'footer.php'; ?>
-
-
-    <script src="script.js"></script>
-</body>
-</html>
+<?php include("footer.php"); ?>

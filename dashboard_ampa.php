@@ -6,38 +6,136 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
 }
-
+$titulo_dashboard = "Dashboard AMPA";
 $is_admin = ($_SESSION['usuario_rol'] === 'admin');
-
-// CARGAR DATOS AMPA
-$stmt = $conexion->prepare("SELECT * FROM ampa WHERE id = 1");
-$stmt->execute();
-$resultado = $stmt->get_result();
-$ampa_data = $resultado->fetch_assoc();
-$stmt->close();
 
 // PROCESAR ACCIONES
 $mensaje = '';
 if ($_POST && isset($_POST['accion'])) {
-    $titulo = trim($_POST['titulo']);
-    $texto = trim($_POST['texto']);
-    $enlace_formulario = trim($_POST['enlace_formulario']);
-    $enlace_video = trim($_POST['enlace_video']);
-    
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        $imagen = file_get_contents($_FILES['imagen']['tmp_name']);
-        $tipo_imagen = $_FILES['imagen']['type'];
-        $stmt = $conexion->prepare("UPDATE ampa SET titulo=?, texto=?, imagen=?, tipo_imagen=?, enlace_formulario=?, enlace_video=? WHERE id=1");
-        $stmt->bind_param("sssiss", $titulo, $texto, $imagen, $tipo_imagen, $enlace_formulario, $enlace_video);
-    } else {
-        $stmt = $conexion->prepare("UPDATE ampa SET titulo=?, texto=?, enlace_formulario=?, enlace_video=? WHERE id=1");
-        $stmt->bind_param("ssss", $titulo, $texto, $enlace_formulario, $enlace_video);
+    switch ($_POST['accion']) {
+        case 'eliminar':
+            $id = (int) $_POST['id'];
+            $stmt = $conexion->prepare("DELETE FROM ampa WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            if ($stmt->execute())
+                $mensaje = 'Entrada AMPA eliminada correctamente';
+            $stmt->close();
+            break;
+
+        case 'activar':
+            // Primero desactivar todas las entradas
+            $stmt = $conexion->prepare("UPDATE ampa SET activo = 0");
+            $stmt->execute();
+            $stmt->close();
+            
+            // Activar solo la seleccionada
+            $id = (int) $_POST['id'];
+            $stmt = $conexion->prepare("UPDATE ampa SET activo = 1, ultima_edicion_fecha=NOW(), ultima_edicion_usuario_id=? WHERE id = ?");
+            $stmt->bind_param("ii", $_SESSION['usuario_id'], $id);
+            if ($stmt->execute())
+                $mensaje = 'Entrada AMPA activada correctamente (única visible)';
+            $stmt->close();
+            break;
+
+        case 'nueva':
+            $titulo = trim($_POST['titulo']);
+            $texto = trim($_POST['texto']);
+            $enlace_formulario = trim($_POST['enlace_formulario']);
+            $enlace_video = trim($_POST['enlace_video']);
+            $imagen = isset($_POST['imagen_existente']) ? trim($_POST['imagen_existente']) : '';
+
+            // SUBIDA DE IMAGEN
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                $upload_dir = 'img/';
+                if (!is_dir($upload_dir))
+                    mkdir($upload_dir, 0777, true);
+
+                $file_extension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                if (in_array($file_extension, $allowed)) {
+                    $new_filename = 'ampa_' . time() . '_' . rand(1000, 9999) . '.' . $file_extension;
+                    $upload_path = $upload_dir . $new_filename;
+
+                    if (move_uploaded_file($_FILES['imagen']['tmp_name'], $upload_path)) {
+                        $imagen = $upload_path;
+                    }
+                }
+            }
+
+            $stmt = $conexion->prepare("INSERT INTO ampa (titulo, texto, imagen, enlace_formulario, enlace_video, fecha_actualizacion, ultima_edicion_fecha, ultima_edicion_usuario_id, activo) VALUES (?, ?, ?, ?, ?, NOW(), NOW(), ?, 0)");
+            $stmt->bind_param("ssssi", $titulo, $texto, $imagen, $enlace_formulario, $enlace_video, $_SESSION['usuario_id']);
+            if ($stmt->execute())
+                $mensaje = 'Entrada AMPA añadida correctamente';
+            $stmt->close();
+            break;
+
+        case 'editar':
+            $id = (int) $_POST['id'];
+            $titulo = trim($_POST['titulo']);
+            $texto = trim($_POST['texto']);
+            $enlace_formulario = trim($_POST['enlace_formulario']);
+            $enlace_video = trim($_POST['enlace_video']);
+            $imagen = isset($_POST['imagen_existente']) ? trim($_POST['imagen_existente']) : '';
+
+            // SUBIDA DE IMAGEN NUEVA
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                $upload_dir = 'img/';
+                if (!is_dir($upload_dir))
+                    mkdir($upload_dir, 0777, true);
+
+                $file_extension = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+                if (in_array($file_extension, $allowed)) {
+                    $new_filename = 'ampa_' . time() . '_' . rand(1000, 9999) . '.' . $file_extension;
+                    $upload_path = $upload_dir . $new_filename;
+
+                    if (move_uploaded_file($_FILES['imagen']['tmp_name'], $upload_path)) {
+                        $imagen = $upload_path;
+                        // Eliminar imagen anterior si existe
+                        if (isset($_POST['imagen_existente']) && file_exists($_POST['imagen_existente'])) {
+                            unlink($_POST['imagen_existente']);
+                        }
+                    }
+                }
+            }
+
+            $stmt = $conexion->prepare("UPDATE ampa SET titulo=?, texto=?, imagen=?, enlace_formulario=?, enlace_video=?, fecha_actualizacion=NOW(), ultima_edicion_fecha=NOW(), ultima_edicion_usuario_id=? WHERE id=?");
+            $stmt->bind_param("sssssii", $titulo, $texto, $imagen, $enlace_formulario, $enlace_video, $_SESSION['usuario_id'], $id);
+            if ($stmt->execute())
+                $mensaje = 'Entrada AMPA actualizada correctamente';
+            $stmt->close();
+            break;
     }
-    
-    if ($stmt->execute()) {
-        $mensaje = 'AMPA actualizado correctamente';
-        header("Refresh:0");
-    }
+}
+
+// CARGAR TODAS LAS ENTRADAS PARA GESTIÓN CON USUARIO - CONSULTA CORREGIDA ✅
+$stmt = $conexion->prepare("
+    SELECT a.*, u.nombre AS ultima_edicion_usuario_nombre
+    FROM ampa a
+    LEFT JOIN usuarios u ON a.ultima_edicion_usuario_id = u.id
+    ORDER BY a.fecha_actualizacion DESC
+");
+$stmt->execute();
+$resultado = $stmt->get_result();
+$entradas = [];
+while ($fila = $resultado->fetch_assoc()) {
+    $entradas[] = $fila;
+}
+$stmt->close();
+
+// MODO EDITAR
+$modo_edit = false;
+$entrada_edit = null;
+if (isset($_GET['editar'])) {
+    $id_edit = (int) $_GET['editar'];
+    $stmt = $conexion->prepare("SELECT * FROM ampa WHERE id = ?");
+    $stmt->bind_param("i", $id_edit);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $entrada_edit = $result->fetch_assoc();
+    $modo_edit = $entrada_edit !== null;
     $stmt->close();
 }
 ?>
@@ -49,201 +147,167 @@ if ($_POST && isset($_POST['accion'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión AMPA - Dashboard Admin</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --morado: #8B5CF6; --morado-oscuro: #7C3AED; --morado-claro: #C4B5FD;
-            --blanco: #FFFFFF; --gris: #6B7280; --gris-oscuro: #1F2937; --verde: #10B981;
-            --naranja: #F59E0B;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, sans-serif; background: linear-gradient(135deg, #F8FAFC, #EDE9FE); min-height: 100vh; padding: 2rem; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        
-        /* BOTÓN VOLVER HEADER */
-        .header-actions { 
-            position: absolute; 
-            top: 2.5rem; 
-            left: 2rem; 
-            z-index: 1000;
-            display: flex; 
-            gap: 1rem; 
-        }
-        .btn-volver { 
-            background: linear-gradient(135deg, var(--morado-oscuro), var(--morado)); 
-            color: white; 
-            border: none; 
-            padding: 0.8rem 1.5rem; 
-            border-radius: 10px; 
-            font-weight: 600; 
-            font-size: 0.95rem; 
-            cursor: pointer; 
-            text-decoration: none; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 0.5rem; 
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(139,92,246,0.3);
-        }
-        .btn-volver:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 25px rgba(139,92,246,0.4); 
-        }
-        
-        .header { 
-            background: var(--blanco); 
-            padding: 2.5rem; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(139,92,246,0.1); 
-            margin-bottom: 2rem; 
-            text-align: center; 
-            border: 1px solid var(--morado-claro);
-            position: relative;
-        }
-        .saludo { background: linear-gradient(135deg, var(--morado), var(--morado-oscuro)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-        .info-usuario { background: var(--morado-claro); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.1rem; font-weight: 600; }
-        
-        .seccion-form { background: var(--blanco); border-radius: 20px; padding: 2.5rem; box-shadow: 0 10px 30px rgba(139,92,246,0.08); margin-bottom: 2rem; border-top: 5px solid var(--naranja); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
-        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .form-label { font-weight: 600; color: var(--gris-oscuro); }
-        .form-input, .form-textarea, .form-file { padding: 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.3s; background: #f9fafb; }
-        .form-input:focus, .form-textarea:focus, .form-file:focus { outline: none; border-color: var(--naranja); box-shadow: 0 0 0 3px rgba(245,158,11,0.1); }
-        .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
-        .btn { padding: 1rem 2rem; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; }
-        .btn-primary { background: linear-gradient(135deg, var(--naranja), #f97316); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(245,158,11,0.3); }
-        .btn-secondary { background: linear-gradient(135deg, var(--morado), var(--morado-oscuro)); color: white; }
-        
-        .preview-section { background: var(--blanco); border-radius: 20px; padding: 2.5rem; box-shadow: 0 10px 30px rgba(139,92,246,0.08); margin-bottom: 2rem; border-top: 5px solid var(--verde); }
-        .preview-media { display: flex; gap: 2rem; padding: 2rem; background: #f8f9fa; border-radius: 10px; margin-bottom: 2rem; }
-        .preview-media-img { flex: 0 0 300px; text-align: center; }
-        .preview-media-img img { max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .preview-media-video iframe { width: 100%; height: 200px; border-radius: 10px; }
-        .preview-text { flex: 1; }
-        .preview-text h3 { color: #2c3e50; margin-bottom: 1rem; }
-        
-        .alert { padding: 1rem 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; font-weight: 600; }
-        .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-        .no-admin { text-align: center; padding: 4rem; background: var(--blanco); border-radius: 20px; color: var(--gris); margin: 2rem 0; border: 1px solid var(--morado-claro); }
-        .btn-logout { background: linear-gradient(135deg, var(--morado-oscuro), var(--morado)); color: white; border: none; padding: 1.2rem 2.5rem; border-radius: 15px; font-weight: 700; font-size: 1.1rem; cursor: pointer; display: block; margin: 3rem auto 0; transition: all 0.3s ease; }
-        .btn-logout:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(139,92,246,0.4); }
-        
-        @media (max-width: 768px) { 
-            .header-actions { left: 1rem; top: 1rem; }
-            .form-grid { grid-template-columns: 1fr; }
-            .preview-media { flex-direction: column; }
-        }
-    </style>
+    <link rel="stylesheet" href="style_dashboard.css">
 </head>
 <body>
-    <div class="container">
-        <!-- HEADER CON BOTÓN VOLVER -->
-        <div class="header">
-            <div class="header-actions">
-                <a href="dashboard.php" class="btn-volver" title="Volver al Dashboard">
-                    <i class="fas fa-arrow-left"></i> Dashboard
-                </a>
-            </div>
-            
-            <h1 class="saludo">
-                <i class="fas fa-users"></i>
-                Gestión AMPA
-                <span class="info-usuario"><?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?> (<?php echo ucfirst($_SESSION['usuario_rol']); ?>)</span>
-            </h1>
-        </div>
+    <div class="dashboard_ampa_container">
+        <!-- HEADER -->
+        <?php include 'dashboard_head.php'; ?>
 
         <?php if (!$is_admin): ?>
-            <div class="no-admin">
-                <i class="fas fa-lock" style="font-size: 4rem; color: var(--morado-claro); margin-bottom: 1rem;"></i>
-                <h2>Solo administradores pueden gestionar el contenido</h2>
+            <div class="dashboard_ampa_no_admin">
+                <i class="fas fa-lock"></i>
+                <h2>Solo administradores pueden gestionar el contenido AMPA</h2>
             </div>
         <?php else: ?>
-            
+
             <?php if ($mensaje): ?>
-                <div class="alert alert-success"><?php echo htmlspecialchars($mensaje); ?></div>
+                <div class="dashboard_ampa_alert dashboard_ampa_alert_success">
+                    <?php echo htmlspecialchars($mensaje); ?>
+                </div>
             <?php endif; ?>
 
-            <!-- PREVIEW ACTUAL -->
-            <div class="preview-section">
-                <h2><i class="fas fa-eye"></i> Vista Previa Actual</h2>
-                <?php if ($ampa_data): ?>
-                    <?php $hay_media = !empty($ampa_data['imagen']) || !empty($ampa_data['enlace_video']); ?>
-                    <div class="preview-media">
-                        <?php if ($hay_media): ?>
-                            <div class="preview-media-img">
-                                <?php if (!empty($ampa_data['imagen'])): ?>
-                                    <img src="data:<?php echo $ampa_data['tipo_imagen']; ?>;base64,<?php echo base64_encode($ampa_data['imagen']); ?>" alt="AMPA">
-                                <?php else: ?>
-                                    <iframe src="<?php echo htmlspecialchars(str_replace('watch?v=', 'embed/', $ampa_data['enlace_video'])); ?>" frameborder="0" allowfullscreen></iframe>
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
-                        <div class="preview-text">
-                            <h3><?php echo htmlspecialchars($ampa_data['titulo']); ?></h3>
-                            <p><?php echo nl2br(htmlspecialchars($ampa_data['texto'])); ?></p>
-                            <?php if (!empty($ampa_data['enlace_formulario'])): ?>
-                                <a href="<?php echo htmlspecialchars($ampa_data['enlace_formulario']); ?>" target="_blank" class="btn btn-primary" style="padding: 0.7rem 1.5rem; font-size: 0.9rem;">
-                                    📋 Formulario de inscripción
-                                </a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            </div>
+            <!-- FORMULARIO -->
+            <div class="dashboard_ampa_seccion_form <?php echo $modo_edit ? 'dashboard_ampa_modo_edit' : ''; ?>">
+                <h2>
+                    <?php if ($modo_edit): ?>
+                        <i class="fas fa-edit"></i> Editar Entrada (ID: <?php echo $entrada_edit['id']; ?>)
+                    <?php else: ?>
+                        <i class="fas fa-plus"></i> Nueva Entrada AMPA
+                    <?php endif; ?>
+                </h2>
+                <form method="POST" class="dashboard_ampa_form_grid" enctype="multipart/form-data">
+                    <?php if ($modo_edit): ?>
+                        <input type="hidden" name="accion" value="editar">
+                        <input type="hidden" name="id" value="<?php echo $entrada_edit['id']; ?>">
+                        <input type="hidden" name="imagen_existente" value="<?php echo htmlspecialchars($entrada_edit['imagen']); ?>">
+                    <?php else: ?>
+                        <input type="hidden" name="accion" value="nueva">
+                    <?php endif; ?>
 
-            <!-- FORMULARIO EDITAR AMPA -->
-            <div class="seccion-form">
-                <h2><i class="fas fa-edit"></i> Editar Contenido AMPA</h2>
-                <form method="POST" enctype="multipart/form-data" class="form-grid">
-                    <input type="hidden" name="accion" value="editar">
-                    
-                    <div class="form-group">
-                        <label class="form-label">Título</label>
-                        <input type="text" name="titulo" class="form-input" required 
-                               value="<?php echo htmlspecialchars($ampa_data['titulo'] ?? ''); ?>">
+                    <div class="dashboard_ampa_form_group">
+                        <label class="dashboard_ampa_form_label">Título *</label>
+                        <input type="text" name="titulo" class="dashboard_ampa_form_input" required 
+                               value="<?php echo htmlspecialchars($modo_edit ? $entrada_edit['titulo'] : ($_POST['titulo'] ?? '')); ?>"
+                               placeholder="Ej: AMPA 2026 - Actividades Escolares">
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Nueva Imagen (opcional)</label>
-                        <input type="file" name="imagen" class="form-file" accept="image/*">
-                        <small>Dejar vacío para mantener la actual</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Enlace Video YouTube (opcional)</label>
-                        <input type="url" name="enlace_video" class="form-input" 
-                               value="<?php echo htmlspecialchars($ampa_data['enlace_video'] ?? ''); ?>"
-                               placeholder="https://www.youtube.com/watch?v=...">
-                        <small>Solo uno: imagen O video</small>
-                    </div>
-                    
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label class="form-label">Texto Principal</label>
-                        <textarea name="texto" class="form-textarea" required rows="8"><?php echo htmlspecialchars($ampa_data['texto'] ?? ''); ?></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Enlace Formulario (opcional)</label>
-                        <input type="url" name="enlace_formulario" class="form-input" 
-                               value="<?php echo htmlspecialchars($ampa_data['enlace_formulario'] ?? ''); ?>"
+
+                    <div class="dashboard_ampa_form_group">
+                        <label class="dashboard_ampa_form_label">Enlace Formulario (opcional)</label>
+                        <input type="url" name="enlace_formulario" class="dashboard_ampa_form_input" 
+                               value="<?php echo htmlspecialchars($modo_edit ? $entrada_edit['enlace_formulario'] : ($_POST['enlace_formulario'] ?? '')); ?>"
                                placeholder="https://docs.google.com/forms/...">
                     </div>
-                    
-                    <div class="btn-group">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Actualizar AMPA
+
+                    <div class="dashboard_ampa_form_group">
+                        <label class="dashboard_ampa_form_label">Enlace Video (opcional)</label>
+                        <input type="url" name="enlace_video" class="dashboard_ampa_form_input" 
+                               value="<?php echo htmlspecialchars($modo_edit ? $entrada_edit['enlace_video'] : ($_POST['enlace_video'] ?? '')); ?>"
+                               placeholder="https://youtube.com/...">
+                    </div>
+
+                    <!-- INPUT FILE -->
+                    <div class="dashboard_ampa_form_group">
+                        <?php if ($modo_edit && $entrada_edit['imagen']): ?>
+                            <label class="dashboard_ampa_form_label">Imagen actual:</label>
+                            <div class="dashboard_ampa_imagen_actual">
+                                <img src="<?php echo htmlspecialchars($entrada_edit['imagen']); ?>" alt="Imagen actual" style="max-width: 150px; max-height: 100px; border-radius: 8px;">
+                                <p style="font-size: 0.9rem; color: var(--gris);"><?php echo htmlspecialchars(basename($entrada_edit['imagen'])); ?></p>
+                            </div>
+                        <?php endif; ?>
+                        <label class="dashboard_ampa_form_label">Nueva Imagen (JPG, PNG, GIF, WEBP)</label>
+                        <input type="file" name="imagen" class="dashboard_ampa_form_input" accept="image/*">
+                        <small style="color: var(--gris);">Máx 5MB. Deja vacío para mantener la actual</small>
+                    </div>
+
+                    <div class="dashboard_ampa_form_group" style="grid-column: 1 / -1;">
+                        <label class="dashboard_ampa_form_label">Texto *</label>
+                        <textarea name="texto" class="dashboard_ampa_form_textarea" required><?php echo htmlspecialchars($modo_edit ? $entrada_edit['texto'] : ($_POST['texto'] ?? '')); ?></textarea>
+                    </div>
+
+                    <div class="dashboard_ampa_btn_group">
+                        <button type="submit" class="dashboard_ampa_btn dashboard_ampa_btn_primary">
+                            <i class="fas fa-save"></i> <?php echo $modo_edit ? 'Actualizar' : 'Añadir'; ?> Entrada
                         </button>
-                        <a href="dashboard.php" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Volver al Dashboard
-                        </a>
                     </div>
                 </form>
             </div>
+
+            <!-- LISTA DE ENTRADAS AMPA -->
+            <div class="dashboard_ampa_seccion_lista">
+                <h2><i class="fas fa-list"></i> Entradas AMPA (<?php echo count($entradas); ?>)</h2>
+                <?php if (!empty($entradas)): ?>
+                    <div class="dashboard_ampa_entradas_grid">
+                        <?php foreach ($entradas as $entrada): ?>
+                            <div class="dashboard_ampa_entrada_card <?php echo $entrada['activo'] ? 'dashboard_ampa_activa' : ''; ?>">
+                                <?php if ($entrada['imagen']): ?>
+                                    <div class="dashboard_ampa_entrada_imagen">
+                                        <img src="<?php echo htmlspecialchars($entrada['imagen']); ?>" alt="<?php echo htmlspecialchars($entrada['titulo']); ?>">
+                                    </div>
+                                <?php endif; ?>
+                                <h3 class="dashboard_ampa_entrada_titulo"><?php echo htmlspecialchars($entrada['titulo']); ?></h3>
+                                <div class="dashboard_ampa_entrada_fecha">
+                                    <i class="fas fa-calendar"></i> <?php echo date('d/m/Y', strtotime($entrada['fecha_actualizacion'])); ?>
+                                    <?php if (!empty($entrada['ultima_edicion_usuario_nombre'])): ?>
+                                        <br>
+                                        <small style="color: #666; font-size: 0.85rem;">
+                                            <?php echo htmlspecialchars($entrada['ultima_edicion_usuario_nombre']); ?>
+                                        </small>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="dashboard_ampa_entrada_texto">
+                                    <?php echo htmlspecialchars(substr($entrada['texto'], 0, 150)); ?>...
+                                </div>
+                                <div class="dashboard_ampa_entrada_enlaces">
+                                    <?php if ($entrada['enlace_formulario']): ?>
+                                        <a href="<?php echo htmlspecialchars($entrada['enlace_formulario']); ?>" class="dashboard_ampa_enlace_formulario" target="_blank">
+                                            <i class="fas fa-file-alt"></i> Formulario
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if ($entrada['enlace_video']): ?>
+                                        <a href="<?php echo htmlspecialchars($entrada['enlace_video']); ?>" class="dashboard_ampa_enlace_video" target="_blank">
+                                            <i class="fas fa-video"></i> Video
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="dashboard_ampa_acciones_botones">
+                                    <!-- BOTÓN ELEGIR/SELECCIONAR -->
+                                    <form method="POST" style="display: contents;" onsubmit="return confirm('¿Seleccionar esta entrada como activa? Se desactivarán las demás.')" class="dashboard_ampa_activar_form">
+                                        <input type="hidden" name="accion" value="activar">
+                                        <input type="hidden" name="id" value="<?php echo $entrada['id']; ?>">
+                                        <button type="submit" class="dashboard_ampa_btn_small dashboard_ampa_btn_activar <?php echo $entrada['activo'] ? 'dashboard_ampa_activo' : ''; ?>">
+                                            <i class="fas fa-star <?php echo $entrada['activo'] ? 'fas' : 'far'; ?>"></i> 
+                                            <?php echo $entrada['activo'] ? 'Activa' : 'Elegir'; ?>
+                                        </button>
+                                    </form>
+                                    
+                                    <a href="?editar=<?php echo $entrada['id']; ?>" class="dashboard_ampa_btn_small dashboard_ampa_btn_editar">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <form method="POST" style="display: contents;" onsubmit="return confirm('¿Eliminar esta entrada AMPA?')" class="dashboard_ampa_eliminar_form">
+                                        <input type="hidden" name="accion" value="eliminar">
+                                        <input type="hidden" name="id" value="<?php echo $entrada['id']; ?>">
+                                        <button type="submit" class="dashboard_ampa_btn_small dashboard_ampa_btn_delete">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="dashboard_ampa_vacio">
+                        <i class="fas fa-users"></i>
+                        <h3>No hay entradas AMPA</h3>
+                        <p>Añade la primera entrada con el formulario de arriba</p>
+                    </div>
+                <?php endif; ?>
+            </div>
         <?php endif; ?>
 
-        <form method="POST" action="logout.php" style="text-align: center;">
-            <button type="submit" class="btn-logout">
-                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        <form method="POST" action="dashboard.php" class="dashboard_universal_volver">
+            <button type="submit" class="dashboard_universal_btn_volver">
+                <i class="fas fa-arrow-left"></i> Volver
             </button>
         </form>
     </div>
