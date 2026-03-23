@@ -6,7 +6,7 @@
     <div class="contenedor-max">
         <div class="hero-layout-universal">
             <div class="hero-icono-universal">
-                <i class="fas fa-graduation-cap" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
+                <i class="fas fa-file-pdf" style="font-size: 3.5rem; color: var(--verde-principal);"></i>
             </div>
             <div class="hero-texto-universal">
                 <h1 class="hero-titulo-universal">Convalidación Bachillerato</h1>

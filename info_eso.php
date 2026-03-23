@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
 <?php include 'head.php'; ?>
-<link rel="stylesheet" href="style.css">
-</head>
 
 <?php
 $rutaPdf = "https://site.educa.madrid.org/ies.laarboleda.alcorcon/wp-content/uploads/ies.laarboleda.alcorcon/2023/11/Libros-ESO-curso-23-24.pdf";
 ?>
 
-<body>
+
     <section class="seccion-hero-universal">
         <div class="contenedor-max">
             <div class="hero-layout-universal">
@@ -52,5 +47,3 @@ $rutaPdf = "https://site.educa.madrid.org/ies.laarboleda.alcorcon/wp-content/upl
     </main>
 
     <?php include 'footer.php'; ?>
-</body>
-</html>

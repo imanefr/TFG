@@ -11,16 +11,7 @@ while ($fila = $resultado->fetch_assoc()) {
 $conexion->close();
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <?php include 'head.php'; ?>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
+<?php include 'head.php'; ?>
     <!-- HERO HEADER BACHILLERATO -->
     <section class="seccion-hero-universal">
         <div class="contenedor-max">
@@ -121,5 +112,3 @@ $conexion->close();
     </main>
 
     <?php include 'footer.php'; ?>
-</body>
-</html>

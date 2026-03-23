@@ -60,9 +60,6 @@ function isActiveSubmenu($submenu) {
                         <a href="bolsa_empleo.php" class="header_pagina_submenu_titulo <?php echo isActivePage('bolsa_empleo') ? 'activo' : ''; ?>">Bolsa de empleo</a>
                         <a href="teatro.php" class="header_pagina_submenu_titulo <?php echo isActivePage('teatro') ? 'activo' : ''; ?>">Teatro</a>
                         <a href="plan_igualdad.php" class="header_pagina_submenu_titulo <?php echo isActivePage('plan_igualdad') ? 'activo' : ''; ?>">Plan de igualdad</a>
-
-
-
                     </div>
                 </div>
 
@@ -73,9 +70,11 @@ function isActiveSubmenu($submenu) {
                     <div class="header_pagina_submenu">
                         <a href="info_eso.php" class="header_pagina_submenu_titulo <?php echo isActivePage('eso_info') ? 'activo' : ''; ?>">ESO</a>
                         <a href="info_bachillerato.php" class="header_pagina_submenu_titulo">Bachillerato</a>
-                        <a href="info_fp.php" class="header_pagina_submenu_titulo header_pagina_titulo_desplegable <?php echo isActivePage('fp_info') ? 'activo' : ''; ?>">Formación Profesional▾</a>
-                        <div class="header_pagina_submenu_anidado">
-                            <a href="https://www.comunidad.madrid/sites/default/files/ifces02_desarrollo_de_videojuegos_y_realidad_virtual.pdf" class="header_pagina_submenu_titulo <?php echo isActivePage('desarrollo_videojuegos') ? 'activo' : ''; ?>">Curso Desarrollo de Videojuegos</a>
+                        <div class="header_pagina_submenu_item_desplegable">
+                            <a href="info_fp.php" class="header_pagina_submenu_titulo header_pagina_titulo_desplegable <?php echo isActivePage('fp_info') ? 'activo' : ''; ?>">Formación Profesional▾</a>
+                            <div class="header_pagina_submenu_anidado">
+                                <a href="https://www.comunidad.madrid/sites/default/files/ifces02_desarrollo_de_videojuegos_y_realidad_virtual.pdf" class="header_pagina_submenu_titulo <?php echo isActivePage('desarrollo_videojuegos') ? 'activo' : ''; ?>">Curso Desarrollo de Videojuegos</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,24 +91,30 @@ function isActiveSubmenu($submenu) {
                     <span class="header_pagina_icono_desplegable">▾</span>
                     <div class="header_pagina_submenu">
                         <a href="avisos.php" class="header_pagina_submenu_titulo <?php echo isActivePage('avisos') ? 'activo' : ''; ?>">Avisos</a>
-                        <a href="#" class="header_pagina_submenu_titulo header_pagina_titulo_desplegable">Matriculación ▾</a>
-                        <div class="header_pagina_submenu_anidado">
-                            <a href="matriculacion_eso.php" class="header_pagina_submenu_titulo <?php echo isActivePage('matriculacion_eso') ? 'activo' : ''; ?>">Matriculación ESO</a>
-                            <a href="matriculacion_bach.php" class="header_pagina_submenu_titulo <?php echo isActivePage('matriculacion_bach') ? 'activo' : ''; ?>">Matriculación Bachillerato</a>
-                            <a href="matriculacion_fp.php" class="header_pagina_submenu_titulo <?php echo isActivePage('matriculacion_fp') ? 'activo' : ''; ?>">Matriculación FP</a>
-                        </div> 
-                        <a href="#" class="header_pagina_submenu_titulo header_pagina_titulo_desplegable">Convalidación ▾</a>
-                        <div class="header_pagina_submenu_anidado">
-                            <a href="convalidacion_eso.php" class="header_pagina_submenu_titulo <?php echo isActivePage('convalidacion_eso') ? 'activo' : ''; ?>">Convalidación ESO</a>
-                            <a href="convalidacion_bach.php" class="header_pagina_submenu_titulo <?php echo isActivePage('convalidacion_bach') ? 'activo' : ''; ?>">Convalidación Bachillerato</a>
-                            <a href="convalidacion_fp.php" class="header_pagina_submenu_titulo <?php echo isActivePage('convalidacion_fp') ? 'activo' : ''; ?>">Convalidación FP</a>
-                        </div> 
-                        <a href="#" class="header_pagina_submenu_titulo header_pagina_titulo_desplegable">Solicitud títulos ▾</a>
-                        <div class="header_pagina_submenu_anidado">
-                            <a href="solicitud_titulo_eso.php" class="header_pagina_submenu_titulo <?php echo isActivePage('solicitud_titulo_eso') ? 'activo' : ''; ?>">Título ESO</a>
-                            <a href="solicitud_titulo_bach.php" class="header_pagina_submenu_titulo <?php echo isActivePage('solicitud_titulo_bach') ? 'activo' : ''; ?>">Título Bachillerato</a>
-                            <a href="solicitud_titulo_fp.php" class="header_pagina_submenu_titulo <?php echo isActivePage('solicitud_titulo_fp') ? 'activo' : ''; ?>">Título FP</a>
-                        </div> 
+                        <div class="header_pagina_submenu_item_desplegable">
+                            <a href="#" class="header_pagina_submenu_titulo header_pagina_titulo_desplegable">Matriculación ▾</a>
+                            <div class="header_pagina_submenu_anidado">
+                                <a href="matriculacion_eso.php" class="header_pagina_submenu_titulo <?php echo isActivePage('matriculacion_eso') ? 'activo' : ''; ?>">Matriculación ESO</a>
+                                <a href="matriculacion_bach.php" class="header_pagina_submenu_titulo <?php echo isActivePage('matriculacion_bach') ? 'activo' : ''; ?>">Matriculación Bachillerato</a>
+                                <a href="matriculacion_fp.php" class="header_pagina_submenu_titulo <?php echo isActivePage('matriculacion_fp') ? 'activo' : ''; ?>">Matriculación FP</a>
+                            </div> 
+                        </div>
+                        <div class="header_pagina_submenu_item_desplegable">
+                            <a href="#" class="header_pagina_submenu_titulo header_pagina_titulo_desplegable">Convalidación ▾</a>
+                            <div class="header_pagina_submenu_anidado">
+                                <a href="convalidacion_eso.php" class="header_pagina_submenu_titulo <?php echo isActivePage('convalidacion_eso') ? 'activo' : ''; ?>">Convalidación ESO</a>
+                                <a href="convalidacion_bach.php" class="header_pagina_submenu_titulo <?php echo isActivePage('convalidacion_bach') ? 'activo' : ''; ?>">Convalidación Bachillerato</a>
+                                <a href="convalidacion_fp.php" class="header_pagina_submenu_titulo <?php echo isActivePage('convalidacion_fp') ? 'activo' : ''; ?>">Convalidación FP</a>
+                            </div> 
+                        </div>
+                        <div class="header_pagina_submenu_item_desplegable">
+                            <a href="#" class="header_pagina_submenu_titulo header_pagina_titulo_desplegable">Solicitud títulos ▾</a>
+                            <div class="header_pagina_submenu_anidado">
+                                <a href="solicitud_titulo_eso.php" class="header_pagina_submenu_titulo <?php echo isActivePage('solicitud_titulo_eso') ? 'activo' : ''; ?>">Título ESO</a>
+                                <a href="solicitud_titulo_bach.php" class="header_pagina_submenu_titulo <?php echo isActivePage('solicitud_titulo_bach') ? 'activo' : ''; ?>">Título Bachillerato</a>
+                                <a href="solicitud_titulo_fp.php" class="header_pagina_submenu_titulo <?php echo isActivePage('solicitud_titulo_fp') ? 'activo' : ''; ?>">Título FP</a>
+                            </div> 
+                        </div>
                         <a href="otros_tramites.php" class="header_pagina_submenu_titulo <?php echo isActivePage('otros_tramites') ? 'activo' : ''; ?>">Otros trámites</a>
                         <a href="contacto_secretaria.php" class="header_pagina_submenu_titulo <?php echo isActivePage('contacto') ? 'activo' : ''; ?>">Contacto</a>
                     </div>
