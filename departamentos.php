@@ -5,32 +5,32 @@ include("conexion.php"); // Conexión preparada para contenido dinámico futuro
 
 // ARRAY COMPLETO - 20 departamentos organizados por áreas académicas
 $departamentos = [
-    ['nombre' => 'Actividades Extraescolares', 'pagina' => 'actividades_extraescolares.php', 'icono' => 'fas fa-star'],
-    ['nombre' => 'Biblioteca', 'pagina' => 'biblioteca.php', 'icono' => 'fas fa-book'],
-    ['nombre' => 'Biología y Geología', 'pagina' => 'biologia.php', 'icono' => 'fas fa-leaf'],
-    ['nombre' => 'Dibujo', 'pagina' => 'dibujo.php', 'icono' => 'fas fa-pencil-alt'],
+    ['nombre' => 'Actividades Extraescolares', 'pagina' => 'info_departamento.php?id=1', 'icono' => 'fas fa-star'],
+    ['nombre' => 'Biblioteca', 'pagina' => 'info_departamento.php?id=2', 'icono' => 'fas fa-book'],
+    ['nombre' => 'Biología y Geología', 'pagina' => 'info_departamento.php?id=3', 'icono' => 'fas fa-leaf'],
+    ['nombre' => 'Dibujo', 'pagina' => 'info_departamento.php?id=4', 'icono' => 'fas fa-pencil-alt'],
     
-    ['nombre' => 'Economía', 'pagina' => 'economia.php', 'icono' => 'fas fa-chart-line'],
-    ['nombre' => 'Educación Física', 'pagina' => 'educacion_fisica.php', 'icono' => 'fas fa-dumbbell'],
-    ['nombre' => 'Filosofía', 'pagina' => 'filosofia.php', 'icono' => 'fas fa-brain'],
-    ['nombre' => 'Física y Química', 'pagina' => 'fisica_quimica.php', 'icono' => 'fas fa-flask'],
+    ['nombre' => 'Economía', 'pagina' => 'info_departamento.php?id=5', 'icono' => 'fas fa-chart-line'],
+    ['nombre' => 'Educación Física', 'pagina' => 'info_departamento.php?id=6', 'icono' => 'fas fa-dumbbell'],
+    ['nombre' => 'Filosofía', 'pagina' => 'info_departamento.php?id=7', 'icono' => 'fas fa-brain'],
+    ['nombre' => 'Física y Química', 'pagina' => 'info_departamento.php?id=8', 'icono' => 'fas fa-flask'],
     
-    ['nombre' => 'Francés', 'pagina' => 'frances.php', 'icono' => 'fas fa-flag'],
-    ['nombre' => 'FOL', 'pagina' => 'fol.php', 'icono' => 'fas fa-briefcase'],
-    ['nombre' => 'Geografía e Historia', 'pagina' => 'geografia_historia.php', 'icono' => 'fas fa-globe'],
-    ['nombre' => 'Imagen Personal', 'pagina' => 'imagen_personal.php', 'icono' => 'fas fa-cut'],
+    ['nombre' => 'Francés', 'pagina' => 'info_departamento.php?id=9', 'icono' => 'fas fa-flag'],
+    ['nombre' => 'FOL', 'pagina' => 'info_departamento.php?id=10', 'icono' => 'fas fa-briefcase'],
+    ['nombre' => 'Geografía e Historia', 'pagina' => 'info_departamento.php?id=11', 'icono' => 'fas fa-globe'],
+    ['nombre' => 'Imagen Personal', 'pagina' => 'info_departamento.php?id=12', 'icono' => 'fas fa-cut'],
     
-    ['nombre' => 'Imagen y Sonido', 'pagina' => 'imagen_sonido.php', 'icono' => 'fas fa-video'],
-    ['nombre' => 'Informática', 'pagina' => 'informatica.php', 'icono' => 'fas fa-laptop'],
-    ['nombre' => 'Inglés', 'pagina' => 'ingles.php', 'icono' => 'fas fa-language'],
-    ['nombre' => 'Lengua Castellana y Literatura', 'pagina' => 'lengua.php', 'icono' => 'fas fa-font'],
+    ['nombre' => 'Imagen y Sonido', 'pagina' => 'info_departamento.php?id=13', 'icono' => 'fas fa-video'],
+    ['nombre' => 'Informática', 'pagina' => 'info_departamento.php?id=14', 'icono' => 'fas fa-laptop'],
+    ['nombre' => 'Inglés', 'pagina' => 'info_departamento.php?id=15', 'icono' => 'fas fa-language'],
+    ['nombre' => 'Lengua Castellana y Literatura', 'pagina' => 'info_departamento.php?id=16', 'icono' => 'fas fa-font'],
     
-    ['nombre' => 'Matemáticas', 'pagina' => 'matematicas.php', 'icono' => 'fas fa-calculator'],
-    ['nombre' => 'Música', 'pagina' => 'musica.php', 'icono' => 'fas fa-music'],
-    ['nombre' => 'Orientación', 'pagina' => 'orientacion.php', 'icono' => 'fas fa-compass'],
-    ['nombre' => 'Religión', 'pagina' => 'religion.php', 'icono' => 'fas fa-pray'],
+    ['nombre' => 'Matemáticas', 'pagina' => 'info_departamento.php?id=17', 'icono' => 'fas fa-calculator'],
+    ['nombre' => 'Música', 'pagina' => 'info_departamento.php?id=18', 'icono' => 'fas fa-music'],
+    ['nombre' => 'Orientación', 'pagina' => 'info_departamento.php?id=19', 'icono' => 'fas fa-compass'],
+    ['nombre' => 'Religión', 'pagina' => 'info_departamento.php?id=20', 'icono' => 'fas fa-pray'],
     
-    ['nombre' => 'Tecnología', 'pagina' => 'tecnologia.php', 'icono' => 'fas fa-cogs']
+    ['nombre' => 'Tecnología', 'pagina' => 'info_departamento.php?id=21', 'icono' => 'fas fa-cogs']
 ];
 ?>
 

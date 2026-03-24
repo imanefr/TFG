@@ -2,7 +2,7 @@
 // Variables para conectar a la base de datos MySQL
 $host = "localhost"; 
 $user = "root"; 
-$pass = "1234"; 
+$pass = ""; 
 $db = "arboledatablas"; 
 
 // Creamos la conexión usando mysqli, que es para MySQL mejorado

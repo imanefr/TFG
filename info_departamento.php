@@ -118,18 +118,126 @@ switch ($deptID) {
             <h2 class="departamentos_titulo"><?php echo $deptNombre; ?></h2>
             <?php 
             
-            $sql = "SELECT * FROM departamentos WHERE id = $deptID";
+            // SECCIONES
+            $sql = "SELECT * FROM departamentos WHERE dept_id = $deptID";
             $resultado = mysqli_query($conexion, $sql);
-            $fila = mysqli_fetch_assoc($resultado);
+            $secciones = [];
+            while ($fila = $resultado->fetch_assoc()) { // Almacena todas las noticias
+                $secciones[] = $fila;
+            }
 
-            if($fila != "")
-            {
-                foreach($fila as $seccion)
+            //IMAGENES
+            $sql = "SELECT * FROM departamentos_imagenes WHERE id_dept = $deptID";
+            $resultado = mysqli_query($conexion, $sql);
+            $imagenes = [];
+            while ($fila = $resultado->fetch_assoc()) { 
+                $imagenes[] = $fila;
+            }
+
+            //LINKS
+            $sql = "SELECT * FROM departamentos_links WHERE id_dept = $deptID";
+            $resultado = mysqli_query($conexion, $sql);
+            $links = [];
+            while ($fila = $resultado->fetch_assoc()) { 
+                $links[] = $fila;
+            }
+
+            //PDFS
+            $sql = "SELECT * FROM departamentos_pdfs WHERE id_dept = $deptID";
+            $resultado = mysqli_query($conexion, $sql);
+            $pdfs = [];
+            while ($fila = $resultado->fetch_assoc()) { 
+                $pdfs[] = $fila;
+            }
+            
+            //VIDEOS
+            $sql = "SELECT * FROM departamentos_videos WHERE id_dept = $deptID";
+            $resultado = mysqli_query($conexion, $sql);
+            $videos = [];
+            while ($fila = $resultado->fetch_assoc()) { 
+                $videos[] = $fila;
+            }
+
+
+            if($secciones != null) {
+                foreach($secciones as $seccion)
                 {
                     ?>
                     <div class="departamentos_seccion">
                         <h3 class="departamentos_seccion_titulo"><?php echo $seccion['titulo_seccion']; ?></h3>
                         <p class="departamentos_seccion_contenido"><?php echo $seccion['texto_seccion']; ?></p>
+                        <?php
+                            if($imagenes != null) {
+                                ?>
+                                <div class="departamentos_imagenes_grid">
+                                <?php
+                                foreach(array_filter($imagenes, fn($img) => $img['id_noticia'] == $seccion['id']) as $imagen) 
+                                {
+                                    ?>
+                                    <div class="departamentos_imagen">
+                                        <img src="<?php echo $imagen['src']; ?>" alt="<?php echo $imagen['alt']; ?>">
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                                </div>
+                                <?php
+                            }
+                        ?>
+                        <?php
+                            if($links != null) {
+                                ?>
+                                <?php
+                                foreach(array_filter($links, fn($link) => $link['id_noticia'] == $seccion['id']) as $link) 
+                                {
+                                    ?>
+                                    <div class="departamentos_link_item">
+                                        <a href="<?php echo isset($link['url']) ? $link['url'] : (isset($link['src']) ? $link['src'] : '#'); ?>" target="_blank" rel="noopener noreferrer">
+                                            <i class="fas fa-link"></i> <?php echo isset($link['texto']) ? $link['texto'] : (isset($link['nombre']) ? $link['nombre'] : 'Enlace'); ?>
+                                        </a>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                                <?php
+                            }
+                        ?>
+                        <?php
+                            if($pdfs != null) {
+                                ?>
+                                <?php
+                                foreach(array_filter($pdfs, fn($pdf) => $pdf['id_noticia'] == $seccion['id']) as $pdf) 
+                                {
+                                    ?>
+                                    <div class="departamentos_pdf_item">
+                                        <h2 class="departamentos_pdf_titulo"><?php echo isset($pdf['titulo']) ? $pdf['titulo'] : (isset($pdf['nombre']) ? $pdf['nombre'] : 'Documento PDF'); ?></h2>
+                                        <iframe src="<?php echo isset($pdf['src']) ? $pdf['src'] : (isset($pdf['url']) ? $pdf['url'] : '#'); ?>" target="_blank" rel="noopener noreferrer"></iframe>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                                <?php
+                            }
+                        ?>
+                        <?php
+                            if($videos != null) {
+                                ?>
+                                <?php
+                                foreach(array_filter($videos, fn($video) => $video['id_noticia'] == $seccion['id']) as $video) 
+                                {
+                                    ?>
+                                    <div class="departamentos_video_item">
+                                        <h2 class="departamentos_video_titulo"><?php echo isset($video['titulo']) ? $video['titulo'] : (isset($video['nombre']) ? $video['nombre'] : 'Video sin Título'); ?></h2>
+                                        <div class="video_wrapper">
+                                            <iframe src="<?php echo isset($video['src']) ? $video['src'] : (isset($video['url']) ? $video['url'] : ''); ?>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                                <?php
+                            }
+                        ?>
                     </div>
                 <?php
                 }
@@ -137,7 +245,7 @@ switch ($deptID) {
             else
             {
                 ?>
-                <div class="erasmus_sin_contenido">
+                <div class="departamento_sin_contenido">
                     <i class="<?php echo $deptIcono; ?>"></i>
                     <h3>No hay noticias recientes</h3>
                     <p>No te preocupes. ¡Habrán novedades pronto!</p>
@@ -152,4 +260,6 @@ switch ($deptID) {
     </section>
 </main>
 
-<?php include 'footer.php'; ?>
+<?php 
+include 'footer.php'; 
+?>
