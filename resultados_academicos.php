@@ -1,19 +1,24 @@
 <?php
+// Incluye conexión a BD (require_once evita cargas múltiples)
 require_once 'conexion.php';
 
+// Consulta SQL: selecciona resultados académicos activos ordenados
 $sql = "SELECT id, titulo, descripcion, img, orden 
         FROM resultados_academicos 
         WHERE activo = 1 
-        ORDER BY orden ASC, id ASC";
+        ORDER BY orden ASC, id ASC";  // Orden personalizado + ID
 
-$resultado = $conexion->query($sql);
+$resultado = $conexion->query($sql);  // Ejecuta consulta
 
+// Array para almacenar todos los resultados
 $resultados = [];
 if ($resultado) {
+    // Recorre cada fila del resultado
     while ($row = $resultado->fetch_assoc()) {
-        $resultados[] = $row;
+        $resultados[] = $row;  // Añade al array
     }
 }
+// Cierra conexión BD
 $conexion->close();
 ?>
 
@@ -24,7 +29,7 @@ $conexion->close();
     <div class="contenedor-max">
         <div class="hero-layout-universal">
             <div class="hero-icono-universal">
-                <i class="fas fa-chart-line" style="font-size: 2.5rem; color: var(--verde-principal);"></i>
+                <i class="fas fa-chart-line icono_universal"></i>  <!-- Icono gráfico -->
             </div>
             <div class="hero-texto-universal">
                 <h1 class="hero-titulo-universal">Resultados Académicos</h1>
@@ -40,28 +45,32 @@ $conexion->close();
         <div class="contenedor-max">
             <h2 class="resultados_academicos_titulo">Nuestros Resultados 2023-2024</h2>
             
-            <?php if (!empty($resultados)): ?>
+            <?php if (!empty($resultados)): ?>  <!-- Si hay datos -->
+                <!-- Grid responsive de cards -->
                 <div class="resultados_academicos_grid">
-                    <?php foreach ($resultados as $res): ?>
+                    <?php foreach ($resultados as $res): ?>  <!-- Por cada resultado -->
                         <div class="resultados_academicos_card">
+                            <!-- Imagen con fallback (si no carga se oculta) -->
                             <img src="img/<?php echo htmlspecialchars(basename($res['img'])); ?>" 
                                  alt="<?php echo htmlspecialchars($res['titulo']); ?>" 
                                  class="resultados_academicos_imagen"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                 onerror="this.style.display='none'; this.nextElementSibling.classList.remove('resultados_academicos_placeholder_hidden');">
                             
-                            <div class="resultados_academicos_placeholder" style="display: none; background: #f8f9fa; border-radius: 8px; height: 200px; align-items: center; justify-content: center; margin-bottom: 1.2rem;">
-                                <i class="fas fa-image" style="font-size: 2.5rem; color: var(--gris-medio);"></i>
+                            <!-- Placeholder si imagen falla -->
+                            <div class="resultados_academicos_placeholder resultados_academicos_placeholder_hidden">
+                                <i class="fas fa-image resultados_academicos_placeholder_icono"></i>
                             </div>
                             
+                            <!-- Contenido de la card -->
                             <h3 class="resultados_academicos_titulo_card"><?php echo htmlspecialchars($res['titulo']); ?></h3>
                             <p class="resultados_academicos_descripcion"><?php echo htmlspecialchars($res['descripcion']); ?></p>
                             <div class="resultados_academicos_anio">2023-2024</div>
                         </div>
                     <?php endforeach; ?>
                 </div>
-            <?php else: ?>
+            <?php else: ?>  <!-- Si NO hay datos -->
                 <div class="resultados_academicos_vacio">
-                    <i class="fas fa-chart-bar"></i>
+                    <i class="fas fa-chart-bar resultados_academicos_vacio_icono"></i>
                     <p>No hay datos disponibles.</p>
                 </div>
             <?php endif; ?>
@@ -69,4 +78,4 @@ $conexion->close();
     </section>
 </main>
 
-<?php include 'footer.php'; ?>
+<?php include 'footer.php'; ?>  <!-- Footer del sitio -->

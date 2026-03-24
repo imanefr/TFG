@@ -1,0 +1,359 @@
+.icono_universal {
+    font-size: 3.5rem;
+    color: var(--verde-principal);
+}
+
+
+/* ==========================================================================
+   ARBOLEDA BOT - HOMOGÉNEO CON EL DISEÑO PRINCIPAL
+   ========================================================================== */
+
+/* CONTENEDOR NOTIFICACIONES */
+#notificaciones_whatsapp_container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: min(350px, 90vw);
+    max-height: 500px;
+    overflow-y: auto;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+/* NOTIFICACIÓN INDIVIDUAL */
+.notificaciones_whatsapp_item {
+    background: var(--verde-principal);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow: var(--sombra-fuerte);
+    animation: notificaciones_slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+    border: 1px solid var(--gris-suave);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.notificaciones_whatsapp_item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--blanco);
+}
+
+.notificaciones_whatsapp_item:hover {
+    transform: translateX(-0.5rem) scale(1.02);
+    box-shadow: 0 16px 32px rgba(19, 139, 60, 0.25);
+}
+
+.notificaciones_whatsapp_header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.notificaciones_whatsapp_avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--blanco);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--verde-principal);
+    font-size: 1rem;
+    box-shadow: var(--sombra-suave);
+    flex-shrink: 0;
+}
+
+.notificaciones_whatsapp_content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.notificaciones_whatsapp_titulo {
+    font-weight: 600;
+    color: var(--blanco);
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+}
+
+.notificaciones_whatsapp_time {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+}
+
+.notificaciones_whatsapp_descripcion {
+    color: var(--blanco);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    font-weight: 400;
+}
+
+/* BOTÓN TOGGLE PRINCIPAL */
+#arboleda_bot_toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 3.75rem;
+    height: 3.75rem;
+    background: var(--verde-principal);
+    border: none;
+    border-radius: 50%;
+    color: var(--blanco);
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--sombra-fuerte);
+    z-index: 10002;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#arboleda_bot_toggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 16px 32px rgba(19, 139, 60, 0.3);
+    background: var(--verde-oscuro);
+}
+
+/* CONTENEDOR PRINCIPAL DEL BOT */
+#arboleda_bot_container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: min(380px, 95vw);
+    height: 500px;
+    background: var(--blanco);
+    border-radius: 1.25rem;
+    box-shadow: var(--sombra-fuerte);
+    z-index: 10001;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow: hidden;
+    border: 1px solid var(--gris-suave);
+}
+
+#arboleda_bot_container.arboleda_bot_active {
+    transform: translateX(0);
+}
+
+/* HEADER DEL BOT */
+.arboleda_bot_header {
+    background: var(--verde-principal);
+    color: var(--blanco);
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+.arboleda_bot_header > div:first-child {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.arboleda_bot_header > div:last-child {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+/* ÁREA DE MENSAJES */
+.arboleda_bot_messages {
+    height: 340px;
+    overflow-y: auto;
+    padding: 1.25rem;
+    background: var(--fondo-principal);
+}
+
+.arboleda_bot_messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.arboleda_bot_messages::-webkit-scrollbar-track {
+    background: var(--gris-suave);
+    border-radius: 3px;
+}
+
+.arboleda_bot_messages::-webkit-scrollbar-thumb {
+    background: var(--gris-medio);
+    border-radius: 3px;
+}
+
+/* INPUT Y BOTÓN ENVIAR */
+.arboleda_bot_input {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.25rem;
+    background: var(--blanco);
+    border-top: 1px solid var(--gris-suave);
+}
+
+.arboleda_bot_input input {
+    width: 100%;
+    padding: 0.875rem 3.125rem 0.875rem 1rem;
+    border: 2px solid var(--gris-suave);
+    border-radius: 1.5rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.25s ease;
+    font-family: inherit;
+}
+
+.arboleda_bot_input input:focus {
+    border-color: var(--verde-principal);
+    box-shadow: 0 0 0 3px rgba(19, 139, 60, 0.1);
+}
+
+.arboleda_bot_send {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--verde-principal);
+    color: var(--blanco);
+    border: none;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+}
+
+.arboleda_bot_send:hover {
+    background: var(--verde-oscuro);
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* MENSAJES */
+.arboleda_bot_message {
+    margin-bottom: 1rem;
+    display: flex;
+    animation: arboleda_bot_messageSlide 0.3s ease;
+}
+
+.arboleda_bot_message.arboleda_bot_user {
+    justify-content: flex-end;
+}
+
+.arboleda_bot_message.arboleda_bot_bot {
+    justify-content: flex-start;
+}
+
+.arboleda_bot_content {
+    max-width: 80%;
+    padding: 0.875rem 1rem;
+    border-radius: 1.125rem;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    box-shadow: var(--sombra-suave);
+}
+
+.arboleda_bot_message.arboleda_bot_user .arboleda_bot_content {
+    background: var(--verde-principal);
+    color: var(--blanco);
+    border-radius: 1.125rem 1.125rem 0.5rem 1.125rem;
+}
+
+.arboleda_bot_message.arboleda_bot_bot .arboleda_bot_content {
+    background: var(--blanco);
+    color: var(--gris-texto);
+    border: 1px solid var(--gris-suave);
+    border-radius: 1.125rem 1.125rem 1.125rem 0.5rem;
+}
+
+/* TYPING INDICATOR */
+#arboleda_bot_typing {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gris-medio);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.arboleda_bot_typing_dots {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.arboleda_bot_typing_dots span {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--verde-principal);
+    animation: arboleda_bot_typing 1.4s infinite ease-in-out;
+}
+
+.arboleda_bot_typing_dots span:nth-child(2) { animation-delay: 0.2s; }
+.arboleda_bot_typing_dots span:nth-child(3) { animation-delay: 0.4s; }
+
+/* Estilos inline extraídos - ArboledaBot */
+
+/* Header chat - Título */
+.arboleda_bot_header_titulo {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Header chat - Subtítulo */
+.arboleda_bot_header_subtitulo {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Botón toggle - Emoji flotante */
+.arboleda_bot_toggle {
+  /* Sin estilos inline originales, solo clase añadida */
+}
+
+
+/* ANIMACIONES */
+@keyframes notificaciones_slideInRight {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes arboleda_bot_messageSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes arboleda_bot_typing {
+    0%, 60%, 100% { transform: scale(1); }
+    30% { transform: scale(0.8); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    #notificaciones_whatsapp_container,
+    #arboleda_bot_container {
+        left: 20px !important;
+        right: 20px !important;
+        width: calc(100vw - 40px);
+    }
+    
+    #arboleda_bot_toggle {
+        bottom: 20px !important;
+        top: auto !important;
+        right: 20px !important;
+    }
+}

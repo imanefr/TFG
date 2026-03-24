@@ -1,44 +1,65 @@
 <?php
+// Dashboard completo para gestión de avisos del IES La Arboleda
+// Iniciar sesión PHP para manejar autenticación del usuario
 session_start();
+
+// Importar archivo de conexión a base de datos MySQLi preparada
 require_once 'conexion.php';
 
+// Verificar que el usuario esté autenticado en la sesión
+// Si no existe usuario_id en sesión, redirigir al login
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
-    exit;
+    exit; // Termina la ejecución del script inmediatamente
 }
 
-// Título dinámico para el header global
+// Título dinámico para el header global del dashboard
 $titulo_dashboard = "Dashboard Avisos";
 
+// Determinar si el usuario actual tiene rol de administrador
+// Solo los admins pueden crear/editar/eliminar avisos
 $is_admin = ($_SESSION['usuario_rol'] === 'admin');
+
+// Variable que almacenará mensajes de éxito/error tras operaciones
 $mensaje = '';
 
-// PROCESAR SOLO ADMIN + POST
+// PROCESADOR CENTRAL DE ACCIONES - Maneja CRUD completo (solo administradores)
+// Verifica: admin + método POST + acción específica
 if ($is_admin && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
+
+    // Switch principal que ejecuta acción según valor de $_POST['accion']
     switch ($_POST['accion']) {
+
+        // Acción: Eliminar aviso específico por ID
         case 'eliminar':
+            // Convertir ID a entero para evitar inyecciones SQL
             $id = (int) $_POST['id'];
+
+            // Consulta preparada para eliminar aviso de forma segura
             $stmt = $conexion->prepare("DELETE FROM avisos WHERE id = ?");
-            $stmt->bind_param("i", $id);
+            $stmt->bind_param("i", $id); // 'i' = integer parameter
+            // Verificar que se eliminó al menos 1 fila
             if ($stmt->execute() && $stmt->affected_rows > 0) {
                 $mensaje = 'Aviso eliminado correctamente';
             }
-            $stmt->close();
+            $stmt->close(); // Liberar recursos del statement
             break;
 
+        // Acción: Crear nuevo aviso completo
         case 'nueva':
             $titulo = trim($_POST['titulo'] ?? '');
             $texto = trim($_POST['texto'] ?? '');
             $enlace = trim($_POST['enlace'] ?? '');
-            $fecha = $_POST['fecha'] ?? date('Y-m-d H:i:s');
             $importante = isset($_POST['importante']) ? 1 : 0;
 
             if ($titulo && $texto) {
                 $stmt = $conexion->prepare("
-                    INSERT INTO avisos (titulo, texto, enlace, fecha, importante, ultima_edicion_fecha, ultima_edicion_usuario_id) 
-                    VALUES (?, ?, ?, ?, ?, NOW(), ?)
-                ");
-                $stmt->bind_param("sssssi", $titulo, $texto, $enlace, $fecha, $importante, $_SESSION['usuario_id']);
+            INSERT INTO avisos (titulo, texto, enlace, fecha, importante, ultima_edicion_fecha, ultima_edicion_usuario_id) 
+            VALUES (?, ?, ?, NOW(), ?, NOW(), ?)
+        ");
+
+                $stmt->bind_param("sssii", $titulo, $texto, $enlace, $importante, $_SESSION['usuario_id']);
+
                 if ($stmt->execute()) {
                     $mensaje = 'Aviso añadido correctamente';
                 }
@@ -48,21 +69,22 @@ if ($is_admin && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']
             }
             break;
 
+        // Acción: Editar aviso existente
         case 'editar':
             $id = (int) $_POST['id'];
             $titulo = trim($_POST['titulo'] ?? '');
             $texto = trim($_POST['texto'] ?? '');
             $enlace = trim($_POST['enlace'] ?? '');
-            $fecha = $_POST['fecha'] ?? date('Y-m-d H:i:s');
             $importante = isset($_POST['importante']) ? 1 : 0;
 
             $stmt = $conexion->prepare("
-                UPDATE avisos 
-                SET titulo=?, texto=?, enlace=?, fecha=?, importante=?, 
-                    ultima_edicion_fecha=NOW(), ultima_edicion_usuario_id=? 
-                WHERE id=?
-            ");
-            $stmt->bind_param("sssssii", $titulo, $texto, $enlace, $fecha, $importante, $_SESSION['usuario_id'], $id);
+        UPDATE avisos 
+        SET titulo=?, texto=?, enlace=?, fecha=NOW(), importante=?, 
+            ultima_edicion_fecha=NOW(), ultima_edicion_usuario_id=? 
+        WHERE id=?
+    ");
+            $stmt->bind_param("sssiii", $titulo, $texto, $enlace, $importante, $_SESSION['usuario_id'], $id);
+
             if ($stmt->execute() && $stmt->affected_rows > 0) {
                 $mensaje = 'Aviso actualizado correctamente';
             }
@@ -71,7 +93,9 @@ if ($is_admin && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']
     }
 }
 
-// CARGAR AVISOS (con JOIN usuario)
+// CARGAR LISTADO COMPLETO DE AVISOS PARA MOSTRAR
+// Consulta con JOIN para mostrar nombre del último editor
+// Orden: importantes primero, luego por fecha descendente
 $stmt = $conexion->prepare("
     SELECT a.*, u.nombre as ultima_edicion_usuario_nombre
     FROM avisos a 
@@ -79,14 +103,17 @@ $stmt = $conexion->prepare("
     ORDER BY a.importante DESC, a.fecha DESC
 ");
 $stmt->execute();
-$avisos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$avisos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC); // Array asociativo completo
 $stmt->close();
 
-// ✏️ MODO EDICIÓN
-$modo_edit = false;
-$aviso_edit = null;
+// DETECTAR MODO EDICIÓN - Carga datos de aviso específico para editar
+// Solo accesible para administradores
+$modo_edit = false; // Flag que indica si estamos editando
+$aviso_edit = null; // Datos del aviso que se edita
+
 if ($is_admin && isset($_GET['editar'])) {
-    $id_edit = (int) $_GET['editar'];
+    $id_edit = (int) $_GET['editar']; // Sanitizar ID de URL
+
     $stmt = $conexion->prepare("
         SELECT a.*, u.nombre as ultima_edicion_usuario_nombre
         FROM avisos a 
@@ -96,6 +123,8 @@ if ($is_admin && isset($_GET['editar'])) {
     $stmt->bind_param("i", $id_edit);
     $stmt->execute();
     $result = $stmt->get_result();
+
+    // Cargar datos del aviso y activar modo edición si existe
     if ($aviso_edit = $result->fetch_assoc()) {
         $modo_edit = true;
     }
@@ -106,50 +135,67 @@ if ($is_admin && isset($_GET['editar'])) {
 <!DOCTYPE html>
 <html lang="es">
     <head>
+        <!-- Configuración básica del documento HTML5 -->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Gestión Avisos - Dashboard Admin</title>
+
+        <!-- Recursos externos: iconos y estilos CSS -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         <link rel="stylesheet" href="style_dashboard.css">
     </head>
     <body>
+        <!-- Contenedor principal de todo el dashboard -->
         <div class="dashboard_avisos_container">
-            <!-- HEADER -->
-            <?php include 'dashboard_head.php'; ?>
 
+            <?php include 'dashboard_head.php'; // Header reutilizable con datos usuario     ?>
 
+            <!-- RESTRICCION DE ACCESO - Solo administradores pueden gestionar avisos -->
             <?php if (!$is_admin): ?>
                 <div class="dashboard_avisos_no_admin">
-                    <i class="fas fa-lock" style="font-size: 4rem; color: var(--morado-claro); margin-bottom: 1rem;"></i>
+                    <i class="fas fa-lock dashboard_avisos_no_admin_icono"></i>
                     <h2>Solo administradores pueden gestionar los avisos</h2>
                 </div>
             <?php else: ?>
 
-                <!-- ALERTA DE MENSAJE -->
+                <!-- MOSTRAR MENSAJE DE ÉXITO/ERROR si existe -->
                 <?php if ($mensaje): ?>
-                    <div class="dashboard_avisos_alert <?php echo strpos($mensaje, 'eliminado') !== false || strpos($mensaje, 'añadido') !== false || strpos($mensaje, 'actualizado') !== false ? 'dashboard_avisos_alert_success' : 'dashboard_avisos_alert_error'; ?>">
-                        <?php echo htmlspecialchars($mensaje); ?>
+                    <!-- Detecta tipo de mensaje por contenido para aplicar clase CSS correcta -->
+                    <div class="dashboard_avisos_alert <?php
+                    echo strpos($mensaje, 'eliminado') !== false ||
+                    strpos($mensaje, 'añadido') !== false ||
+                    strpos($mensaje, 'actualizado') !== false ? 'dashboard_avisos_alert_success' : 'dashboard_avisos_alert_error';
+                    ?>">
+                             <?php echo htmlspecialchars($mensaje); // Escapa HTML por seguridad ?>
                     </div>
                 <?php endif; ?>
 
-                <!-- FORMULARIO NUEVA / EDITAR -->
+                <!-- FORMULARIO PRINCIPAL - Nueva entrada o Editar existente -->
                 <div class="dashboard_avisos_seccion_form <?php echo $modo_edit ? 'dashboard_avisos_modo_edit' : ''; ?>">
                     <h2>
                         <?php if ($modo_edit): ?>
+                            <!-- Modo edición: muestra ID del aviso -->
                             <i class="fas fa-edit"></i> Editar Aviso (ID: <?php echo $aviso_edit['id']; ?>)
                         <?php else: ?>
+                            <!-- Modo creación: nuevo aviso -->
                             <i class="fas fa-plus"></i> Nuevo Aviso
                         <?php endif; ?>
                     </h2>
 
+                    <!-- Formulario principal con validación HTML5 -->
                     <form method="POST" class="dashboard_avisos_form_grid">
+
+                        <!-- Campos ocultos que determinan la acción a ejecutar -->
                         <?php if ($modo_edit): ?>
+                            <!-- Modo edición: campos necesarios para UPDATE -->
                             <input type="hidden" name="accion" value="editar">
                             <input type="hidden" name="id" value="<?php echo $aviso_edit['id']; ?>">
                         <?php else: ?>
+                            <!-- Modo nueva: solo indica acción INSERT -->
                             <input type="hidden" name="accion" value="nueva">
                         <?php endif; ?>
 
+                        <!-- Campo Título - Requerido -->
                         <div class="dashboard_avisos_form_group">
                             <label class="dashboard_avisos_form_label">Título *</label>
                             <input type="text" name="titulo" class="dashboard_avisos_form_input" required 
@@ -157,12 +203,7 @@ if ($is_admin && isset($_GET['editar'])) {
                                    placeholder="Ej: Reunión Consejo Escolar">
                         </div>
 
-                        <div class="dashboard_avisos_form_group">
-                            <label class="dashboard_avisos_form_label">Fecha y Hora *</label>
-                            <input type="datetime-local" name="fecha" class="dashboard_avisos_form_input" required 
-                                   value="<?php echo $modo_edit ? str_replace(' ', 'T', $aviso_edit['fecha']) : ($_POST['fecha'] ?? date('Y-m-d\TH:i')); ?>">
-                        </div>
-
+                        <!-- Campo Enlace - Opcional -->
                         <div class="dashboard_avisos_form_group">
                             <label class="dashboard_avisos_form_label">Enlace (opcional)</label>
                             <input type="url" name="enlace" class="dashboard_avisos_form_input" 
@@ -170,22 +211,29 @@ if ($is_admin && isset($_GET['editar'])) {
                                    placeholder="documentos/matriculacion.pdf">
                         </div>
 
+                        <!-- Checkbox para marcar como IMPORTANTE -->
                         <div class="dashboard_avisos_form_group">
                             <label class="dashboard_avisos_form_label">
-                                <input type="checkbox" name="importante" <?php echo ($modo_edit && $aviso_edit['importante']) || isset($_POST['importante']) ? 'checked' : ''; ?>>
+                                <!-- Estado del checkbox según modo edición o POST -->
+                                <input type="checkbox" class="dashboard_avisos_form_checkbox" name="importante" <?php echo ($modo_edit && $aviso_edit['importante']) || isset($_POST['importante']) ? 'checked' : ''; ?>>
                                 Marcar como IMPORTANTE
                             </label>
                         </div>
 
-                        <div class="dashboard_avisos_form_group" style="grid-column: 1 / -1;">
+                        <!-- Campo Texto - Requerido (ocupa toda la anchura del grid) -->
+                        <div class="dashboard_avisos_form_group dashboard_avisos_form_group_wide">
                             <label class="dashboard_avisos_form_label">Texto del Aviso *</label>
                             <textarea name="texto" class="dashboard_avisos_form_textarea" required><?php echo htmlspecialchars($modo_edit ? $aviso_edit['texto'] : ($_POST['texto'] ?? '')); ?></textarea>
                         </div>
 
+                        <!-- Botones de acción del formulario -->
                         <div class="dashboard_avisos_btn_group">
+                            <!-- Botón principal: Guardar -->
                             <button type="submit" class="dashboard_avisos_btn dashboard_avisos_btn_primary">
                                 <i class="fas fa-save"></i> <?php echo $modo_edit ? 'Actualizar' : 'Añadir'; ?> Aviso
                             </button>
+
+                            <!-- Botón Cancelar solo en modo edición -->
                             <?php if ($modo_edit): ?>
                                 <a href="dashboard_avisos.php" class="dashboard_avisos_btn dashboard_avisos_btn_secondary">
                                     <i class="fas fa-times"></i> Cancelar
@@ -195,40 +243,57 @@ if ($is_admin && isset($_GET['editar'])) {
                     </form>
                 </div>
 
-                <!-- LISTA DE AVISOS -->
-                <div class="dashboard_avisos_seccion_form">
+                <!-- LISTADO COMPLETO DE AVISOS PUBLICADOS -->
+                <!-- Grid responsive con tarjetas individuales -->
+                <div class="dashboard_avisos_seccion_avisos">
+                    <!-- Contador dinámico de avisos existentes -->
                     <h2><i class="fas fa-list"></i> Avisos Publicados (<?php echo count($avisos); ?>)</h2>
+
                     <?php if (!empty($avisos)): ?>
+                        <!-- Grid responsive de tarjetas de avisos -->
                         <div class="dashboard_avisos_noticias_grid">
                             <?php foreach ($avisos as $aviso): ?>
+                                <!-- Tarjeta individual de cada aviso -->
                                 <div class="dashboard_avisos_noticia_card <?php echo $aviso['importante'] ? 'dashboard_avisos_importante' : ''; ?>">
+
+                                    <!-- Título del aviso + indicador IMPORTANTE -->
                                     <h3 class="dashboard_avisos_noticia_titulo">
                                         <?php echo htmlspecialchars($aviso['titulo']); ?>
                                         <?php if ($aviso['importante']): ?>
-                                            <span style="color: var(--rojo); font-weight: 700;">IMPORTANTE</span>
+                                            <span class="dashboard_avisos_etiqueta_importante">IMPORTANTE</span>
                                         <?php endif; ?>
                                     </h3>
+
+                                    <!-- Fecha de publicación + nombre del último editor -->
                                     <div class="dashboard_avisos_noticia_fecha">
                                         <i class="fas fa-calendar"></i> <?php echo date('d/m/Y', strtotime($aviso['fecha'])); ?>
                                         <?php if (!empty($aviso['ultima_edicion_usuario_nombre'])): ?>
-                                            <br><small style="color: #666; font-size: 0.85rem;"><?php echo htmlspecialchars($aviso['ultima_edicion_usuario_nombre']); ?></small>
+                                            <!-- Auditoría: quién modificó por última vez -->
+                                            <br><small class="dashboard_avisos_fecha_editor"><?php echo htmlspecialchars($aviso['ultima_edicion_usuario_nombre']); ?></small>
                                         <?php endif; ?>
                                     </div>
 
+                                    <!-- Preview del contenido (primeros 150 caracteres) -->
                                     <div class="dashboard_avisos_noticia_contenido">
                                         <?php echo htmlspecialchars(substr($aviso['texto'], 0, 150)); ?>...
                                     </div>
+
+                                    <!-- Enlace externo si existe -->
                                     <?php if ($aviso['enlace']): ?>
                                         <a href="<?php echo htmlspecialchars($aviso['enlace']); ?>" class="dashboard_avisos_noticia_enlace" target="_blank">
                                             <i class="fas fa-external-link-alt"></i> Ver documento
                                         </a>
                                     <?php endif; ?>
 
+                                    <!-- BOTONES DE ACCIÓN - Solo iconos para espacio reducido -->
                                     <div class="dashboard_avisos_acciones_botones">
+                                        <!-- Botón Editar - Enlace directo con parámetro GET -->
                                         <a href="?editar=<?php echo $aviso['id']; ?>" class="dashboard_avisos_btn_small dashboard_avisos_btn_editar" title="Editar">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <form method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar este aviso?')">
+
+                                        <!-- Botón Eliminar con confirmación JavaScript -->
+                                        <form method="POST" class="dashboard_avisos_eliminar_form" onsubmit="return confirm('¿Eliminar este aviso?')">
                                             <input type="hidden" name="accion" value="eliminar">
                                             <input type="hidden" name="id" value="<?php echo $aviso['id']; ?>">
                                             <button type="submit" class="dashboard_avisos_btn_small dashboard_avisos_btn_delete" title="Eliminar">
@@ -240,19 +305,20 @@ if ($is_admin && isset($_GET['editar'])) {
                             <?php endforeach; ?>
                         </div>
                     <?php else: ?>
-                        <div style="text-align: center; padding: 3rem; color: var(--gris);">
-                            <i class="fas fa-bell-slash" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                        <!-- Estado vacío - No hay avisos creados -->
+                        <div class="dashboard_avisos_vacio">
+                            <i class="fas fa-bell-slash"></i>
                             <h3>No hay avisos</h3>
                             <p>Añade el primer aviso con el formulario de arriba</p>
                         </div>
                     <?php endif; ?>
                 </div>
-            <?php endif; ?>
+            <?php endif; // Fin restricción admin     ?>
 
-            <!-- LOGOUT -->
+            <!-- Botón universal para volver al dashboard anterior -->
             <form method="POST" action="dashboard_secretaria.php" class="dashboard_universal_volver">
                 <button type="submit" class="dashboard_universal_btn_volver">
-                    <i class="fas fa-arrow-left"> </i>  Volver
+                    <i class="fas fa-arrow-left"></i> Volver
                 </button>
             </form>
         </div>

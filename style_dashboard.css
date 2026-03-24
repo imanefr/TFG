@@ -220,6 +220,27 @@
 /* ==========================================================================
     DASHBOARD INICIO - COMPLETO
  ==========================================================================*/
+/* === ICONOS GRADIENTE - COMPLETO === */
+.dashboard_inicio_cuadro_icono_inicio { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+.dashboard_inicio_cuadro_icono_nuestro_centro { background: linear-gradient(135deg, #10B981, #059669); }
+.dashboard_inicio_cuadro_icono_oferta_educativa { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+.dashboard_inicio_cuadro_icono_secretaria { background: linear-gradient(135deg, #F59E0B, #D97706); }
+.dashboard_inicio_cuadro_icono_erasmus { background: linear-gradient(135deg, #06B6D4, #0891B2); }
+.dashboard_inicio_cuadro_icono_documentos { background: linear-gradient(135deg, #F59E0B, #D97706); }
+.dashboard_inicio_cuadro_icono_departamentos { background: linear-gradient(135deg, #EC4899, #DB2777); }
+.dashboard_inicio_cuadro_icono_familias { background: linear-gradient(135deg, #10B981, #059669); }
+.dashboard_inicio_cuadro_icono_orientacion { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+
+/* === BORDES SUPERIORES - COMPLETO === */
+.dashboard_inicio_cuadro_menu_inicio { border-top-color: #8B5CF6; }
+.dashboard_inicio_cuadro_menu_nuestro_centro { border-top-color: #10B981; }
+.dashboard_inicio_cuadro_menu_oferta_educativa { border-top-color: #3B82F6; }
+.dashboard_inicio_cuadro_menu_secretaria { border-top-color: #F59E0B; }
+.dashboard_inicio_cuadro_menu_erasmus { border-top-color: #06B6D4; }
+.dashboard_inicio_cuadro_menu_documentos { border-top-color: #F59E0B; }
+.dashboard_inicio_cuadro_menu_departamentos { border-top-color: #EC4899; }
+.dashboard_inicio_cuadro_menu_familias { border-top-color: #10B981; }
+.dashboard_inicio_cuadro_menu_orientacion { border-top-color: #8B5CF6; }
 
 .dashboard_inicio_container {
     max-width: 1600px;
@@ -259,6 +280,34 @@
     display: flex;
     align-items: center;
     gap: 2rem;
+}
+/* iconos por sección */
+.dashboard_inicio_cuadro_icono_inicio {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+}
+
+.dashboard_inicio_cuadro_icono_nuestro_centro {
+    background: linear-gradient(135deg, #10B981, #059669);
+}
+
+/* ...resto claves... */
+
+/* bordes por sección */
+.dashboard_inicio_cuadro_menu_inicio {
+    border-top-color: #8B5CF6;
+}
+
+.dashboard_inicio_cuadro_menu_nuestro_centro {
+    border-top-color: #10B981;
+}
+
+/* etc. */
+
+/* icono candado no-admin */
+.dashboard_inicio_no_admin_icono {
+    font-size: 4rem;
+    color: var(--morado-claro);
+    margin-bottom: 1rem;
 }
 
 .dashboard_user_simple {
@@ -901,6 +950,40 @@
     color: #bfdbfe;
 }
 
+/* Nuevas clases para sustituir inline styles */
+.dashboard_ampa_img_preview {
+    max-width: 150px;
+    max-height: 100px;
+    border-radius: 8px;
+}
+.dashboard_ampa_img_nombre {
+    font-size: 0.9rem;
+    color: var(--gris);
+}
+.dashboard_ampa_form_hint {
+    color: var(--gris);
+}
+.dashboard_ampa_form_group_text {
+    grid-column: 1 / -1;
+}
+.dashboard_ampa_fecha_editor {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.dashboard_ampa_no_admin_icono {
+    font-size: 4rem;
+    color: var(--morado-claro);
+    margin-bottom: 1rem;
+}
+
+/* Formularios inline de acciones */
+.dashboard_ampa_activar_form,
+.dashboard_ampa_eliminar_form {
+    display: inline;
+}
+
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .dashboard_ampa_container {
@@ -1156,6 +1239,42 @@
     color: var(--gris);
     margin: 2rem 0;
     border: 1px solid var(--morado-claro);
+}
+
+/* Estilos inline extraídos - Dashboard Nuestro Centro */
+
+/* Icono bloqueo no-admin */
+.dashboard_nuestro_centro_no_admin_icono {
+  font-size: 4rem;
+  color: #9f7aea;
+  margin-bottom: 1rem;
+}
+
+/* Colores dinámicos por sección */
+.dashboard_nuestro_centro_cuadro_color_organigrama {
+  border-top-color: #10B981;
+}
+
+.dashboard_nuestro_centro_cuadro_color_ampa {
+  border-top-color: #F59E0B;
+}
+
+
+
+.dashboard_nuestro_centro_cuadro_icono_color_organigrama {
+  background: linear-gradient(135deg, #10B981, #059669);
+}
+
+.dashboard_nuestro_centro_cuadro_icono_color_ampa {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+}
+
+.dashboard_nuestro_centro_cuadro_color_resultados_academicos {
+  border-top-color: #3B82F6;
+}
+
+.dashboard_nuestro_centro_cuadro_icono_color_resultados_academicos {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
 }
 
 
@@ -1485,6 +1604,31 @@
     color: #991b1b;
     border: 1px solid #fecaca;
 }
+/* bloque “Solo admin” */
+.dashboard_avisos_no_admin_icono {
+    font-size: 4rem;
+    color: var(--morado-claro);
+    margin-bottom: 1rem;
+}
+
+/* campo texto que ocupa toda la fila */
+.dashboard_avisos_form_group_wide {
+    grid-column: 1 / -1;
+}
+
+/* etiqueta IMPORTANTE */
+.dashboard_avisos_etiqueta_importante {
+    color: var(--rojo);
+    font-weight: 700;
+}
+
+/* estado vacío sin avisos */
+.dashboard_avisos_vacio {
+    text-align: center;
+    padding: 3rem;
+    color: var(--gris);
+}
+
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
@@ -1943,6 +2087,44 @@
     color: var(--morado-claro);
     margin-bottom: 1rem;
 }
+/* style_dashboard.css - Estilos extraídos del HTML */
+
+/* Contenedor imagen actual */
+.dashboard_erasmus_imagen_actual img {
+  max-width: 150px;
+  max-height: 100px;
+  border-radius: 8px;
+}
+
+.dashboard_erasmus_imagen_actual p {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Campo contenido textarea */
+.dashboard_erasmus_form_textarea {
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+}
+
+/* Fecha noticia - small auditoría */
+.dashboard_erasmus_noticia_fecha small {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+/* Small texto debajo input file */
+small {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Formularios inline eliminar */
+form[style="display: inline;"] {
+  display: inline;
+}
+
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
@@ -1993,7 +2175,45 @@
     --gris: #6B7280;
     --gris-oscuro: #1F2937;
 }
+/* === ICONOS GRADIENTE === */
+.dashboard_secretaria_cuadro_icono_avisos { 
+    background: linear-gradient(135deg, #EF4444, #DC2626); 
+}
+.dashboard_secretaria_cuadro_icono_matriculacion { 
+    background: linear-gradient(135deg, #10B981, #059669); 
+}
+.dashboard_secretaria_cuadro_icono_convalidacion { 
+    background: linear-gradient(135deg, #F59E0B, #D97706); 
+}
+.dashboard_secretaria_cuadro_icono_solicitud_de_titulos { 
+    background: linear-gradient(135deg, #3B82F6, #2563EB); 
+}
+.dashboard_secretaria_cuadro_icono_otros_tramites { 
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED); 
+}
+.dashboard_secretaria_cuadro_icono_contacto { 
+    background: linear-gradient(135deg, #EC4899, #DB2777); 
+}
 
+/* === BORDES SUPERIORES === */
+.dashboard_secretaria_cuadro_color_avisos { 
+    border-top-color: #EF4444; 
+}
+.dashboard_secretaria_cuadro_color_matriculacion { 
+    border-top-color: #10B981; 
+}
+.dashboard_secretaria_cuadro_color_convalidacion { 
+    border-top-color: #F59E0B; 
+}
+.dashboard_secretaria_cuadro_color_solicitud_de_titulos { 
+    border-top-color: #3B82F6; 
+}
+.dashboard_secretaria_cuadro_color_otros_tramites { 
+    border-top-color: #8B5CF6; 
+}
+.dashboard_secretaria_cuadro_color_contacto { 
+    border-top-color: #EC4899; 
+}
 .dashboard_secretaria_container {
     max-width: 1600px;
     margin: 0 auto;
@@ -2170,6 +2390,61 @@
     border: 1px solid var(--morado-claro);
 }
 
+
+/* Estilos inline extraídos - Dashboard Secretaría */
+
+/* Icono bloqueo no-admin */
+.dashboard_secretaria_no_admin_icono {
+  font-size: 4rem;
+  color: #9f7aea;
+  margin-bottom: 1rem;
+}
+
+/* Colores dinámicos por subsección */
+.dashboard_secretaria_cuadro_color_avisos {
+  border-top-color: #EF4444;
+}
+.dashboard_secretaria_cuadro_color_matriculacion {
+  border-top-color: #10B981;
+}
+.dashboard_secretaria_cuadro_color_convalidacion {
+  border-top-color: #F59E0B;
+}
+.dashboard_secretaria_cuadro_color_solicitud_de_titulos {
+  border-top-color: #3B82F6;
+}
+.dashboard_secretaria_cuadro_color_otros_tramites {
+  border-top-color: #8B5CF6;
+}
+.dashboard_secretaria_cuadro_color_contacto {
+  border-top-color: #EC4899;
+}
+
+/* Iconos gradiente por subsección */
+.dashboard_secretaria_cuadro_icono_color_avisos {
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+}
+.dashboard_secretaria_cuadro_icono_color_matriculacion {
+  background: linear-gradient(135deg, #10B981, #059669);
+}
+.dashboard_secretaria_cuadro_icono_color_convalidacion {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+}
+.dashboard_secretaria_cuadro_icono_color_solicitud_de_titulos {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+}
+.dashboard_secretaria_cuadro_icono_color_otros_tramites {
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+}
+.dashboard_secretaria_cuadro_icono_color_contacto {
+  background: linear-gradient(135deg, #EC4899, #DB2777);
+}
+
+/* Botón en desarrollo */
+.dashboard_secretaria_submenu_en_desarrollo {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 /* RESPONSIVE - 6 ELEMENTOS */
 @media (max-width: 1400px) {
@@ -2642,28 +2917,28 @@
         left: 1rem;
         top: 1rem;
     }
-    
+
     .dashboard_avisos_container {
         padding: 1rem;
     }
-    
+
     .dashboard_avisos_form_grid,
     .dashboard_avisos_noticias_grid {
         grid-template-columns: 1fr;
     }
-    
+
     .dashboard_avisos_btn_group,
     .dashboard_avisos_acciones_botones {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .dashboard_avisos_btn_small {
         width: 100%;
         max-width: 250px;
         justify-content: center;
     }
-    
+
     .dashboard_avisos_noticia_medios {
         justify-content: center;
     }
@@ -2673,7 +2948,7 @@
     .dashboard_avisos_saludo {
         font-size: 2rem;
     }
-    
+
     .dashboard_avisos_noticia_imagen {
         height: 150px;
     }
@@ -3355,6 +3630,19 @@
     background: linear-gradient(135deg, var(--morado), var(--morado-oscuro));
     color: white;
 }
+
+/* icono de bloqueo no-admin */
+.dashboard_contacto_no_admin_icono {
+    font-size: 4rem;
+    color: var(--morado-claro);
+    margin-bottom: 1rem;
+}
+
+/* textarea que ocupa toda la fila */
+.dashboard_contacto_form_group_wide {
+    grid-column: 1 / -1;
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .dashboard_contacto_header_actions {
