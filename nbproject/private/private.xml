@@ -4,17 +4,40 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/xampp/htdocs/TFG_2/info_eso.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/dashboard_contacto.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/style_bot.css</file>
             <file>file:/C:/xampp/htdocs/TFG_2/info_familias.php</file>
-            <file>file:/C:/xampp/htdocs/TFG_2/script.js</file>
             <file>file:/C:/xampp/htdocs/TFG_2/head.php</file>
-            <file>file:/C:/xampp/htdocs/TFG_2/resultados_academicos.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/chatgpt_api.php</file>
             <file>file:/C:/xampp/htdocs/TFG_2/info_bachillerato.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/dashboard_ampa.php</file>
             <file>file:/C:/xampp/htdocs/TFG_2/index.php</file>
-            <file>file:/C:/xampp/htdocs/TFG_2/footer.php</file>
-            <file>file:/C:/xampp/htdocs/TFG_2/info_fp.php</file>
-            <file>file:/C:/xampp/htdocs/TFG_2/erasmus_noticias.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/login.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/convalidacion_bach.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/departamentos.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/dashboard_erasmus.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/dashboard_secretaria.php</file>
             <file>file:/C:/xampp/htdocs/TFG_2/style.css</file>
             <file>file:/C:/xampp/htdocs/TFG_2/erasmus.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/dashboard_head.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/convalidacion_fp.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/dashboard_avisos.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/dashboard_nuestro_centro.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/script.js</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/avisos.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/resultados_academicos.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/footer.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/info_fp.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/dashboard.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/style_dashboard.css</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/erasmus_noticias.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/logout.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/arboleda_bot.js</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/ampa.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/convalidacion_eso.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/conexion.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/contacto_secretaria.php</file>
+            <file>file:/C:/xampp/htdocs/TFG_2/dashboard_usuarios.php</file>
             <file>file:/C:/xampp/htdocs/TFG_2/organigrama.php</file>
         </group>
     </open-files>

@@ -1,39 +1,65 @@
 <?php
+// INICIA SESIÓN SI NO ESTÁ ACTIVA - Verifica estado y evita warnings múltiples
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    session_start();  // Inicia sesión PHP solo si no existe
 }
 ?>
 
+<!-- INCLUYE HEADER COMPLETO - Navbar, breadcrumb, ArboledaBot (head.php) -->
 <?php include_once 'head.php'; ?>
 
-<!-- CONTENIDO ESPECÍFICO DE INDEX -->
+<?php
+// CARGAR NOTIFICACIONES PUSH - Lee tabla BD para popups WhatsApp
+include("conexion.php");                                    // Conexión MySQLi
+$sql_notif = "SELECT * FROM notificaciones_push WHERE activo=1 ORDER BY fecha DESC LIMIT 10";  // Últimas 10 activas
+$result_notif = $conexion->query($sql_notif);               // Ejecuta consulta
+$notificaciones = [];                                       // Array vacío inicial
+
+// PROCESA RESULTADO - Convierte filas BD → array PHP
+if ($result_notif && $result_notif->num_rows > 0) {
+    while ($row = $result_notif->fetch_assoc()) {           // Itera cada fila
+        $notificaciones[] = $row;                           // Añade a array
+    }
+}
+$conexion->close();                                         // Cierra conexión BD
+?>
+
+<!-- HERO CARRUSEL - Imagen principal + título overlay (3 slides) -->
 <section id="inicio" class="indice_pagina_hero_carrusel">
-    <div class="indice_pagina_contenedor_carrusel">
+    <div class="indice_pagina_contenedor_carrusel">          <!-- Wrapper carrusel JS/CSS -->
+        <!-- SLIDE 1 - Imagen de fondo activa por defecto -->
         <div class="indice_pagina_imagen_carrusel indice_pagina_activa" style="background-image: url('img/instituto_back_1.jpg');"></div>
+        <!-- SLIDE 2 - Segunda imagen -->
         <div class="indice_pagina_imagen_carrusel" style="background-image: url('img/instituto_back_2.jpg');"></div>
+        <!-- SLIDE 3 - Tercera imagen -->
         <div class="indice_pagina_imagen_carrusel" style="background-image: url('img/instituto_back_3.jpg');"></div>
     </div>
+    <!-- TEXTO OVERLAY - Título hero sobre carrusel -->
     <div class="indice_pagina_contenido_hero">
         <h2 class="indice_pagina_titulo_hero">
-            <span class="indice_pagina_texto_hero_superior">BIENVENIDOS A NUESTRO CENTRO</span>
-            <span class="indice_pagina_texto_hero_principal">IES LA ARBOLEDA</span>
-            <span class="indice_pagina_texto_hero_inferior">Alcorcón - Tu instituto de referencia</span>
+            <span class="indice_pagina_texto_hero_superior">BIENVENIDOS A NUESTRO CENTRO</span>  <!-- Línea superior -->
+            <span class="indice_pagina_texto_hero_principal">IES LA ARBOLEDA</span>              <!-- Título principal -->
+            <span class="indice_pagina_texto_hero_inferior">Alcorcón - Tu instituto de referencia</span> <!-- Subtítulo -->
         </h2>
     </div>
 </section>
 
+<!-- ATAJOS "A UN CLIC" - 3 enlaces directos externos -->
 <section class="indice_pagina_seccion_atajo">
     <div class="indice_pagina_contenedor_principal">
-        <h3 class="indice_pagina_titulo_atajo">A UN CLIC</h3>
-        <div class="indice_pagina_grid_atajos">
+        <h3 class="indice_pagina_titulo_atajo">A UN CLIC</h3>     <!-- Título sección -->
+        <div class="indice_pagina_grid_atajos">                  <!-- Grid CSS 3 columnas -->
+            <!-- AULA VIRTUAL - Enlace EducaMadrid -->
             <a href="https://aulavirtual33.educa.madrid.org/ies.laarboleda.alcorcon/" class="indice_pagina_tarjeta_atajo card-un-clic">
-                <div class="indice_pagina_icono_atajo"><i class="fas fa-graduation-cap"></i></div>
+                <div class="indice_pagina_icono_atajo"><i class="fas fa-graduation-cap"></i></div>  <!-- Icono FontAwesome -->
                 <h4 class="indice_pagina_titulo_atajo_card">Aula Virtual</h4>
             </a>
+            <!-- CORREO EDUCAMADRID - Email institucional -->
             <a href="https://correoweb.educa.madrid.org/" class="indice_pagina_tarjeta_atajo card-un-clic">
                 <div class="indice_pagina_icono_atajo"><i class="fas fa-envelope"></i></div>
                 <h4 class="indice_pagina_titulo_atajo_card">Correo educamadrid</h4>
             </a>
+            <!-- ROBLE/RAÍCES - Plataforma Comunidad Madrid -->
             <a href="https://raices.madrid.org/" class="indice_pagina_tarjeta_atajo card-un-clic">
                 <div class="indice_pagina_icono_atajo"><i class="fas fa-tree"></i></div>
                 <h4 class="indice_pagina_titulo_atajo_card">Roble/Raíces</h4>
@@ -42,64 +68,111 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
 </section>
 
+<!-- MAIN CONTENIDO - Secciones dinámicas -->
 <main>
-    <?php include("conexion.php"); ?>
+    <?php include("conexion.php"); ?>                          <!-- Reconexión BD para noticias -->
+    
     <section class="indice_pagina_contenedor_principal">
-        <a href="relevante_ahora.php" style="text-decoration: none;"><h2 class="indice_pagina_titulo_atajo">RELEVANTE AHORA</h2></a>
-        <?php
-            function primeras15Palabras($texto) {
-                $palabras = explode(' ', strip_tags($texto));
-                $primeras15 = array_slice($palabras, 0, 15);
-                return implode(' ', $primeras15) . '...';
-            }
-
-            $sql = "SELECT r.*, u.nombre as ultima_edicion_usuario_nombre
-                    FROM noticias r 
-                    LEFT JOIN usuarios u ON r.ultima_edicion_usuario_id = u.id 
-                    WHERE r.destacada = 1 
-                    ORDER BY r.fecha DESC LIMIT 8";
-
-            $resultado = $conexion->query($sql);
-            $noticias = [];
-            while ($fila = $resultado->fetch_assoc()) {
-                $noticias[] = $fila;
-            }
-        ?>
-        <div class="indice_pagina_grid_noticias">
-            <?php foreach ($noticias as $noticia): ?>
-                <a href="noticias_relevantes.php?id=<?php echo $noticia['id']; ?>" class="indice_pagina_tarjeta_noticia card-un-clic">
-                    <img src="<?php echo $noticia['imagen']; ?>" alt="<?php echo $noticia['titulo']; ?>">
-                    <p><?php echo primeras15Palabras($noticia['contenido']); ?></p>
-                </a>
-            <?php endforeach; ?>
+        <!-- TÍTULO RELEVANTE -->
+        <h2 class="indice_pagina_titulo_atajo">RELEVANTE AHORA</h2>
+        <div class="indice_pagina_grid_noticias">                <!-- Grid noticias fijas -->
+            <!-- 4 TARJETAS FIJAS  -->
+            <a href="#" class="indice_pagina_tarjeta_noticia card-un-clic">
+                <img src="img/libros_texto.jpg" alt="Libros de texto">
+                <p>Libros de texto 2025‑26</p>
+            </a>
+            <a href="#" class="indice_pagina_tarjeta_noticia card-un-clic">
+                <img src="img/matriculacion.jpg" alt="Matriculación">
+                <p>Matriculación 2024‑25</p>
+            </a>
+            <a href="#" class="indice_pagina_tarjeta_noticia card-un-clic">
+                <img src="img/becas.jpg" alt="Becas y ayudas">
+                <p>Becas y ayudas</p>
+            </a>
+            <a href="#" class="indice_pagina_tarjeta_noticia card-un-clic">
+                <img src="img/calendario.jpg" alt="Calendario escolar">
+                <p>Calendario escolar 2025‑2026</p>
+            </a>
         </div>
 
-        <a href="ultimas_noticias.php" style="text-decoration: none;"><h2 class="indice_pagina_titulo_atajo" style="margin-top:3rem;">ÚLTIMAS NOTICIAS</h2></a>
+        <!-- ÚLTIMAS NOTICIAS - Dinámicas desde BD -->
+        <h2 class="indice_pagina_titulo_atajo" style="margin-top:3rem;">ÚLTIMAS NOTICIAS</h2>
         <div class="indice_pagina_grid_noticias">
             <?php
-            $sql = "SELECT * FROM noticias ORDER BY fecha DESC LIMIT 5";
-            $resultado = $conexion->query($sql);
-            if ($resultado && $resultado->num_rows > 0) {
-                while ($fila = $resultado->fetch_assoc()) {
+            $sql = "SELECT * FROM noticias ORDER BY fecha DESC LIMIT 5";  // Últimas 5 noticias
+            $resultado = $conexion->query($sql);                         // Ejecuta consulta
+            if ($resultado && $resultado->num_rows > 0) {                // Si hay resultados
+                while ($fila = $resultado->fetch_assoc()) {              // Itera cada noticia
             ?>
+                <!-- TARJETA NOTICIA DINÁMICA -->
                 <div class="indice_pagina_tarjeta_noticia noticia-item">
-                    <?php if (!empty($fila["imagen"])): ?>
+                    <?php if (!empty($fila["imagen"])): ?>                   <!-- IMAGEN OPCIONAL -->
                         <img src="<?php echo htmlspecialchars($fila['imagen']); ?>" alt="Noticia">
                     <?php endif; ?>
+                    <!-- FECHA FORMATEADA - "2026-03-17" → "17/03/2026" -->
                     <p class="indice_pagina_fecha_noticia"><?php echo date("d/m/Y", strtotime($fila["fecha"])); ?></p>
+                    <!-- TÍTULO - Escapa HTML para seguridad -->
                     <h4 class="indice_pagina_titulo_noticia"><?php echo htmlspecialchars($fila["titulo"]); ?></h4>
+                    <!-- CONTENIDO - Primer párrafo escapa HTML -->
                     <p class="indice_pagina_contenido_noticia"><?php echo htmlspecialchars($fila["contenido"]); ?></p>
+                    <!-- ENLACE DETALLE - noticia.php?id=123 -->
                     <a href="noticia.php?id=<?php echo $fila['id']; ?>" class="indice_pagina_boton_leer_mas">Leer más</a>
                 </div>
             <?php
-                }
-            } else {
+                }  // Fin while noticias
+            } else {  // SIN NOTICIAS
                 echo '<p>No hay noticias disponibles por el momento.</p>';
             }
-            $conexion->close();
+            $conexion->close();  // Cierra conexión BD
             ?>
         </div>
     </section>
 </main>
 
+<!-- CONTENEDOR NOTIFICACIONES -->
+<div id="notificaciones_whatsapp_container"></div>
+
+<!-- JS NOTIFICACIONES -->
+<script>
+const notificaciones = <?php echo json_encode($notificaciones); ?>;  // Convierte PHP array → JS JSON
+
+// FUNCIÓN: Crea popup individual
+function mostrarNotificacionWhatsApp(notif) {
+    const container = document.getElementById('notificaciones_whatsapp_container');  // Busca contenedor
+    const notifDiv = document.createElement('div');                                  // Crea div notificación
+    notifDiv.className = 'notificaciones_whatsapp_item';                             // Clase CSS
+    
+    // CLICK ENLACE - Abre URL si existe
+    if (notif.enlace) {
+        notifDiv.onclick = () => window.open(notif.enlace, '_blank');
+    }
+    
+    // HTML TEMPLATE - Estructura -like
+    
+    notifDiv.innerHTML = `
+        <div class="notificaciones_whatsapp_header">                           <!-- Header: avatar + título -->
+            <div class="notificaciones_whatsapp_avatar">${notif.titulo.charAt(0)}</div>  <!-- 1ª letra avatar -->
+            <div class="notificaciones_whatsapp_content">
+                <div class="notificaciones_whatsapp_titulo">${notif.titulo}</div>         <!-- Nombre remitente -->
+                <div class="notificaciones_whatsapp_time">${new Date(notif.fecha).toLocaleTimeString()}</div>  <!-- Hora local -->
+            </div>
+        </div>
+        <div class="notificaciones_whatsapp_descripcion">${notif.descripcion}</div>  <!-- Mensaje -->
+    `;
+    
+    // INSERTA ARRIBA - Primera posición (más reciente arriba)
+    container.insertBefore(notifDiv, container.firstChild);
+    // AUTO-ELIMINA - 10 segundos después
+    setTimeout(() => notifDiv.remove(), 10000);
+}
+
+// MUESTRA 2 PRIMERAS - Con delay progresivo (0s, 2s)
+if (notificaciones.length > 0) {
+    notificaciones.slice(0, 2).forEach((notif, i) => {         // Primeras 2 notificaciones
+        setTimeout(() => mostrarNotificacionWhatsApp(notif), i * 2000);  // Delay 2s entre cada una
+    });
+}
+</script>
+
+<!-- FOOTER - Incluye copyright, redes, contacto -->
 <?php include 'footer.php'; ?>
