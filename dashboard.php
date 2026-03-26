@@ -22,15 +22,27 @@ $stmt->close();                                                                /
 
 // ARRAY MENÚ PRINCIPAL - Define 9 secciones del dashboard con iconos, títulos, enlaces
 $menu_principal = [
-    'inicio' => ['icono' => 'fa-home', 'titulo' => 'Página Inicio', 'descripcion' => 'Página principal del IES La Arboleda', 'enlace' => 'index.php', 'dashboard' => ''],
+    'inicio' => ['icono' => 'fa-home', 'titulo' => 'Página Inicio', 'descripcion' => 'Página principal del IES La Arboleda', 'enlace' => 'index.php', 'dashboard' => 'dashboard_inicio.php'],
     'nuestro_centro' => ['icono' => 'fa-building', 'titulo' => 'Nuestro Centro', 'descripcion' => 'Organigrama, AMPA, Resultados Académicos', 'enlace' => '', 'dashboard' => 'dashboard_nuestro_centro.php'],
     'oferta_educativa' => ['icono' => 'fa-graduation-cap', 'titulo' => 'Oferta Educativa', 'descripcion' => 'ESO, Bachillerato, Formación Profesional', 'enlace' => '', 'dashboard' => 'dashboard_oferta_educativa.php'],
     'secretaria' => ['icono' => 'fa-file-alt', 'titulo' => 'Secretaría', 'descripcion' => 'Matriculaciones, convalidaciones, títulos', 'enlace' => '', 'dashboard' => 'dashboard_secretaria.php'],
     'erasmus' => ['icono' => 'fa-plane', 'titulo' => 'Erasmus+', 'descripcion' => 'Programa de movilidad europea', 'enlace' => 'erasmus.php', 'dashboard' => 'dashboard_erasmus.php'],
     'documentos' => ['icono' => 'fa-file-pdf', 'titulo' => 'Documentos Institucionales', 'descripcion' => 'Documentos oficiales del centro', 'enlace' => 'doc_institucionales.php', 'dashboard' => 'dashboard_doc_institucionales.php'],
-    'departamentos' => ['icono' => 'fa-users', 'titulo' => 'Departamentos', 'descripcion' => 'Listado de departamentos académicos', 'enlace' => 'departamentos.php', 'dashboard' => ''],
-    'familias' => ['icono' => 'fa-user-friends', 'titulo' => 'Información Familias', 'descripcion' => 'Comunicaciones para familias', 'enlace' => 'info_familias.php', 'dashboard' => ''],
-    'orientacion' => ['icono' => 'fa-chalkboard-teacher', 'titulo' => 'Orientación', 'descripcion' => 'Departamento de orientación', 'enlace' => 'orientacion.php', 'dashboard' => '']
+    'familias' => ['icono' => 'fa-user-friends', 'titulo' => 'Información Familias', 'descripcion' => 'Comunicaciones para familias', 'enlace' => 'info_familias.php', 'dashboard' => 'dashboard_familias.php'],
+    'bolsa_de_empleo' => ['icono' => 'fa-briefcase', 'titulo' => 'Bolsa de Empleo', 'descripcion' => 'Ofertas de empleo', 'enlace' => 'bolsa_de_empleo.php', 'dashboard' => 'dashboard_bolsa_empleo.php'],
+    'teatro' => ['icono' => 'fa-theater-masks', 'titulo' => 'Teatro', 'descripcion' => 'Publicaciones sobre el grupo de teatro', 'enlace' => 'teatro.php', 'dashboard' => 'dashboard_teatro.php'],
+    'plan_de_igualdad' => ['icono' => 'fa-balance-scale', 'titulo' => 'Plan de Igualdad', 'descripcion' => 'Información sobre el plan de igualdad', 'enlace' => 'plan_de_igualdad.php', 'dashboard' => 'dashboard_plan_igualdad.php'],
+    'matriculaciones' => ['icono' => 'fa-file-invoice', 'titulo' => 'Matriculaciones', 'descripcion' => 'Información sobre matriculaciones', 'enlace' => '', 'dashboard' => 'dashboard_matriculaciones.php'],
+    'titulaciones' => ['icono' => 'fa-graduation-cap', 'titulo' => 'Titulaciones', 'descripcion' => 'Información sobre titulaciones', 'enlace' => '', 'dashboard' => 'dashboard_titulaciones.php'],
+    'otros_tramites' => ['icono' => 'fa-file-signature', 'titulo' => 'Otros trámites', 'descripcion' => 'Información sobre otros trámites', 'enlace' => 'otros_tramites.php', 'dashboard' => 'dashboard_otros_tramites.php'],
+    'documentos_institucionales' => ['icono' => 'fa-file-arrow-down', 'titulo' => 'Documentos Institucionales', 'descripcion' => 'Documentos oficiales del centro', 'enlace' => 'doc_institucionales.php', 'dashboard' => 'dashboard_doc_institucionales.php'],
+    'orientacion' => ['icono' => 'fa-user-doctor', 'titulo' => 'Orientación', 'descripcion' => 'Información sobre orientación', 'enlace' => 'orientacion.php', 'dashboard' => 'dashboard_orientacion.php'],
+    'blog' => ['icono' => 'fa-newspaper', 'titulo' => 'Blog', 'descripcion' => 'Publicaciones del blog', 'enlace' => 'blog.php', 'dashboard' => 'dashboard_blog.php'],
+    'organigrama' => ['icono' => 'fa-users icono_universal', 'titulo' => 'Organigrama', 'descripcion' => 'Información sobre el organigrama', 'enlace' => 'organigrama.php', 'dashboard' => 'dashboard_organigrama.php'],
+    'resultados_academicos' => ['icono' => 'fa-chalkboard-teacher', 'titulo' => 'Resultados Académicos', 'descripcion' => 'Información sobre resultados académicos', 'enlace' => 'resultados_academicos.php', 'dashboard' => 'dashboard_resultados_academicos.php'],
+    'convalidaciones' => ['icono' => 'fa-file-pdf', 'titulo' => 'Convalidaciones', 'descripcion' => 'Información sobre convalidaciones', 'enlace' => '', 'dashboard' => 'dashboard_convalidaciones.php'],
+    'solicitud_titulos' => ['icono' => 'fa-graduation-cap', 'titulo' => 'Solicitud de Títulos', 'descripcion' => 'Información sobre solicitud de títulos', 'enlace' => '', 'dashboard' => 'dashboard_solicitud_titulos.php'],
+    'departamentos' => ['icono' => 'fa-users', 'titulo' => 'Departamentos', 'descripcion' => 'Listado de departamentos académicos', 'enlace' => 'departamentos.php', 'dashboard' => 'dashboard_departamentos.php'],
 ];
 
 

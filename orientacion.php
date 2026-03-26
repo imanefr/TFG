@@ -43,8 +43,8 @@
                             <li>
                                 <h4 class="orientacion_seccion_titulo_lista"><?php echo $row['titulo']; ?></h4>
                                 <p class="orientacion_parrafo_lista">
-                                <?php echo $row['descripcion']; ?>
-                                <a class="orientacion_link" href="<?php echo $row['enlace']; ?>"><?php echo $row['texto_enlace']; ?></a>
+                                <?php echo $row['texto']; ?>
+                                <a class="orientacion_link" href="<?php echo $row['link']; ?>"><?php echo $row['texto_enlace']; ?></a>
                                 </p>
                             </li>
                         <?php

@@ -7,7 +7,7 @@
     <div class="contenedor-max">
         <div class="hero-layout-universal">
             <div class="hero-icono-universal">
-                <i class="fas fa-briefcase icono_universal"></i> 
+                <i class="fas fa-file-pdf icono_universal"></i> 
             </div>
             <div class="hero-texto-universal">
                 <h1 class="hero-titulo-universal">Convalidación FP</h1> <!-- Título principal -->

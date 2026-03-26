@@ -42,34 +42,6 @@ include 'conexion.php'
             }
         }
         ?>
-        <div class="documentos_institucionales_contenedor_pdf">
-            <h3 class="documentos_institucionales_seccion_titulo">Plan de Convivencia</h3>
-            <iframe src="media/PLAN-DE-CONVIVENCIA-2.pdf" class="documentos_institucionales_pdf_iframe"></iframe>
-            <a href="media/PLAN-DE-CONVIVENCIA-2.pdf" class="documentos_institucionales_btn_descarga" download>
-                <i class="fas fa-file-pdf"></i> Descargar PDF
-            </a>
-        </div>
-        <div class="documentos_institucionales_contenedor_pdf">
-            <h3 class="documentos_institucionales_seccion_titulo">Programación General Anual</h3>
-            <iframe src="media/PGA-IES-LA-ARBOLEDA-25-26_signed-1.pdf" class="documentos_institucionales_pdf_iframe"></iframe>
-            <a href="media/PGA-IES-LA-ARBOLEDA-25-26_signed-1.pdf" class="documentos_institucionales_btn_descarga" download>
-                <i class="fas fa-file-pdf"></i> Descargar PDF
-            </a>
-        </div>
-        <div class="documentos_institucionales_contenedor_pdf">
-            <h3 class="documentos_institucionales_seccion_titulo">Memoria Anual</h3>
-            <iframe src="media/Memoria-anual-2024-25.pdf" class="documentos_institucionales_pdf_iframe"></iframe>
-            <a href="media/Memoria-anual-2024-25.pdf" class="documentos_institucionales_btn_descarga" download>
-                <i class="fas fa-file-pdf"></i> Descargar PDF
-            </a>
-        </div>
-        <div class="documentos_institucionales_contenedor_pdf">
-            <h3 class="documentos_institucionales_seccion_titulo">Plan Digital del Centro</h3>
-            <iframe src="media/PLAN-DIGITAL.pdf" class="documentos_institucionales_pdf_iframe"></iframe>
-            <a href="media/PLAN-DIGITAL.pdf" class="documentos_institucionales_btn_descarga" download>
-                <i class="fas fa-file-pdf"></i> Descargar PDF
-            </a>
-        </div>
     </div>
 </main>
 

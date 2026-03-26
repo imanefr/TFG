@@ -3,7 +3,7 @@
 require_once 'conexion.php';
 
 // Consulta SQL: selecciona resultados académicos activos ordenados
-$sql = "SELECT id, titulo, descripcion, img, orden 
+$sql = "SELECT id, titulo, texto, imagen, orden 
         FROM resultados_academicos 
         WHERE activo = 1 
         ORDER BY orden ASC, id ASC";  // Orden personalizado + ID
@@ -51,7 +51,7 @@ $conexion->close();
                     <?php foreach ($resultados as $res): ?>  <!-- Por cada resultado -->
                         <div class="resultados_academicos_card">
                             <!-- Imagen con fallback (si no carga se oculta) -->
-                            <img src="img/<?php echo htmlspecialchars(basename($res['img'])); ?>" 
+                            <img src="img/<?php echo htmlspecialchars(basename($res['imagen'])); ?>" 
                                  alt="<?php echo htmlspecialchars($res['titulo']); ?>" 
                                  class="resultados_academicos_imagen"
                                  onerror="this.style.display='none'; this.nextElementSibling.classList.remove('resultados_academicos_placeholder_hidden');">
@@ -63,7 +63,7 @@ $conexion->close();
                             
                             <!-- Contenido de la card -->
                             <h3 class="resultados_academicos_titulo_card"><?php echo htmlspecialchars($res['titulo']); ?></h3>
-                            <p class="resultados_academicos_descripcion"><?php echo htmlspecialchars($res['descripcion']); ?></p>
+                            <p class="resultados_academicos_descripcion"><?php echo htmlspecialchars($res['texto']); ?></p>
                             <div class="resultados_academicos_anio">2023-2024</div>
                         </div>
                     <?php endforeach; ?>

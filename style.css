@@ -4683,7 +4683,7 @@ body {
     color: var(--verde-principal);
     font-size: 1.3rem;
     font-weight: 700;
-    margin: 3rem 0 3rem;
+    margin: 3rem 0 2rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     position: relative;
@@ -4698,14 +4698,68 @@ body {
     margin: 10px auto 0;
 }
 
-.imagen-bolsa-empleo {
+.bolsa_empleo_item
+{
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+    background-color: var(--blanco);
+    border: 2px solid var(--verde-muy-claro);
+}
+
+.bolsa_empleo_item_titulo
+{
+    text-align: center;
+    color: var(--verde-principal);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bolsa_empleo_item_texto
+{
+    text-align: center;
+    color: var(--gris-texto);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bolsa_empleo_link
+{
+    text-align: center;
+    color: var(--verde-principal);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.bolsa_empleo_link:hover
+{
+    color: var(--verde-oscuro);
+    transform: translateY(-2px) scale(1.05);
+    text-decoration: underline;
+}
+
+.bolsa_empleo_item_imagen {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
-.imagen-bolsa-empleo img {
+.bolsa_empleo_item_imagen img {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
@@ -4713,7 +4767,7 @@ body {
     transition: transform 0.3s ease;
 }
 
-.imagen-bolsa-empleo img:hover {
+.bolsa_empleo_item_imagen img:hover {
     transform: scale(1.02);
 }
 
@@ -4726,6 +4780,17 @@ body {
     padding: 2rem 3rem 4rem;
     max-width: 1000px;
     margin: 0 auto;
+}
+
+.teatro_item
+{
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+    background-color: var(--blanco);
+    border: 2px solid var(--verde-muy-claro);
 }
 
 .teatro_titulo {
@@ -4748,6 +4813,16 @@ body {
     margin: 10px auto 0;
 }
 
+.teatro_item_titulo
+{
+    text-align: center;
+    color: var(--verde-principal);
+    font-size: 1.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .teatro_subtitulo {
     text-align: center;
     color: var(--gris-texto);
@@ -4768,6 +4843,27 @@ body {
     margin-right: auto;
 }
 
+.teatro_item_texto
+{
+    text-align: center;
+    color: var(--gris-texto);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.teatro_pdf_titulo {
+    text-align: center;
+    color: var(--verde-principal);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .teatro_info_contenedor {
     margin-top: 2rem;
     padding: 50px;
@@ -4777,12 +4873,55 @@ body {
     box-shadow: var(--sombra-suave);
 }
 
-.teatro_info_contenedor iframe {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    border-radius: 12px;
+.teatro_pdf_iframe {
+    border: none; 
+    border-radius: 12px; 
     box-shadow: var(--sombra-suave);
+    margin-top: 1rem;
 }
+
+.teatro_btn_descarga {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--verde-principal);
+    color: var(--blanco);
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.teatro_btn_descarga:hover {
+    background: var(--verde-oscuro);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(19, 139, 60, 0.2);
+}
+
+.teatro_btn_descarga i {
+    font-size: 0.9rem;
+}
+
+.teatro_link
+{
+    color: var(--verde-principal);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+
+}
+
+.teatro_link:hover {
+    color: var(--verde-oscuro);
+    transform: translateY(-2px) scale(1.05);
+}
+
 
 .teatro_imagenes_grid {
     display: grid;
@@ -4817,6 +4956,16 @@ body {
     margin: 0 auto;
 }
 
+.plan_igualdad_item
+{
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+    background-color: var(--blanco);
+    border: 2px solid var(--verde-muy-claro);
+}
+
 .plan_igualdad_titulo {
     text-align: center;
     color: var(--verde-principal);
@@ -4835,6 +4984,16 @@ body {
     height: 3px;
     background: var(--verde-principal);
     margin: 10px auto 0;
+}
+
+.plan_igualdad_item_titulo
+{
+    text-align: center;
+    color: var(--verde-principal);
+    font-size: 1.5rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .plan_igualdad_subtitulo {
@@ -4857,6 +5016,17 @@ body {
     margin-right: auto;
 }
 
+.plan_igualdad_item_texto
+{
+    text-align: center;
+    color: var(--gris-texto);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .plan_igualdad_pdf_titulo {
     text-align: center;
     color: var(--verde-principal);
@@ -4871,6 +5041,7 @@ body {
     border: none; 
     border-radius: 12px; 
     box-shadow: var(--sombra-suave);
+    margin-top: 1rem;
 }
 
 .plan_igualdad_btn_descarga {
@@ -4899,7 +5070,7 @@ body {
     font-size: 0.9rem;
 }
 
-.protocol-pdf-link
+.plan_igualdad_link
 {
     color: var(--verde-principal);
     text-decoration: none;
@@ -4910,7 +5081,7 @@ body {
 
 }
 
-.protocol-pdf-link:hover {
+.plan_igualdad_link:hover {
     color: var(--verde-oscuro);
     transform: translateY(-2px) scale(1.05);
 }

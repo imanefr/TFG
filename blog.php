@@ -43,7 +43,7 @@ include 'conexion.php';
                             
                             <div class="blog_item_texto_wrapper">
                                 <h3 class="blog_item_titulo"><?php echo $post['titulo']; ?></h3>
-                                <p class="blog_item_contenido"><?php echo nl2br(htmlspecialchars($post['contenido'])); ?></p>
+                                <p class="blog_item_contenido"><?php echo nl2br(htmlspecialchars($post['texto'])); ?></p>
                                 
                                 <?php if (!empty($post['pdf'])): ?>
                                     <iframe class="blog_item_pdf" src="<?php echo $post['pdf']; ?>" frameborder="0"></iframe>

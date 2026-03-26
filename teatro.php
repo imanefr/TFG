@@ -1,4 +1,7 @@
-<?php include 'head.php'; ?>
+<?php 
+include 'head.php';
+include 'conexion.php';
+ ?>
 
 <!-- HERO -->
 <section class="seccion-hero-universal">
@@ -44,6 +47,33 @@
                     <img src="img/teatro5.png" alt="Imagen 5">
                     <img src="img/teatro6.png" alt="Imagen 6">
                 </div>
+                <?php 
+                $sql = "SELECT * FROM teatro ORDER BY fecha_publicacion";
+                $result = $conexion->query($sql);
+                if($result->num_rows > 0){
+                    while($row = $result->fetch_assoc())
+                    {
+                        ?>
+                        <div class="teatro_item">
+                            <h2 class="teatro_item_titulo"><?php echo $row['titulo']; ?></h2>
+                                    <div class="teatro_item_imagen">
+                                        <img src="<?php echo $row['imagen']; ?>" alt="<?php echo $row['titulo']; ?>" class="teatro_item_imagen">
+                                    </div>
+                                    <p class="teatro_item_texto">
+                                        <?php echo $row['texto']; ?>
+                                    <br/>
+                                    <a href="<?php echo $row['link']; ?>" 
+                                    data-type="link" 
+                                    target="_blank"
+                                    class="teatro_link">
+                                    <?php echo $row['texto_link']; ?>
+                                    </a>
+                                    </p>
+                                </div>
+                                <?php
+                            }
+                        }
+                    ?>
             </div>
         </div>
     </section>

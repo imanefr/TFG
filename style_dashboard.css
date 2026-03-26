@@ -64,17 +64,6 @@
     transform: translateY(-2px);
 }
 
-
-
-
-
-
-
-
-
-
-
-
 /* ==========================================================================
     LOGIN - VERDE CON VAR()
  ==========================================================================*/
@@ -228,8 +217,20 @@
 .dashboard_inicio_cuadro_icono_erasmus { background: linear-gradient(135deg, #06B6D4, #0891B2); }
 .dashboard_inicio_cuadro_icono_documentos { background: linear-gradient(135deg, #F59E0B, #D97706); }
 .dashboard_inicio_cuadro_icono_departamentos { background: linear-gradient(135deg, #EC4899, #DB2777); }
-.dashboard_inicio_cuadro_icono_familias { background: linear-gradient(135deg, #10B981, #059669); }
 .dashboard_inicio_cuadro_icono_orientacion { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+.dashboard_inicio_cuadro_icono_familias { background: linear-gradient(135deg, #10B981, #059669); }
+.dashboard_inicio_cuadro_icono_bolsa_de_empleo { background: linear-gradient(135deg, #06B6D4, #0891B2); }
+.dashboard_inicio_cuadro_icono_teatro { background: linear-gradient(135deg, #EC4899, #DB2777); }
+.dashboard_inicio_cuadro_icono_plan_de_igualdad { background: linear-gradient(135deg, #F59E0B, #D97706); }
+.dashboard_inicio_cuadro_icono_matriculaciones { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+.dashboard_inicio_cuadro_icono_titulaciones { background: linear-gradient(135deg, #10B981, #059669); }
+.dashboard_inicio_cuadro_icono_otros_tramites { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+.dashboard_inicio_cuadro_icono_documentos_institucionales { background: linear-gradient(135deg, #F59E0B, #D97706); }
+.dashboard_inicio_cuadro_icono_blog { background: linear-gradient(135deg, #10B981, #059669); }
+.dashboard_inicio_cuadro_icono_organigrama { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+.dashboard_inicio_cuadro_icono_resultados_academicos { background: linear-gradient(135deg, #10B981, #059669); }
+.dashboard_inicio_cuadro_icono_convalidaciones { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+.dashboard_inicio_cuadro_icono_solicitud_titulos { background: linear-gradient(135deg, #10B981, #059669); }
 
 /* === BORDES SUPERIORES - COMPLETO === */
 .dashboard_inicio_cuadro_menu_inicio { border-top-color: #8B5CF6; }
@@ -239,8 +240,20 @@
 .dashboard_inicio_cuadro_menu_erasmus { border-top-color: #06B6D4; }
 .dashboard_inicio_cuadro_menu_documentos { border-top-color: #F59E0B; }
 .dashboard_inicio_cuadro_menu_departamentos { border-top-color: #EC4899; }
-.dashboard_inicio_cuadro_menu_familias { border-top-color: #10B981; }
 .dashboard_inicio_cuadro_menu_orientacion { border-top-color: #8B5CF6; }
+.dashboard_inicio_cuadro_menu_familias { border-top-color: #10B981; }
+.dashboard_inicio_cuadro_menu_bolsa_de_empleo { border-top-color: #06B6D4; }
+.dashboard_inicio_cuadro_menu_teatro { border-top-color: #EC4899; }
+.dashboard_inicio_cuadro_menu_plan_de_igualdad { border-top-color: #F59E0B; }
+.dashboard_inicio_cuadro_menu_matriculaciones { border-top-color: #3B82F6; }
+.dashboard_inicio_cuadro_menu_titulaciones { border-top-color: #10B981; }
+.dashboard_inicio_cuadro_menu_otros_tramites { border-top-color: #8B5CF6; }
+.dashboard_inicio_cuadro_menu_documentos_institucionales { border-top-color: #F59E0B; }
+.dashboard_inicio_cuadro_menu_blog { border-top-color: #10B981; }
+.dashboard_inicio_cuadro_menu_organigrama { border-top-color: #3B82F6; }
+.dashboard_inicio_cuadro_menu_resultados_academicos { border-top-color: #10B981; }
+.dashboard_inicio_cuadro_menu_convalidaciones { border-top-color: #8B5CF6; }
+.dashboard_inicio_cuadro_menu_solicitud_titulos { border-top-color: #10B981; }
 
 .dashboard_inicio_container {
     max-width: 1600px;
@@ -547,6 +560,7 @@
         padding: 1.5rem;
     }
 }
+
 /* ==========================================================================
    DASHBOARD AMPA - CSS COMPLETO (CORREGIDO)
  ==========================================================================*/
@@ -3931,5 +3945,523 @@ form[style="display: inline;"] {
 
     .dashboard_usuarios_titulo {
         font-size: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   DASHBOARD ORGANIGRAMA - CSS COMPLETO (CORREGIDO)
+ ==========================================================================*/
+
+/* VARIABLES CSS */
+:root {
+    --blanco: #ffffff;
+    --morado: #8b5cf6;
+    --morado-oscuro: #7c3aed;
+    --morado-claro: #c4b5fd;
+    --verde: #10b981;
+    --naranja: #f59e0b;
+    --azul: #3b82f6;
+    --rosa: #ec4899;
+    --gris: #6b7280;
+    --gris-oscuro: #374151;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.dashboard_organigrama_container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+/* HEADER (COMPARTIDO) */
+.dashboard_organigrama_header {
+    background: var(--blanco);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(59,130,246,0.1);
+    margin-bottom: 2rem;
+    text-align: center;
+    border: 1px solid #dbeafe;
+    position: relative;
+}
+
+.dashboard_organigrama_header_actions {
+    position: absolute;
+    top: 2.5rem;
+    left: 2rem;
+    z-index: 1000;
+}
+
+.dashboard_organigrama_btn_volver {
+    background: linear-gradient(135deg, var(--azul), #1d4ed8);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+}
+
+.dashboard_organigrama_btn_volver:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59,130,246,0.4);
+}
+
+.dashboard_organigrama_saludo {
+    background: linear-gradient(135deg, var(--azul), var(--morado));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.dashboard_organigrama_info_usuario {
+    background: linear-gradient(135deg, #bfdbfe, #93c5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* NO ADMIN */
+.dashboard_organigrama_no_admin {
+    text-align: center;
+    padding: 4rem;
+    background: var(--blanco);
+    border-radius: 20px;
+    color: var(--gris);
+    margin: 2rem 0;
+    border: 1px solid #dbeafe;
+}
+
+.dashboard_organigrama_no_admin i {
+    font-size: 4rem;
+    color: #bfdbfe;
+    margin-bottom: 1rem;
+}
+
+/* ALERTAS */
+.dashboard_organigrama_alert {
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.dashboard_organigrama_alert_success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+/* FORMULARIO */
+.dashboard_organigrama_seccion_form {
+    background: var(--blanco);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(59,130,246,0.08);
+    margin-bottom: 2rem;
+    border-top: 5px solid var(--azul);
+}
+
+.dashboard_organigrama_modo_edit {
+    background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+    border-top-color: var(--naranja) !important;
+}
+
+.dashboard_organigrama_form_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.dashboard_organigrama_form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dashboard_organigrama_form_label {
+    font-weight: 600;
+    color: var(--gris-oscuro);
+}
+
+.dashboard_organigrama_form_input,
+.dashboard_organigrama_form_textarea {
+    padding: 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: #f9fafb;
+}
+
+.dashboard_organigrama_form_input:focus,
+.dashboard_organigrama_form_textarea:focus {
+    outline: none;
+    border-color: var(--azul);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+/* INPUT FILE ESTILIZADO */
+.dashboard_organigrama_form_input[type="file"] {
+    padding: 0.75rem;
+    border: 2px dashed #bfdbfe;
+    background: linear-gradient(135deg, #f8fafc, #eff6ff);
+}
+
+.dashboard_organigrama_form_input[type="file"]:hover {
+    border-color: var(--azul);
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+}
+
+.dashboard_organigrama_imagen_actual {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #eff6ff;
+    border-radius: 10px;
+    border: 2px solid var(--azul);
+    text-align: center;
+}
+
+.dashboard_organigrama_imagen_actual img {
+    max-width: 150px;
+    max-height: 100px;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard_organigrama_form_textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+/* BOTONES FORMULARIO */
+.dashboard_organigrama_btn_group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    grid-column: 1 / -1;
+}
+
+.dashboard_organigrama_btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dashboard_organigrama_btn_primary {
+    background: linear-gradient(135deg, var(--azul), #1d4ed8);
+    color: white;
+}
+
+.dashboard_organigrama_btn_primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(59,130,246,0.3);
+}
+
+/* LISTA DE ENTRADAS */
+.dashboard_organigrama_lista {
+    margin-top: 2rem;
+}
+
+.dashboard_organigrama_seccion_card
+{
+    background: var(--blanco);
+    border-radius: 15px;
+    padding: 1rem;
+    box-shadow: 0 8px 25px rgba(139,92,246,0.08);
+    border-left: 5px solid var(--azul);
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.dashboard_organigrama_seccion_lista h2 {
+    margin-bottom: 1.5rem;
+}
+
+.dashboard_organigrama_entradas_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.dashboard_organigrama_entrada_card {
+    background: var(--blanco);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(59,130,246,0.08);
+    border-left: 5px solid var(--azul);
+    transition: all 0.3s ease;
+}
+
+.dashboard_organigrama_entrada_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(59,130,246,0.15);
+}
+
+.dashboard_organigrama_entrada_imagen {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.dashboard_organigrama_entrada_imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.dashboard_organigrama_entrada_imagen:hover img {
+    transform: scale(1.05);
+}
+
+.dashboard_organigrama_entrada_titulo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gris-oscuro);
+    margin-bottom: 0.5rem;
+}
+
+.dashboard_organigrama_entrada_fecha {
+    color: var(--gris);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.dashboard_organigrama_entrada_texto {
+    color: var(--gris-oscuro);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.dashboard_organigrama_entrada_enlaces {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+}
+
+.dashboard_organigrama_enlace_formulario {
+    color: var(--verde);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: rgba(16,185,129,0.1);
+    transition: all 0.3s;
+}
+
+.dashboard_organigrama_enlace_formulario:hover {
+    background: var(--verde);
+    color: white;
+    text-decoration: none;
+}
+
+.dashboard_organigrama_enlace_video {
+    background: linear-gradient(135deg, var(--rosa), #be185d);
+    color: white !important;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.3s;
+}
+
+.dashboard_organigrama_enlace_video:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(236,72,153,0.4);
+}
+
+/* BOTONES DE ACCIÓN - CORREGIDO ✅ */
+.dashboard_organigrama_acciones_botones {
+    margin-top: 1.5rem !important;
+    padding-top: 1.5rem !important;
+    border-top: 1px solid #e5e7eb !important;
+    display: flex !important;
+    gap: 1rem !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    width: 100% !important;
+    min-height: 60px !important;
+}
+
+.dashboard_organigrama_btn_small {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.95rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    transition: all 0.3s !important;
+    border: none !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    min-width: 90px !important;
+}
+
+.dashboard_organigrama_btn_editar {
+    background: linear-gradient(135deg, var(--naranja), #f97316);
+    color: white;
+}
+
+.dashboard_organigrama_btn_editar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(245,158,11,0.4);
+}
+
+.dashboard_organigrama_btn_delete {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.dashboard_organigrama_btn_delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(239,68,68,0.4);
+}
+
+/* ESTADO VACÍO */
+.dashboard_organigrama_vacio {
+    text-align: center;
+    padding: 3rem;
+    color: var(--gris);
+}
+
+.dashboard_organigrama_vacio i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: #bfdbfe;
+}
+
+/* Nuevas clases para sustituir inline styles */
+.dashboard_organigrama_img_preview {
+    max-width: 150px;
+    max-height: 100px;
+    border-radius: 8px;
+}
+.dashboard_organigrama_img_nombre {
+    font-size: 0.9rem;
+    color: var(--gris);
+}
+.dashboard_organigrama_form_hint {
+    color: var(--gris);
+}
+.dashboard_organigrama_form_group_text {
+    grid-column: 1 / -1;
+}
+.dashboard_organigrama_fecha_editor {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.dashboard_organigrama_no_admin_icono {
+    font-size: 4rem;
+    color: var(--morado-claro);
+    margin-bottom: 1rem;
+}
+
+/* Formularios inline de acciones */
+.dashboard_organigrama_activar_form,
+.dashboard_organigrama_eliminar_form {
+    display: inline;
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .dashboard_organigrama_container {
+        padding: 0.5rem;
+    }
+
+    .dashboard_organigrama_header_actions {
+        position: static;
+        margin-bottom: 1rem;
+    }
+
+    .dashboard_organigrama_header {
+        padding: 1.5rem;
+    }
+
+    .dashboard_organigrama_saludo {
+        font-size: 1.8rem;
+    }
+
+    .dashboard_organigrama_entradas_grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard_organigrama_btn_group,
+    .dashboard_organigrama_acciones_botones {
+        flex-direction: row !important;
+        justify-content: center !important;
+        gap: 0.75rem !important;
+    }
+
+    .dashboard_organigrama_btn_small {
+        width: 100% !important;
+        max-width: 120px !important;
+        justify-content: center !important;
+        padding: 0.6rem 1.2rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .dashboard_organigrama_entrada_imagen {
+        height: 150px;
+    }
+
+    .dashboard_organigrama_entrada_enlaces {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard_organigrama_saludo {
+        font-size: 1.5rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .dashboard_organigrama_seccion_form {
+        padding: 1.5rem;
+    }
+
+    .dashboard_organigrama_acciones_botones {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
     }
 }
