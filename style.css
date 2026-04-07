@@ -5282,7 +5282,7 @@ body {
     border-radius: 12px;
     box-shadow: var(--sombra-suave);
     background-color: var(--blanco);
-    border: 2px solid var(--verde-muy-claro);
+    border-left: 4px solid var(--verde-principal);
 }
 
 .plan_igualdad_titulo {

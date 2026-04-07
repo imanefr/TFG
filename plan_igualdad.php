@@ -51,9 +51,9 @@ include 'conexion.php';
                             <?php } ?>
                             <?php if($row['link'] != '') { ?>
                             <a href="<?php echo $row['link']; ?>" 
-                            data-type="link" 
-                            target="_blank"
-                            class="plan_igualdad_link">
+                            class="plan_igualdad_link"
+                            data-type="link"
+                            target="_blank">
                             <?php echo $row['texto_link']; ?>
                             </a>
                             <?php } ?>

@@ -87,7 +87,7 @@ $conexion->close();                                         // Cierra conexión 
                 <a href="noticias_relevantes.php?id=<?php echo $fila['id']; ?>" class="indice_pagina_tarjeta_noticia card-un-clic">
                     <img src="<?php echo $fila['imagen']; ?>" alt="<?php echo $fila['titulo']; ?>">
                     <p class="indice_pagina_fecha_noticia"><?php echo date("d/m/Y", strtotime($fila["fecha"])); ?></p>
-                    <p><?php echo $fila['titulo']; ?></p>
+                    <h4 class="indice_pagina_titulo_noticia"><?php echo htmlspecialchars($fila["titulo"]); ?></h4>
                 </a>
             <?php
                 }  // Fin while noticias

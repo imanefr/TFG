@@ -36,7 +36,7 @@ include("conexion.php");
                 <h2 class="documentacion_necesaria_titulo">DOCUMENTACIÓN NECESARIA PARA FORMALIZAR LA MATRÍCULA DE LOS ALUMNOS/AS DEL CENTRO.</h2>
                 <ul class="lista_documentacion_fp">
                         <?php 
-                            $sql = "SELECT * FROM matriculacion_fp ORDER BY fecha";
+                            $sql = "SELECT * FROM matriculacion_fp ORDER BY fecha_creacion";
                             $result = $conexion->query($sql);
                             if($result->num_rows > 0){
                                 while($row = $result->fetch_assoc())
