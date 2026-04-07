@@ -237,21 +237,27 @@ $actividad = !empty($actividades_doc) ? reset($actividades_doc) : null;
                     <?php endforeach; ?>
                 <?php else: ?>  <!-- FALLBACK DOCS FIJOS -->
                     <!-- PROYECTO EDUCATIVO PDF -->
-                    <div>
-                        <a href="https://site.educa.madrid.org/ies.laarboleda.alcorcon/wp-content/uploads/ies.laarboleda.alcorcon/2024/10/Proyecto-Educativo-del-Centro2425.pdf" class="info_familias_btn_documento" target="_blank" rel="noopener">
-                            <i class="fas fa-file-pdf"></i> Proyecto Educativo <i class="fas fa-download"></i>
+                    <div class="info_familias_documento_item">
+                        <a href="https://site.educa.madrid.org/ies.laarboleda.alcorcon/wp-content/uploads/ies.laarboleda.alcorcon/2024/10/Proyecto-Educativo-del-Centro2425.pdf" class="info_familias_btn_pdf" target="_blank" rel="noopener">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Proyecto Educativo</span>
+                            <i class="fas fa-download"></i>
                         </a>
                     </div>
                     <!-- NORMAS CONVIVENCIA PDF -->
-                    <div>
-                        <a href="https://site.educa.madrid.org/ies.laarboleda.alcorcon/wp-content/uploads/ies.laarboleda.alcorcon/2024/10/NORMAS-DE-CONVIVENCIA-IES-LA-ARBOLEDA.pdf" class="info_familias_btn_documento" target="_blank" rel="noopener">
-                            <i class="fas fa-file-pdf"></i> Normas de Convivencia <i class="fas fa-download"></i>
+                    <div class="info_familias_documento_item">
+                        <a href="https://site.educa.madrid.org/ies.laarboleda.alcorcon/wp-content/uploads/ies.laarboleda.alcorcon/2024/10/NORMAS-DE-CONVIVENCIA-IES-LA-ARBOLEDA.pdf" class="info_familias_btn_pdf" target="_blank" rel="noopener">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Normas de Convivencia</span>
+                            <i class="fas fa-download"></i>
                         </a>
                     </div>
                     <!-- RESULTADOS ACADÉMICOS - Enlace página -->
-                    <div>
-                        <a href="https://site.educa.madrid.org/ies.laarboleda.alcorcon/index.php/resultados-academicos/" class="info_familias_btn_documento" target="_blank">
-                            <i class="fas fa-chart-bar"></i> Resultados Académicos <i class="fas fa-external-link-alt"></i>
+                    <div class="info_familias_documento_item resultados">
+                        <a href="https://site.educa.madrid.org/ies.laarboleda.alcorcon/index.php/resultados-academicos/" class="info_familias_btn_pdf" target="_blank">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Resultados Académicos</span>
+                            <i class="fas fa-external-link-alt"></i>
                         </a>
                     </div>
                 <?php endif; ?>

@@ -318,7 +318,7 @@ if ($is_admin && isset($_GET['editar'])) {
             <!-- Botón universal para volver al dashboard anterior -->
             <form method="POST" action="dashboard_secretaria.php" class="dashboard_universal_volver">
                 <button type="submit" class="dashboard_universal_btn_volver">
-                    <i class="fas fa-arrow-left"></i> Volver
+                    <i class="fas fa-arrow-left"></i> Volver a Secretaría
                 </button>
             </form>
         </div>

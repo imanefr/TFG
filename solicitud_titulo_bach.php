@@ -40,14 +40,14 @@ include('conexion.php');
                     while($row = $result->fetch_assoc())
                     {
                         ?>
-                        <div class="titulo_eso_item">
-                            <h2 class="solicitud_titulo_eso_info_titulo"><?php echo $row['titulo']; ?></h2>
-                            <div class="titulo_eso_item_imagen">
+                        <div class="titulo_bachillerato_item">
+                            <h2 class="solicitud_titulo_bachillerato_info_titulo"><?php echo $row['titulo']; ?></h2>
+                            <div class="titulo_bachillerato_item_imagen">
                                 <?php if($row['imagen'] != '') { ?>
-                                <img src="<?php echo $row['imagen']; ?>" alt="<?php echo $row['titulo']; ?>" class="titulo_eso_item_imagen">
+                                <img src="<?php echo $row['imagen']; ?>" alt="<?php echo $row['titulo']; ?>" class="titulo_bachillerato_item_imagen">
                                 <?php } ?>
                             </div>
-                            <p class="solicitud_titulo_eso_texto">
+                            <p class="solicitud_titulo_bachillerato_texto">
                                 <?php echo $row['texto']; ?>
                             <br/>
                             <?php if($row['pdf'] != '') { ?>
@@ -57,7 +57,7 @@ include('conexion.php');
                             <a href="<?php echo $row['link']; ?>" 
                             data-type="link" 
                             target="_blank"
-                            class="titulo_eso_link">
+                            class="titulo_bachillerato_link">
                             <?php echo $row['texto_link']; ?>
                             </a>
                             <?php } ?>

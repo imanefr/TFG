@@ -33,8 +33,8 @@ include("conexion.php");
                 </p>
             </div>
             <div class="documentacion-necesaria-fp">
+                <h2 class="documentacion_necesaria_titulo">DOCUMENTACIÓN NECESARIA PARA FORMALIZAR LA MATRÍCULA DE LOS ALUMNOS/AS DEL CENTRO.</h2>
                 <ul class="lista_documentacion_fp">
-                    <li class="lista_documentacion_fp_item">
                         <?php 
                             $sql = "SELECT * FROM matriculacion_fp ORDER BY fecha";
                             $result = $conexion->query($sql);
@@ -43,23 +43,22 @@ include("conexion.php");
                                 {
                                     ?>
                                     <li class="lista_documentacion_fp_item">
-                                    <h2 class="lista_documentacion_fp_item_titulo"><?php echo $row['titulo']; ?></h2>
-                                    <p class="lista_documentacion_fp_item_texto">
-                                        <?php echo $row['descripcion']; ?>
-                                        <br/>
-                                        <a href="<?php echo $row['enlace']; ?>" 
-                                        data-type="link" 
-                                        target="_blank"
-                                        class="matriculacion_fp_link">
-                                        <?php echo $row['titulo']; ?>
-                                        </a>
-                                    </p>
+                                        <h2 class="lista_documentacion_fp_item_titulo"><?php echo $row['titulo']; ?></h2>
+                                        <p class="lista_documentacion_fp_item_texto">
+                                            <?php echo $row['descripcion']; ?>
+                                            <br/>
+                                            <a href="<?php echo $row['enlace']; ?>" 
+                                            data-type="link" 
+                                            target="_blank"
+                                            class="matriculacion_fp_link">
+                                            <?php echo $row['titulo']; ?>
+                                            </a>
+                                        </p>
                                     </li>
                                     <?php
                                 }
                             }
                         ?>
-                    </li>
                 </ul>
         </div>
     </section>

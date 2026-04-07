@@ -40,7 +40,7 @@ $submenus_secretaria = [
     // OTROS - Trámites varios (EN DESARROLLO)
     ['enlace' => 'otros_tramites.php', 'titulo' => 'Otros trámites', 'icono' => 'fa-folder-open', 
      'descripcion' => 'Gestión de otros procedimientos administrativos', 
-     'dashboard' => '#'],
+     'dashboard' => 'dashboard_otros_tramites.php'],
     
     // CONTACTO - Datos secretaría
     ['enlace' => 'contacto_secretaria.php', 'titulo' => 'Contacto', 'icono' => 'fa-envelope-open-text', 

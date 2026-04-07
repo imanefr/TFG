@@ -7,6 +7,9 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
+$titulo_dashboard = "Gestión de Matriculación";
+$is_admin = ($_SESSION['usuario_rol'] === 'admin');
+
 // ✅ MANEJAR ELIMINAR
 if (isset($_GET['eliminar'])) {
     $id = intval($_GET['eliminar']);
@@ -36,7 +39,7 @@ if (isset($_GET['editar'])) {
     $id = intval($_GET['editar']);
     
     // Buscar en ESO
-    $sql = "SELECT 'ESO' as etapa, id, titulo, descripcion, ruta_pdf, fecha FROM matriculacion_eso WHERE id = ?";
+    $sql = "SELECT 'ESO' as etapa, id, titulo, descripcion, ruta_pdf, fecha_creacion FROM matriculacion_eso WHERE id = ?";
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -45,7 +48,7 @@ if (isset($_GET['editar'])) {
         $matricula_editar = $row;
     } else {
         // Buscar en Bachillerato
-        $sql = "SELECT 'Bachillerato' as etapa, id, titulo, descripcion, ruta_pdf, fecha FROM matriculacion_bachillerato WHERE id = ?";
+        $sql = "SELECT 'Bachillerato' as etapa, id, titulo, descripcion, ruta_pdf, fecha_creacion FROM matriculacion_bachillerato WHERE id = ?";
         $stmt = $conexion->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -54,7 +57,7 @@ if (isset($_GET['editar'])) {
             $matricula_editar = $row;
         } else {
             // Buscar en FP
-            $sql = "SELECT 'FP' as etapa, id, titulo, descripcion, ruta_pdf, fecha FROM matriculacion_fp WHERE id = ?";
+            $sql = "SELECT 'FP' as etapa, id, titulo, descripcion, ruta_pdf, fecha_creacion FROM matriculacion_fp WHERE id = ?";
             $stmt = $conexion->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();
@@ -76,15 +79,15 @@ unset($_SESSION['mensaje_ok'], $_SESSION['mensaje_error']);
 function obtenerMatriculas($conexion) {
     $matriculas = [];
     
-    $sql_eso = "SELECT 'ESO' AS etapa, id, titulo, descripcion, ruta_pdf, fecha FROM matriculacion_eso WHERE activo = 1 ORDER BY fecha DESC";
+    $sql_eso = "SELECT 'ESO' AS etapa, id, titulo, descripcion, ruta_pdf, fecha_creacion FROM matriculacion_eso WHERE activo = 1 ORDER BY fecha_creacion DESC";
     $result_eso = $conexion->query($sql_eso);
     if ($result_eso) while ($row = $result_eso->fetch_assoc()) $matriculas[] = $row;
     
-    $sql_bach = "SELECT 'Bachillerato' AS etapa, id, titulo, descripcion, ruta_pdf, fecha FROM matriculacion_bachillerato WHERE activo = 1 ORDER BY fecha DESC";
+    $sql_bach = "SELECT 'Bachillerato' AS etapa, id, titulo, descripcion, ruta_pdf, fecha_creacion FROM matriculacion_bachillerato WHERE activo = 1 ORDER BY fecha_creacion DESC";
     $result_bach = $conexion->query($sql_bach);
     if ($result_bach) while ($row = $result_bach->fetch_assoc()) $matriculas[] = $row;
     
-    $sql_fp = "SELECT 'FP' AS etapa, id, titulo, descripcion, ruta_pdf, fecha FROM matriculacion_fp WHERE activo = 1 ORDER BY fecha DESC";
+    $sql_fp = "SELECT 'FP' AS etapa, id, titulo, descripcion, ruta_pdf, fecha_creacion FROM matriculacion_fp WHERE activo = 1 ORDER BY fecha_creacion DESC";
     $result_fp = $conexion->query($sql_fp);
     if ($result_fp) while ($row = $result_fp->fetch_assoc()) $matriculas[] = $row;
     
@@ -100,170 +103,140 @@ $conexion->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión Matriculación - Admin</title>
+    <title>Gestión Matriculación - Dashboard Admin</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --morado: #8B5CF6; --morado-oscuro: #7C3AED; --morado-claro: #C4B5FD;
-            --blanco: #FFFFFF; --gris: #6B7280; --gris-oscuro: #1F2937;
-            --verde: #10B981; --rojo: #EF4444; --naranja: #F59E0B;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, sans-serif; background: linear-gradient(135deg, #F8FAFC, #EDE9FE); padding: 2rem; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .btn-volver { background: linear-gradient(135deg, var(--morado-oscuro), var(--morado)); color: white; padding: 0.8rem 1.5rem; border-radius: 10px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139,92,246,0.3); margin-bottom: 2rem; display: block; }
-        .btn-volver:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139,92,246,0.4); }
-        .header { background: var(--blanco); padding: 2.5rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(139,92,246,0.1); margin-bottom: 2rem; text-align: center; border: 1px solid var(--morado-claro); }
-        .titulo-principal { background: linear-gradient(135deg, var(--morado), var(--morado-oscuro)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
-        
-        .form-section { background: var(--blanco); border-radius: 20px; padding: 2.5rem; box-shadow: 0 10px 30px rgba(139,92,246,0.08); margin-bottom: 2rem; border-top: 5px solid var(--verde); }
-        .form-section.editando { border-top-color: var(--morado); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        label { font-weight: 600; color: var(--gris-oscuro); }
-        input, select, textarea { padding: 1rem; border: 2px solid #E5E7EB; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--morado); box-shadow: 0 0 0 3px rgba(139,92,246,0.1); }
-        textarea { resize: vertical; min-height: 120px; }
-        .btn-guardar { background: linear-gradient(135deg, var(--verde), #059669); color: white; border: none; padding: 1.2rem 3rem; border-radius: 15px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
-        .btn-cancelar { background: #6B7280; color: white; border: none; padding: 1rem 2rem; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
-        .btn-guardar:hover, .btn-cancelar:hover { transform: translateY(-2px); }
-        
-        .lista-section { background: var(--blanco); border-radius: 20px; padding: 2.5rem; box-shadow: 0 10px 30px rgba(139,92,246,0.08); }
-        .lista-matriculas { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
-        .matricula-card { background: #F8FAFC; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: all 0.3s ease; border-left: 4px solid var(--verde); }
-        .matricula-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-        .etapa-tag { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: white; margin-bottom: 1rem; }
-        .etapa-eso { background: var(--rojo); }
-        .etapa-bachillerato { background: var(--naranja); }
-        .etapa-fp { background: var(--verde); }
-        .fecha { color: var(--gris); font-size: 0.9rem; margin-bottom: 0.5rem; }
-        .titulo-matricula { font-size: 1.2rem; font-weight: 700; color: var(--gris-oscuro); margin-bottom: 0.8rem; }
-        .descripcion { color: var(--gris); margin-bottom: 1rem; line-height: 1.5; }
-        .acciones { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .btn-accion { color: white; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.3rem; transition: all 0.3s ease; font-weight: 600; }
-        .btn-editar { background: var(--morado); }
-        .btn-eliminar { background: var(--rojo); }
-        .btn-accion:hover { transform: translateY(-2px); }
-        
-        .mensaje { padding: 1rem 2rem; border-radius: 12px; margin-bottom: 2rem; font-weight: 600; }
-        .mensaje-ok { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
-        .mensaje-error { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
-        
-        @media (max-width: 768px) { 
-            .form-grid { grid-template-columns: 1fr; } 
-            .lista-matriculas { grid-template-columns: 1fr; }
-            .acciones { flex-direction: column; }
-        }
-    </style>
+    <link rel="stylesheet" href="style_dashboard.css">
 </head>
 <body>
-    <div class="container">
-        <a href="dashboard_secretaria.php" class="btn-volver">
-            <i class="fas fa-arrow-left"></i> Volver Secretaría
-        </a>
-        
-        <div class="header">
-            <h1 class="titulo-principal">
-                <i class="fas fa-file-signature"></i> Gestión Matriculación
-            </h1>
-        </div>
+    <div class="dashboard_matricula_container">
+        <!-- HEADER -->
+        <?php include 'dashboard_head.php'; ?>
 
-        <?php if ($mensaje_ok): ?>
-            <div class="mensaje mensaje-ok">
-                <i class="fas fa-check-circle"></i> <?= htmlspecialchars($mensaje_ok) ?>
+        <?php if (!$is_admin): ?>
+            <div class="dashboard_matricula_no_admin">
+                <i class="fas fa-lock dashboard_inicio_no_admin_icono"></i>
+                <h2>Solo administradores pueden gestionar la matriculación</h2>
             </div>
-        <?php endif; ?>
+        <?php else: ?>
 
-        <?php if ($mensaje_error): ?>
-            <div class="mensaje mensaje-error">
-                <i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($mensaje_error) ?>
-            </div>
-        <?php endif; ?>
+            <?php if ($mensaje_ok): ?>
+                <div class="dashboard_avisos_alert dashboard_avisos_alert_success">
+                    <i class="fas fa-check-circle"></i> <?= htmlspecialchars($mensaje_ok) ?>
+                </div>
+            <?php endif; ?>
 
-        <!-- FORMULARIO -->
-        <section class="form-section <?= $matricula_editar ? 'editando' : '' ?>">
-            <h2 style="color: var(--gris-oscuro); margin-bottom: 2rem;">
-                <i class="fas fa-<?= $matricula_editar ? 'edit' : 'plus-circle' ?>"></i> 
-                <?= $matricula_editar ? 'Editando: ' . htmlspecialchars($matricula_editar['titulo']) : 'Nueva Matrícula' ?>
-            </h2>
-            <form action="procesar_matricula.php" method="POST">
-                <input type="hidden" name="id" value="<?= $matricula_editar['id'] ?? '' ?>">
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Etapa Educativa *</label>
-                        <select name="etapa" required>
+            <?php if ($mensaje_error): ?>
+                <div class="dashboard_avisos_alert dashboard_avisos_alert_error">
+                    <i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($mensaje_error) ?>
+                </div>
+            <?php endif; ?>
+
+            <!-- FORMULARIO -->
+            <div class="dashboard_matricula_seccion_form <?= $matricula_editar ? 'dashboard_matricula_modo_edit' : '' ?>">
+                <h2 style="color: var(--gris-oscuro); margin-bottom: 2rem;">
+                    <i class="fas fa-<?= $matricula_editar ? 'edit' : 'plus-circle' ?>"></i> 
+                    <?= $matricula_editar ? 'Editar Matrícula: ' . htmlspecialchars($matricula_editar['titulo']) : 'Añadir Nueva Matrícula' ?>
+                </h2>
+                <form action="procesar_matricula.php" method="POST" class="dashboard_matricula_form_grid">
+                    <input type="hidden" name="id" value="<?= $matricula_editar['id'] ?? '' ?>">
+                    <input type="hidden" name="accion" value="<?= $matricula_editar ? 'editar' : 'nueva' ?>">
+                    
+                    <div class="dashboard_matricula_form_group">
+                        <label class="dashboard_matricula_form_label">Etapa Educativa *</label>
+                        <select name="etapa" class="dashboard_matricula_form_select" required>
                             <option value="">-- Selecciona etapa --</option>
                             <option value="eso" <?= ($matricula_editar && $matricula_editar['etapa']=='ESO') ? 'selected' : '' ?>>ESO</option>
                             <option value="bachillerato" <?= ($matricula_editar && $matricula_editar['etapa']=='Bachillerato') ? 'selected' : '' ?>>Bachillerato</option>
                             <option value="fp" <?= ($matricula_editar && $matricula_editar['etapa']=='FP') ? 'selected' : '' ?>>FP</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Título *</label>
-                        <input type="text" name="titulo" value="<?= htmlspecialchars($matricula_editar['titulo'] ?? '') ?>" required>
+                    <div class="dashboard_matricula_form_group">
+                        <label class="dashboard_matricula_form_label">Título de la Matrícula *</label>
+                        <input type="text" name="titulo" class="dashboard_matricula_form_input" 
+                               value="<?= htmlspecialchars($matricula_editar['titulo'] ?? '') ?>" 
+                               placeholder="Ej: Instrucciones Matrícula ESO 2025" required>
                     </div>
-                    <div class="form-group">
-                        <label>Fecha *</label>
-                        <input type="date" name="fecha" value="<?= $matricula_editar['fecha'] ?? '' ?>" required>
+                    <div class="dashboard_matricula_form_group">
+                        <label class="dashboard_matricula_form_label">Fecha de Publicación *</label>
+                        <input type="date" name="fecha" class="dashboard_matricula_form_input" 
+                               value="<?= $matricula_editar['fecha_creacion'] ?? date('Y-m-d') ?>" required>
                     </div>
-                    <div class="form-group">
-                        <label>Ruta PDF *</label>
-                        <input type="text" name="ruta_pdf" value="<?= htmlspecialchars($matricula_editar['ruta_pdf'] ?? '') ?>" required>
+                    <div class="dashboard_matricula_form_group">
+                        <label class="dashboard_matricula_form_label">Ruta al PDF (URL/Carpeta) *</label>
+                        <input type="text" name="ruta_pdf" class="dashboard_matricula_form_input" 
+                               value="<?= htmlspecialchars($matricula_editar['ruta_pdf'] ?? '') ?>" 
+                               placeholder="pdfs/matricula_eso.pdf" required>
                     </div>
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label>Descripción *</label>
-                        <textarea name="descripcion" required><?= htmlspecialchars($matricula_editar['descripcion'] ?? '') ?></textarea>
+                    <div class="dashboard_matricula_form_group" style="grid-column: 1 / -1;">
+                        <label class="dashboard_matricula_form_label">Descripción / Observaciones *</label>
+                        <textarea name="descripcion" class="dashboard_matricula_form_textarea" 
+                                  placeholder="Escribe aquí los detalles del proceso..." required><?= htmlspecialchars($matricula_editar['descripcion'] ?? '') ?></textarea>
                     </div>
-                </div>
-                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
-                    <button type="submit" name="guardar" class="btn-guardar">
-                        <i class="fas fa-save"></i> <?= $matricula_editar ? 'Actualizar' : 'Añadir' ?> Matrícula
-                    </button>
-                    <?php if ($matricula_editar): ?>
-                        <a href="dashboard_matricula.php" class="btn-cancelar">
-                            <i class="fas fa-times"></i> Cancelar
-                        </a>
-                    <?php endif; ?>
-                </div>
-            </form>
-        </section>
 
-        <!-- LISTA MATRÍCULAS -->
-        <section class="lista-section">
-            <h2 style="color: var(--gris-oscuro); margin-bottom: 1.5rem;">
-                <i class="fas fa-list"></i> Matrículas Publicadas (<?= count($matriculas) ?>)
-            </h2>
-            <?php if (empty($matriculas)): ?>
-                <p style="text-align: center; color: var(--gris); padding: 2rem;">No hay matrículas publicadas aún.</p>
-            <?php else: ?>
-                <div class="lista-matriculas">
-                    <?php foreach ($matriculas as $matricula): ?>
-                        <div class="matricula-card">
-                            <span class="etapa-tag etapa-<?= strtolower(str_replace(' ', '-', $matricula['etapa'])) ?>">
-                                <?= htmlspecialchars($matricula['etapa']) ?>
-                            </span>
-                            <div class="fecha">
-                                <i class="fas fa-calendar"></i> <?= date('d/m/Y', strtotime($matricula['fecha'])) ?>
+                    <div class="dashboard_matricula_btn_group">
+                        <button type="submit" name="guardar" class="dashboard_matricula_btn dashboard_matricula_btn_primary">
+                            <i class="fas fa-save"></i> <?= $matricula_editar ? 'Actualizar Cambios' : 'Publicar Matrícula' ?>
+                        </button>
+                        <?php if ($matricula_editar): ?>
+                            <a href="dashboard_matricula.php" class="dashboard_matricula_btn dashboard_matricula_btn_secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
+
+            <!-- LISTA MATRÍCULAS -->
+            <div class="dashboard_matricula_seccion_lista">
+                <h2>
+                    <i class="fas fa-list"></i> Matrículas Publicadas (<?= count($matriculas) ?>)
+                </h2>
+                <?php if (empty($matriculas)): ?>
+                    <div class="dashboard_erasmus_vacio">
+                        <i class="fas fa-file-signature"></i>
+                        <h3>No hay matrículas publicadas aún.</h3>
+                        <p>Utiliza el formulario de arriba para añadir el primer trámite.</p>
+                    </div>
+                <?php else: ?>
+                    <div class="dashboard_matricula_grid">
+                        <?php foreach ($matriculas as $matricula): ?>
+                            <div class="dashboard_matricula_card">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                    <span class="dashboard_matricula_tag tag_<?= strtolower(str_replace(' ', '-', $matricula['etapa'])) ?>">
+                                        <?= htmlspecialchars($matricula['etapa']) ?>
+                                    </span>
+                                    <div class="dashboard_matricula_card_fecha">
+                                        <i class="fas fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($matricula['fecha_creacion'])) ?>
+                                    </div>
+                                </div>
+                                <h4 class="dashboard_matricula_card_titulo"><?= htmlspecialchars($matricula['titulo']) ?></h4>
+                                <p class="dashboard_matricula_card_desc"><?= htmlspecialchars(substr($matricula['descripcion'], 0, 120)) ?>...</p>
+                                
+                                <div class="dashboard_matricula_acciones">
+                                    <a href="?editar=<?= $matricula['id'] ?>" class="dashboard_matricula_btn_small btn_edit">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <a href="?eliminar=<?= $matricula['id'] ?>&etapa=<?= urlencode($matricula['etapa']) ?>" 
+                                       class="dashboard_matricula_btn_small btn_delete" 
+                                       onclick="return confirm('¿Seguro que quieres eliminar esta publicación?')">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </a>
+                                </div>
                             </div>
-                            <h4 class="titulo-matricula"><?= htmlspecialchars($matricula['titulo']) ?></h4>
-                            <p class="descripcion"><?= htmlspecialchars(substr($matricula['descripcion'], 0, 100)) ?>...</p>
-                            <div class="acciones">
-                                <a href="?editar=<?= $matricula['id'] ?>" class="btn-accion btn-editar" title="Editar">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
-                                <a href="?eliminar=<?= $matricula['id'] ?>&etapa=<?= urlencode($matricula['etapa']) ?>" 
-                                   class="btn-accion btn-eliminar" 
-                                   onclick="return confirm('¿Eliminar?\n<?= htmlspecialchars($matricula['titulo']) ?>')" 
-                                   title="Eliminar">
-                                    <i class="fas fa-trash"></i> Eliminar
-                                </a>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </section>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="dashboard_secretaria.php" class="dashboard_universal_volver">
+            <button type="submit" class="dashboard_universal_btn_volver">
+                <i class="fas fa-arrow-left"></i> Volver a Secretaría
+            </button>
+        </form>
     </div>
+</body>
+</html>
+>
 </body>
 </html>

@@ -74,32 +74,34 @@ $conexion->close();                                         // Cierra conexión 
     
     <section class="indice_pagina_contenedor_principal">
         <!-- TÍTULO RELEVANTE -->
-        <h2 class="indice_pagina_titulo_atajo">RELEVANTE AHORA</h2>
-        <div class="indice_pagina_grid_noticias">                <!-- Grid noticias fijas -->
-            <!-- 4 TARJETAS FIJAS  -->
-            <a href="#" class="indice_pagina_tarjeta_noticia card-un-clic">
-                <img src="img/libros_texto.jpg" alt="Libros de texto">
-                <p>Libros de texto 2025‑26</p>
-            </a>
-            <a href="#" class="indice_pagina_tarjeta_noticia card-un-clic">
-                <img src="img/matriculacion.jpg" alt="Matriculación">
-                <p>Matriculación 2024‑25</p>
-            </a>
-            <a href="#" class="indice_pagina_tarjeta_noticia card-un-clic">
-                <img src="img/becas.jpg" alt="Becas y ayudas">
-                <p>Becas y ayudas</p>
-            </a>
-            <a href="#" class="indice_pagina_tarjeta_noticia card-un-clic">
-                <img src="img/calendario.jpg" alt="Calendario escolar">
-                <p>Calendario escolar 2025‑2026</p>
-            </a>
+         <a href="noticias_relevantes.php" class="indice_relevante_ahora_link">
+            <h2 class="indice_pagina_titulo_atajo">RELEVANTE AHORA</h2>
+         </a>
+        <div class="indice_pagina_grid_noticias"> <!-- Grid noticias fijas -->
+            <?php
+                $sql = "SELECT * FROM noticias WHERE destacada = 1 ORDER BY fecha DESC LIMIT 3";
+                $resultado = $conexion->query($sql);
+                if ($resultado && $resultado->num_rows > 0) {
+                    while ($fila = $resultado->fetch_assoc()) {
+            ?>
+                <a href="noticias_relevantes.php?id=<?php echo $fila['id']; ?>" class="indice_pagina_tarjeta_noticia card-un-clic">
+                    <img src="<?php echo $fila['imagen']; ?>" alt="<?php echo $fila['titulo']; ?>">
+                    <p class="indice_pagina_fecha_noticia"><?php echo date("d/m/Y", strtotime($fila["fecha"])); ?></p>
+                    <p><?php echo $fila['titulo']; ?></p>
+                </a>
+            <?php
+                }  // Fin while noticias
+            }  // Fin if noticias
+            ?>
         </div>
 
         <!-- ÚLTIMAS NOTICIAS - Dinámicas desde BD -->
-        <h2 class="indice_pagina_titulo_atajo" style="margin-top:3rem;">ÚLTIMAS NOTICIAS</h2>
+         <a href="ultimas_noticias.php" class="indice_relevante_ahora_link">
+            <h2 class="indice_pagina_titulo_atajo">ÚLTIMAS NOTICIAS</h2>
+         </a>
         <div class="indice_pagina_grid_noticias">
             <?php
-            $sql = "SELECT * FROM noticias ORDER BY fecha DESC LIMIT 5";  // Últimas 5 noticias
+            $sql = "SELECT * FROM noticias ORDER BY fecha DESC LIMIT 6";  // Últimas 5 noticias
             $resultado = $conexion->query($sql);                         // Ejecuta consulta
             if ($resultado && $resultado->num_rows > 0) {                // Si hay resultados
                 while ($fila = $resultado->fetch_assoc()) {              // Itera cada noticia

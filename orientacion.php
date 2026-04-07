@@ -29,7 +29,7 @@
             tanto si has obtenido la titulación como si no la has
             conseguido.
         </p>
-        <div class="orientacion-info">
+        <div class="orientacion_info">
             <div class="orientacion_info_seccion">
                 <h3 class="orientacion_seccion_titulo">¿Qué puedo hacer después de la ESO?</h3>
                 <p class="orientacion_parrafo">Si has aprobado la ESO, hay varias opciones que puedes escoger:</p>
@@ -40,7 +40,7 @@
                     if ($result->num_rows > 0) {
                         while($row = $result->fetch_assoc()) {
                         ?>
-                            <li>
+                            <li class="orientacion_lista_item">
                                 <h4 class="orientacion_seccion_titulo_lista"><?php echo $row['titulo']; ?></h4>
                                 <p class="orientacion_parrafo_lista">
                                 <?php echo $row['texto']; ?>

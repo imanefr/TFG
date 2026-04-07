@@ -35,7 +35,6 @@ include("conexion.php");
             <div class="documentacion-necesaria-bachillerato">
                 <h2 class="documentacion_necesaria_titulo">DOCUMENTACIÓN NECESARIA PARA FORMALIZAR LA MATRÍCULA DE LOS ALUMNOS/AS DEL CENTRO.</h2>
                 <ul class="lista_documentacion_bachillerato">
-                    <li class="lista_documentacion_bachillerato_item">
                         <?php 
                             $sql = "SELECT * FROM matriculacion_bachillerato ORDER BY fecha_creacion";
                             $result = $conexion->query($sql);
@@ -60,8 +59,6 @@ include("conexion.php");
                                 }
                             }
                         ?>
-                        </ul>
-                    </li>
                 </ul>
             </div>
         </div>

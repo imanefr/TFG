@@ -280,6 +280,7 @@
 .dashboard_inicio_saludo {
     background: linear-gradient(135deg, var(--morado), var(--morado-oscuro));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 2.2rem;
     font-weight: 800;
@@ -630,6 +631,7 @@
 .dashboard_ampa_saludo {
     background: linear-gradient(135deg, var(--azul), var(--morado));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 2.5rem;
     font-weight: 800;
@@ -644,6 +646,7 @@
 .dashboard_ampa_info_usuario {
     background: linear-gradient(135deg, #bfdbfe, #93c5fd);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 1.1rem;
     font-weight: 600;
@@ -1133,6 +1136,7 @@
 .dashboard_nuestro_centro_saludo {
     background: linear-gradient(135deg, var(--morado), var(--morado-oscuro));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 2.5rem;
     font-weight: 800;
@@ -1147,6 +1151,7 @@
 .dashboard_nuestro_centro_info_usuario {
     background: var(--morado-claro);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 1.1rem;
     font-weight: 600;
@@ -1388,6 +1393,7 @@
 .dashboard_avisos_saludo {
     background: linear-gradient(135deg, var(--morado), var(--morado-oscuro));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 2.5rem;
     font-weight: 800;
@@ -1402,6 +1408,7 @@
 .dashboard_avisos_info_usuario {
     background: var(--morado-claro);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 1.1rem;
     font-weight: 600;
@@ -1741,6 +1748,7 @@
 .dashboard_erasmus_saludo {
     background: linear-gradient(135deg, var(--morado), var(--morado-oscuro));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 2.5rem;
     font-weight: 800;
@@ -1755,6 +1763,7 @@
 .dashboard_erasmus_info_usuario {
     background: var(--morado-claro);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 1.1rem;
     font-weight: 600;
@@ -2139,47 +2148,164 @@ form[style="display: inline;"] {
   display: inline;
 }
 
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .dashboard_erasmus_header_actions {
-        left: 1rem;
-        top: 1rem;
-    }
-    .dashboard_erasmus_form_grid,
-    .dashboard_erasmus_noticias_grid {
-        grid-template-columns: 1fr;
-    }
-    .dashboard_erasmus_btn_group,
-    .dashboard_erasmus_acciones_botones {
-        flex-direction: column;
-        align-items: center;
-    }
-    .dashboard_erasmus_btn_small {
-        width: 100%;
-        max-width: 250px;
-        justify-content: center;
-    }
-    .dashboard_erasmus_container {
-        padding: 1rem;
-    }
-    .dashboard_erasmus_noticia_medios {
-        justify-content: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .dashboard_erasmus_saludo {
-        font-size: 2rem;
-    }
-    .dashboard_erasmus_noticia_imagen {
-        height: 150px;
-    }
-}
-
 /* ==========================================================================
-   DASHBOARD SECRETARÍA - CSS COMPLETO
+   DASHBOARD MATRICULACIÓN - ESTILO SECRETARÍA (VERDE)
  ==========================================================================*/
+
+.dashboard_matricula_container {
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: var(--fuente-base);
+    background: linear-gradient(135deg, #F8FAFC, #ECFDF5);
+    min-height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.dashboard_matricula_seccion_form {
+    background: var(--blanco);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(16,185,129,0.08);
+    margin-bottom: 2rem;
+    border-top: 6px solid var(--verde-principal);
+}
+
+.dashboard_matricula_seccion_form.dashboard_matricula_modo_edit {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border-top-color: var(--naranja);
+}
+
+.dashboard_matricula_form_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.dashboard_matricula_form_group {
+    display: flex; flex-direction: column; gap: 0.5rem;
+}
+
+.dashboard_matricula_form_label {
+    font-weight: 700; color: var(--gris-oscuro); font-size: 0.95rem;
+}
+
+.dashboard_matricula_form_input,
+.dashboard_matricula_form_select,
+.dashboard_matricula_form_textarea {
+    padding: 1rem;
+    border: 2px solid var(--gris-suave);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: #f9fafb;
+    box-sizing: border-box;
+}
+
+.dashboard_matricula_form_textarea {
+    min-height: 120px; resize: vertical;
+}
+
+.dashboard_matricula_form_input:focus,
+.dashboard_matricula_form_select:focus,
+.dashboard_matricula_form_textarea:focus {
+    outline: none; border-color: var(--verde-principal);
+    box-shadow: 0 0 0 4px rgba(19, 139, 60, 0.1);
+    background: var(--blanco);
+}
+
+.dashboard_matricula_btn_group {
+    grid-column: 1 / -1;
+    display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;
+}
+
+.dashboard_matricula_btn {
+    padding: 1rem 2.5rem; border: none; border-radius: 12px;
+    font-weight: 700; cursor: pointer; transition: all 0.3s;
+    display: inline-flex; align-items: center; gap: 0.7rem; font-size: 1rem;
+}
+
+.dashboard_matricula_btn_primary {
+    background: linear-gradient(135deg, var(--verde-principal), var(--verde-oscuro));
+    color: white; box-shadow: 0 4px 15px rgba(19, 139, 60, 0.3);
+}
+
+.dashboard_matricula_btn_secondary {
+    background: var(--gris-medio); color: white;
+}
+
+.dashboard_matricula_btn:hover {
+    transform: translateY(-2px); box-shadow: var(--sombra-fuerte);
+}
+
+/* LISTADO */
+.dashboard_matricula_seccion_lista h2 {
+    margin-bottom: 2rem; color: var(--gris-oscuro); display: flex; align-items: center; gap: 0.8rem;
+}
+
+.dashboard_matricula_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.dashboard_matricula_card {
+    background: var(--blanco);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--sombra-suave);
+    border-left: 5px solid var(--verde-principal);
+    transition: all 0.3s ease;
+    display: flex; flex-direction: column; gap: 0.8rem;
+    box-sizing: border-box;
+}
+
+.dashboard_matricula_card:hover {
+    transform: translateY(-5px); box-shadow: var(--sombra-fuerte);
+}
+
+.dashboard_matricula_tag {
+    display: inline-block; padding: 0.4rem 1rem; border-radius: 20px;
+    font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: white;
+}
+
+.tag_eso { background: #EF4444; }
+.tag_bachillerato { background: #F59E0B; }
+.tag_fp { background: #10B981; }
+
+.dashboard_matricula_card_titulo {
+    font-size: 1.25rem; font-weight: 700; color: var(--gris-oscuro); line-height: 1.3;
+}
+
+.dashboard_matricula_card_desc {
+    font-size: 0.95rem; color: var(--gris-medio); line-height: 1.5;
+}
+
+.dashboard_matricula_card_fecha {
+    font-size: 0.85rem; color: var(--gris); font-weight: 600;
+}
+
+.dashboard_matricula_acciones {
+    margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--gris-suave);
+    display: flex; gap: 0.8rem;
+}
+
+.dashboard_matricula_btn_small {
+    padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600;
+    text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem;
+}
+
+.btn_edit { background: rgba(139, 92, 246, 0.1); color: var(--morado); }
+.btn_delete { background: rgba(239, 68, 68, 0.1); color: #DC2626; }
+
+.btn_edit:hover { background: var(--morado); color: white; }
+.btn_delete:hover { background: #DC2626; color: white; }
+
+/* REUSABLE NO-ADMIN */
+.dashboard_matricula_no_admin {
+    text-align: center; padding: 5rem 2rem; background: var(--blanco);
+    border-radius: 20px; box-shadow: var(--sombra-suave); border: 1px solid var(--gris-suave);
+}
 
 :root {
     --morado: #8B5CF6;
@@ -2284,6 +2410,7 @@ form[style="display: inline;"] {
 .dashboard_secretaria_saludo {
     background: linear-gradient(135deg, var(--morado), var(--morado-oscuro));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 2.5rem;
     font-weight: 800;
@@ -2298,6 +2425,7 @@ form[style="display: inline;"] {
 .dashboard_secretaria_info_usuario {
     background: var(--morado-claro);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 1.1rem;
     font-weight: 600;
@@ -2570,6 +2698,7 @@ form[style="display: inline;"] {
 .dashboard_avisos_saludo {
     background: linear-gradient(135deg, var(--azul), var(--morado));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 2.5rem;
     font-weight: 800;
@@ -2584,6 +2713,7 @@ form[style="display: inline;"] {
 .dashboard_avisos_info_usuario {
     background: linear-gradient(135deg, #bfdbfe, #93c5fd);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 1.1rem;
     font-weight: 600;
@@ -3041,6 +3171,7 @@ form[style="display: inline;"] {
 .dashboard_ampa_saludo {
     background: linear-gradient(135deg, var(--morado), var(--morado-oscuro));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 2.5rem;
     font-weight: 800;
@@ -3055,6 +3186,7 @@ form[style="display: inline;"] {
 .dashboard_ampa_info_usuario {
     background: var(--morado-claro);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 1.1rem;
     font-weight: 600;
@@ -3447,6 +3579,496 @@ form[style="display: inline;"] {
 }
 
 /* ==========================================================================
+   DASHBOARD CONVALIDACIÓN - ESTILO SECRETARÍA (NARANJA)
+ ==========================================================================*/
+
+.dashboard_convalidacion_container {
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: var(--fuente-base);
+    background: linear-gradient(135deg, #F8FAFC, #FFF7ED);
+    min-height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.dashboard_convalidacion_seccion_form {
+    background: var(--blanco);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(245,158,11,0.08);
+    margin-bottom: 2rem;
+    border-top: 6px solid var(--naranja);
+}
+
+.dashboard_convalidacion_seccion_form.dashboard_convalidacion_modo_edit {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border-top-color: var(--naranja);
+}
+
+.dashboard_convalidacion_form_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.dashboard_convalidacion_form_group {
+    display: flex; flex-direction: column; gap: 0.5rem;
+}
+
+.dashboard_convalidacion_form_label {
+    font-weight: 700; color: var(--gris-oscuro); font-size: 0.95rem;
+}
+
+.dashboard_convalidacion_form_input,
+.dashboard_convalidacion_form_select,
+.dashboard_convalidacion_form_textarea {
+    padding: 1rem;
+    border: 2px solid var(--gris-suave);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: #f9fafb;
+    box-sizing: border-box;
+}
+
+.dashboard_convalidacion_form_textarea {
+    min-height: 120px; resize: vertical;
+}
+
+.dashboard_convalidacion_form_input:focus,
+.dashboard_convalidacion_form_select:focus,
+.dashboard_convalidacion_form_textarea:focus {
+    outline: none; border-color: var(--naranja);
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+    background: var(--blanco);
+}
+
+.dashboard_convalidacion_btn_group {
+    grid-column: 1 / -1;
+    display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;
+}
+
+.dashboard_convalidacion_btn {
+    padding: 1rem 2.5rem; border: none; border-radius: 12px;
+    font-weight: 700; cursor: pointer; transition: all 0.3s;
+    display: inline-flex; align-items: center; gap: 0.7rem; font-size: 1rem;
+}
+
+.dashboard_convalidacion_btn_primary {
+    background: linear-gradient(135deg, var(--naranja), #f97316);
+    color: white; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.dashboard_convalidacion_btn_secondary {
+    background: var(--gris-medio); color: white;
+}
+
+.dashboard_convalidacion_btn:hover {
+    transform: translateY(-2px); box-shadow: var(--sombra-fuerte);
+}
+
+/* LISTADO */
+.dashboard_convalidacion_seccion_lista h2 {
+    margin-bottom: 2rem; color: var(--gris-oscuro); display: flex; align-items: center; gap: 0.8rem;
+}
+
+.dashboard_convalidacion_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.dashboard_convalidacion_card {
+    background: var(--blanco);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--sombra-suave);
+    border-left: 5px solid var(--naranja);
+    transition: all 0.3s ease;
+    display: flex; flex-direction: column; gap: 0.8rem;
+    box-sizing: border-box;
+}
+
+.dashboard_convalidacion_card:hover {
+    transform: translateY(-5px); box-shadow: var(--sombra-fuerte);
+}
+
+.dashboard_convalidacion_tag {
+    display: inline-block; padding: 0.4rem 1rem; border-radius: 20px;
+    font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: white;
+}
+
+.dashboard_convalidacion_card_titulo {
+    font-size: 1.25rem; font-weight: 700; color: var(--gris-oscuro); line-height: 1.3;
+}
+
+.dashboard_convalidacion_card_desc {
+    font-size: 0.95rem; color: var(--gris-medio); line-height: 1.5;
+}
+
+.dashboard_convalidacion_card_fecha {
+    font-size: 0.85rem; color: var(--gris); font-weight: 600;
+}
+
+.dashboard_convalidacion_medios {
+    display: flex; gap: 0.8rem; flex-wrap: wrap; margin: 0.5rem 0;
+}
+
+.dashboard_convalidacion_noticia_enlace {
+    color: var(--naranja); text-decoration: none; font-weight: 600;
+    padding: 0.5rem 1rem; border-radius: 20px; background: rgba(245, 158, 11, 0.1);
+    transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.85rem;
+}
+
+.dashboard_convalidacion_noticia_enlace:hover {
+    background: var(--naranja); color: white;
+}
+
+.dashboard_convalidacion_acciones {
+    margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--gris-suave);
+    display: flex; gap: 0.8rem;
+}
+
+.dashboard_convalidacion_btn_small {
+    padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600;
+    text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem;
+}
+
+/* REUSABLE NO-ADMIN */
+.dashboard_convalidacion_no_admin {
+    text-align: center; padding: 5rem 2rem; background: var(--blanco);
+    border-radius: 20px; box-shadow: var(--sombra-suave); border: 1px solid var(--gris-suave);
+}
+
+/* ==========================================================================
+   DASHBOARD SOLICITUD DE TÍTULOS - ESTILO SECRETARÍA (AZUL)
+ ==========================================================================*/
+
+.dashboard_solicitud_titulos_container {
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: var(--fuente-base);
+    background: linear-gradient(135deg, #F8FAFC, #EFF6FF);
+    min-height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.dashboard_solicitud_titulos_seccion_form {
+    background: var(--blanco);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(59,130,246,0.08);
+    margin-bottom: 2rem;
+    border-top: 6px solid var(--azul);
+}
+
+.dashboard_solicitud_titulos_seccion_form.dashboard_solicitud_titulos_modo_edit {
+    background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+    border-top-color: var(--azul);
+}
+
+.dashboard_solicitud_titulos_form_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.dashboard_solicitud_titulos_form_group {
+    display: flex; flex-direction: column; gap: 0.5rem;
+}
+
+.dashboard_solicitud_titulos_form_label {
+    font-weight: 700; color: var(--gris-oscuro); font-size: 0.95rem;
+}
+
+.dashboard_solicitud_titulos_form_input,
+.dashboard_solicitud_titulos_form_select,
+.dashboard_solicitud_titulos_form_textarea {
+    padding: 1rem;
+    border: 2px solid var(--gris-suave);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: #f9fafb;
+    box-sizing: border-box;
+}
+
+.dashboard_solicitud_titulos_form_textarea {
+    min-height: 120px; resize: vertical;
+}
+
+.dashboard_solicitud_titulos_form_input:focus,
+.dashboard_solicitud_titulos_form_select:focus,
+.dashboard_solicitud_titulos_form_textarea:focus {
+    outline: none; border-color: var(--azul);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    background: var(--blanco);
+}
+
+.dashboard_solicitud_titulos_btn_group {
+    grid-column: 1 / -1;
+    display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;
+}
+
+.dashboard_solicitud_titulos_btn {
+    padding: 1rem 2.5rem; border: none; border-radius: 12px;
+    font-weight: 700; cursor: pointer; transition: all 0.3s;
+    display: inline-flex; align-items: center; gap: 0.7rem; font-size: 1rem;
+}
+
+.dashboard_solicitud_titulos_btn_primary {
+    background: linear-gradient(135deg, var(--azul), #1D4ED8);
+    color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.dashboard_solicitud_titulos_btn_secondary {
+    background: var(--gris-medio); color: white;
+}
+
+.dashboard_solicitud_titulos_btn:hover {
+    transform: translateY(-2px); box-shadow: var(--sombra-fuerte);
+}
+
+/* LISTADO */
+.dashboard_solicitud_titulos_seccion_lista h2 {
+    margin-bottom: 2rem; color: var(--gris-oscuro); display: flex; align-items: center; gap: 0.8rem;
+}
+
+.dashboard_solicitud_titulos_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.dashboard_solicitud_titulos_card {
+    background: var(--blanco);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--sombra-suave);
+    border-left: 5px solid var(--azul);
+    transition: all 0.3s ease;
+    display: flex; flex-direction: column; gap: 0.8rem;
+    box-sizing: border-box;
+}
+
+.dashboard_solicitud_titulos_card:hover {
+    transform: translateY(-5px); box-shadow: var(--sombra-fuerte);
+}
+
+.dashboard_solicitud_titulos_tag {
+    display: inline-block; padding: 0.4rem 1rem; border-radius: 20px;
+    font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: white;
+}
+
+.dashboard_solicitud_titulos_card_titulo {
+    font-size: 1.25rem; font-weight: 700; color: var(--gris-oscuro); line-height: 1.3;
+}
+
+.dashboard_solicitud_titulos_card_desc {
+    font-size: 0.95rem; color: var(--gris-medio); line-height: 1.5;
+}
+
+.dashboard_solicitud_titulos_card_fecha {
+    font-size: 0.85rem; color: var(--gris); font-weight: 600;
+}
+
+.dashboard_solicitud_titulos_medios {
+    display: flex; gap: 0.8rem; flex-wrap: wrap; margin: 0.5rem 0;
+}
+
+.dashboard_solicitud_titulos_noticia_enlace {
+    color: var(--azul); text-decoration: none; font-weight: 600;
+    padding: 0.5rem 1rem; border-radius: 20px; background: rgba(59, 130, 246, 0.1);
+    transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.85rem;
+}
+
+.dashboard_solicitud_titulos_noticia_enlace:hover {
+    background: var(--azul); color: white;
+}
+
+.dashboard_solicitud_titulos_acciones {
+    margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--gris-suave);
+    display: flex; gap: 0.8rem;
+}
+
+.dashboard_solicitud_titulos_btn_small {
+    padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600;
+    text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem;
+}
+
+/* REUSABLE NO-ADMIN */
+.dashboard_solicitud_titulos_no_admin {
+    text-align: center; padding: 5rem 2rem; background: var(--blanco);
+    border-radius: 20px; box-shadow: var(--sombra-suave); border: 1px solid var(--gris-suave);
+}
+
+/* ==========================================================================
+   DASHBOARD DOCUMENTOS INSTITUCIONALES - ESTILO SECRETARÍA (VERDE)
+ ==========================================================================*/
+
+.dashboard_doc_inst_container {
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: var(--fuente-base);
+    background: linear-gradient(135deg, #F8FAFC, #ECFDF5);
+    min-height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.dashboard_doc_inst_seccion_form {
+    background: var(--blanco);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(16,185,129,0.08);
+    margin-bottom: 2rem;
+    border-top: 6px solid var(--verde-principal);
+}
+
+.dashboard_doc_inst_seccion_form.dashboard_doc_inst_modo_edit {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    border-top-color: var(--verde-principal);
+}
+
+.dashboard_doc_inst_form_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.dashboard_doc_inst_form_group {
+    display: flex; flex-direction: column; gap: 0.5rem;
+}
+
+.dashboard_doc_inst_form_label {
+    font-weight: 700; color: var(--gris-oscuro); font-size: 0.95rem;
+}
+
+.dashboard_doc_inst_form_input,
+.dashboard_doc_inst_form_select,
+.dashboard_doc_inst_form_textarea {
+    padding: 1rem;
+    border: 2px solid var(--gris-suave);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: #f9fafb;
+    box-sizing: border-box;
+}
+
+.dashboard_doc_inst_form_textarea {
+    min-height: 120px; resize: vertical;
+}
+
+.dashboard_doc_inst_form_input:focus,
+.dashboard_doc_inst_form_select:focus,
+.dashboard_doc_inst_form_textarea:focus {
+    outline: none; border-color: var(--verde-principal);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+    background: var(--blanco);
+}
+
+.dashboard_doc_inst_btn_group {
+    grid-column: 1 / -1;
+    display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;
+}
+
+.dashboard_doc_inst_btn {
+    padding: 1rem 2.5rem; border: none; border-radius: 12px;
+    font-weight: 700; cursor: pointer; transition: all 0.3s;
+    display: inline-flex; align-items: center; gap: 0.7rem; font-size: 1rem;
+}
+
+.dashboard_doc_inst_btn_primary {
+    background: linear-gradient(135deg, var(--verde-principal), #059669);
+    color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.dashboard_doc_inst_btn_secondary {
+    background: var(--gris-medio); color: white;
+}
+
+.dashboard_doc_inst_btn:hover {
+    transform: translateY(-2px); box-shadow: var(--sombra-fuerte);
+}
+
+/* LISTADO */
+.dashboard_doc_inst_seccion_lista h2 {
+    margin-bottom: 2rem; color: var(--gris-oscuro); display: flex; align-items: center; gap: 0.8rem;
+}
+
+.dashboard_doc_inst_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.dashboard_doc_inst_card {
+    background: var(--blanco);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: var(--sombra-suave);
+    border-left: 5px solid var(--verde-principal);
+    transition: all 0.3s ease;
+    display: flex; flex-direction: column; gap: 0.8rem;
+    box-sizing: border-box;
+}
+
+.dashboard_doc_inst_card:hover {
+    transform: translateY(-5px); box-shadow: var(--sombra-fuerte);
+}
+
+.dashboard_doc_inst_tag {
+    display: inline-block; padding: 0.4rem 1rem; border-radius: 20px;
+    font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: white;
+    background: var(--verde-principal);
+}
+
+.dashboard_doc_inst_card_titulo {
+    font-size: 1.25rem; font-weight: 700; color: var(--gris-oscuro); line-height: 1.3;
+}
+
+.dashboard_doc_inst_card_desc {
+    font-size: 0.95rem; color: var(--gris-medio); line-height: 1.5;
+}
+
+.dashboard_doc_inst_card_fecha {
+    font-size: 0.85rem; color: var(--gris); font-weight: 600;
+}
+
+.dashboard_doc_inst_medios {
+    display: flex; gap: 0.8rem; flex-wrap: wrap; margin: 0.5rem 0;
+}
+
+.dashboard_doc_inst_noticia_enlace {
+    color: var(--verde-principal); text-decoration: none; font-weight: 600;
+    padding: 0.5rem 1rem; border-radius: 20px; background: rgba(16, 185, 129, 0.1);
+    transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.85rem;
+}
+
+.dashboard_doc_inst_noticia_enlace:hover {
+    background: var(--verde-principal); color: white;
+}
+
+.dashboard_doc_inst_acciones {
+    margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--gris-suave);
+    display: flex; gap: 0.8rem;
+}
+
+.dashboard_doc_inst_btn_small {
+    padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600;
+    text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem;
+}
+
+/* REUSABLE NO-ADMIN */
+.dashboard_doc_inst_no_admin {
+    text-align: center; padding: 5rem 2rem; background: var(--blanco);
+    border-radius: 20px; box-shadow: var(--sombra-suave); border: 1px solid var(--gris-suave);
+}
+
+/* ==========================================================================
    DASHBOARD CONTACTO SECRETARÍA - CSS COMPLETO
  ==========================================================================*/
 
@@ -3517,6 +4139,7 @@ form[style="display: inline;"] {
 .dashboard_contacto_saludo {
     background: linear-gradient(135deg, var(--morado), var(--morado-oscuro));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 2.5rem;
     font-weight: 800;
@@ -3531,6 +4154,7 @@ form[style="display: inline;"] {
 .dashboard_contacto_info_usuario {
     background: var(--morado-claro);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 1.1rem;
     font-weight: 600;
@@ -4017,6 +4641,7 @@ form[style="display: inline;"] {
 .dashboard_organigrama_saludo {
     background: linear-gradient(135deg, var(--azul), var(--morado));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 2.5rem;
     font-weight: 800;
@@ -4031,6 +4656,7 @@ form[style="display: inline;"] {
 .dashboard_organigrama_info_usuario {
     background: linear-gradient(135deg, #bfdbfe, #93c5fd);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 1.1rem;
     font-weight: 600;

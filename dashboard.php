@@ -32,16 +32,11 @@ $menu_principal = [
     'bolsa_de_empleo' => ['icono' => 'fa-briefcase', 'titulo' => 'Bolsa de Empleo', 'descripcion' => 'Ofertas de empleo', 'enlace' => 'bolsa_de_empleo.php', 'dashboard' => 'dashboard_bolsa_empleo.php'],
     'teatro' => ['icono' => 'fa-theater-masks', 'titulo' => 'Teatro', 'descripcion' => 'Publicaciones sobre el grupo de teatro', 'enlace' => 'teatro.php', 'dashboard' => 'dashboard_teatro.php'],
     'plan_de_igualdad' => ['icono' => 'fa-balance-scale', 'titulo' => 'Plan de Igualdad', 'descripcion' => 'Información sobre el plan de igualdad', 'enlace' => 'plan_de_igualdad.php', 'dashboard' => 'dashboard_plan_igualdad.php'],
-    'matriculaciones' => ['icono' => 'fa-file-invoice', 'titulo' => 'Matriculaciones', 'descripcion' => 'Información sobre matriculaciones', 'enlace' => '', 'dashboard' => 'dashboard_matriculaciones.php'],
-    'titulaciones' => ['icono' => 'fa-graduation-cap', 'titulo' => 'Titulaciones', 'descripcion' => 'Información sobre titulaciones', 'enlace' => '', 'dashboard' => 'dashboard_titulaciones.php'],
-    'otros_tramites' => ['icono' => 'fa-file-signature', 'titulo' => 'Otros trámites', 'descripcion' => 'Información sobre otros trámites', 'enlace' => 'otros_tramites.php', 'dashboard' => 'dashboard_otros_tramites.php'],
     'documentos_institucionales' => ['icono' => 'fa-file-arrow-down', 'titulo' => 'Documentos Institucionales', 'descripcion' => 'Documentos oficiales del centro', 'enlace' => 'doc_institucionales.php', 'dashboard' => 'dashboard_doc_institucionales.php'],
     'orientacion' => ['icono' => 'fa-user-doctor', 'titulo' => 'Orientación', 'descripcion' => 'Información sobre orientación', 'enlace' => 'orientacion.php', 'dashboard' => 'dashboard_orientacion.php'],
     'blog' => ['icono' => 'fa-newspaper', 'titulo' => 'Blog', 'descripcion' => 'Publicaciones del blog', 'enlace' => 'blog.php', 'dashboard' => 'dashboard_blog.php'],
     'organigrama' => ['icono' => 'fa-users icono_universal', 'titulo' => 'Organigrama', 'descripcion' => 'Información sobre el organigrama', 'enlace' => 'organigrama.php', 'dashboard' => 'dashboard_organigrama.php'],
     'resultados_academicos' => ['icono' => 'fa-chalkboard-teacher', 'titulo' => 'Resultados Académicos', 'descripcion' => 'Información sobre resultados académicos', 'enlace' => 'resultados_academicos.php', 'dashboard' => 'dashboard_resultados_academicos.php'],
-    'convalidaciones' => ['icono' => 'fa-file-pdf', 'titulo' => 'Convalidaciones', 'descripcion' => 'Información sobre convalidaciones', 'enlace' => '', 'dashboard' => 'dashboard_convalidaciones.php'],
-    'solicitud_titulos' => ['icono' => 'fa-graduation-cap', 'titulo' => 'Solicitud de Títulos', 'descripcion' => 'Información sobre solicitud de títulos', 'enlace' => '', 'dashboard' => 'dashboard_solicitud_titulos.php'],
     'departamentos' => ['icono' => 'fa-users', 'titulo' => 'Departamentos', 'descripcion' => 'Listado de departamentos académicos', 'enlace' => 'departamentos.php', 'dashboard' => 'dashboard_departamentos.php'],
 ];
 
