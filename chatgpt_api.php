@@ -86,7 +86,7 @@ function callGroqAPI($message) {
     return false; // Groq falló → usar respuestas locales
 }
 
-/* Fallback local: respuestas fijas SOLO estructura web
+/* Fallback local: respuestas fijas solo estructura web
  * Sin URLs, datos personales, horarios, etc. */
 function getLocalResponse($msg) {
     // Busca palabras clave en mensaje usuario y devuelve ruta web

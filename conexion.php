@@ -1,9 +1,9 @@
 <?php
 // Variables para conectar a la base de datos MySQL
-$host = "localhost"; 
-$user = "root"; 
-$pass = ""; 
-$db = "arboledatablas"; 
+$host = "localhost";
+$user = "root";
+$pass = "1234";
+$db = "arboledatablas";
 
 // Creamos la conexión usando mysqli, que es para MySQL mejorado
 $conexion = new mysqli($host, $user, $pass, $db);
@@ -20,4 +20,3 @@ $conexion->set_charset("utf8mb4");
 $sql = "SELECT * FROM noticias ORDER BY fecha DESC";
 
 ?>
-

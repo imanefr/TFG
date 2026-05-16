@@ -1,16 +1,10 @@
-<?php include 'head.php'; ?>  <!-- Carga el head.php -->
-
-<?php
+<?php include 'head.php'; ?>  <?php
 include("conexion.php");  // Conecta a base de datos MySQLi
-
-// Consulta: TODOS avisos activos ordenados (importantes primero, luego fecha reciente)
-$sql = "SELECT a.*, u.nombre as ultima_edicion_usuario_nombre
-        FROM avisos a 
-        LEFT JOIN usuarios u ON a.ultima_edicion_usuario_id = u.id 
-        ORDER BY a.importante DESC, a.fecha DESC";  // Prioriza avisos marcados importante
+// Consulta CORREGIDA: Eliminamos el LEFT JOIN ya que el nombre está en la propia tabla 'avisos'
+$sql = "SELECT a.* FROM avisos a 
+        ORDER BY a.importante DESC, a.fecha DESC";
 $resultado = $conexion->query($sql);  // Ejecuta consulta SQL
 ?>
-
 <!-- HEADER AVISOS -->
 <section class="seccion-hero-universal">
     <div class="contenedor-max">
@@ -19,7 +13,7 @@ $resultado = $conexion->query($sql);  // Ejecuta consulta SQL
                 <i class="fas fa-users" class="icono_universal"></i> 
             </div>
             <div class="hero-texto-universal">
-                <h1 class="hero-titulo-universal">Avisos del Centro</h1>  <!-- Título H1 página -->
+                <h1 class="hero-titulo-universal">Avisos del Centro</h1> 
                 <p class="hero-subtitulo-universal">Comunicaciones oficiales, plazos importantes y novedades administrativas.</p>  <!-- Subtítulo descriptivo -->
             </div>
         </div>
@@ -34,20 +28,21 @@ $resultado = $conexion->query($sql);  // Ejecuta consulta SQL
 
             <?php if ($resultado && $resultado->num_rows > 0): ?>  <!-- Verifica si hay resultados -->
                 <div class="info_avisos_lista">  <!-- Contenedor grid/lista avisos -->
-                    <?php while ($fila = $resultado->fetch_assoc()): ?>  <!-- Recorre CADA aviso -->
+                    <?php while ($fila = $resultado->fetch_assoc()): ?>  <!-- Recorre cada aviso -->
                         <!-- Cada aviso individual con clase especial si es importante -->
                         <div class="info_avisos_item <?php echo $fila['importante'] ? 'info_avisos_importante' : ''; ?>">
-                            
-                            <?php if ($fila['importante']): ?>  <!-- BADGE si es importante -->
+
+                            <?php if ($fila['importante']): ?>  <!-- Marca si es importante -->
                                 <div class="info_avisos_badge">¡IMPORTANTE!</div>  <!-- Etiqueta destacada -->
                             <?php endif; ?>
 
                             <div class="info_avisos_contenido">  <!-- Contenido del aviso -->
                                 <!-- FECHA + USUARIO EDITOR -->
                                 <p class="info_avisos_fecha">
-                                    <?php echo date('d/m/Y', strtotime($fila['fecha'])); ?>  <!-- Convierte fecha SQL a formato español -->
-                                    <?php if (!empty($fila['ultima_edicion_usuario_nombre'])): ?>  <!-- Muestra quién editó -->
-                                        <br><small class="letra-666"><?php echo htmlspecialchars($fila['ultima_edicion_usuario_nombre']); ?></small>  <!-- Nombre escapado -->
+                                    <?php echo date('d/m/Y', strtotime($fila['fecha'])); ?> 
+
+                                    <?php if (!empty($fila['ultima_edicion_nombre'])): ?> 
+                                        <br><small class="letra-666"><?php echo htmlspecialchars($fila['ultima_edicion_nombre']); ?></small>
                                     <?php endif; ?>
                                 </p>
 

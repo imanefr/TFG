@@ -42,6 +42,7 @@ include 'conexion.php';
                             <?php endif; ?>
                             
                             <div class="blog_item_texto_wrapper">
+                                <p class="erasmus_fecha"><?php echo $post['fecha_publicacion']; ?></p>
                                 <h3 class="blog_item_titulo"><?php echo $post['titulo']; ?></h3>
                                 <p class="blog_item_contenido"><?php echo nl2br(htmlspecialchars($post['texto'])); ?></p>
                                 
