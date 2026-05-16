@@ -17,7 +17,7 @@ $datos_contacto = $resultado->fetch_assoc(); // Convierte primer resultado en ar
                 <i class="fas fa-phone icono_universal"></i>  
             </div>
             <div class="hero-texto-universal">
-                <h1 class="hero-titulo-universal">Contacto secretaría</h1> <!-- Título H1 página -->
+                <h1 class="hero-titulo-universal">Contacto secretaría</h1> 
                 <p class="hero-subtitulo-universal">Información y atención al público</p> <!-- Subtítulo descriptivo -->
             </div>
         </div>

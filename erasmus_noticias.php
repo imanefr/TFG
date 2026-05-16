@@ -2,7 +2,6 @@
 // PÁGINA DETALLE NOTICIA ERASMUS 
 // Muestra noticia individual ID con multimedia completo
 include("conexion.php"); // Conexión MySQLi preparada
-
 // VALIDACIÓN ENTRADA: ID desde GET sanitizado
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 if ($id <= 0) {
@@ -54,7 +53,7 @@ $stmt->close();
         <div class="contenedor-max">
             <?php if ($noticia): ?> <!-- NOTICIA ENCONTRADA -->
                 <article class="erasmus_noticias_post">
-                    
+
                     <!-- IMAGEN PRINCIPAL OPCIONAL -->
                     <?php if (!empty($noticia['imagen'])): ?>
                         <figure class="erasmus_noticias_imagen">
@@ -69,9 +68,12 @@ $stmt->close();
                         <!-- FECHA SEMÁNTICA HTML5 -->
                         <time class="erasmus_noticias_fecha" 
                               datetime="<?php echo date('Y-m-d', strtotime($noticia['fecha'])); ?>">
-                            <?php echo date('d/m/Y', strtotime($noticia['fecha'])); ?>
+                                  <?php echo date('d/m/Y', strtotime($noticia['fecha'])); ?>
+                                  <?php if (!empty($noticia['ultima_edicion_nombre'])): ?>
+                                <br><small class="letra-666"><?php echo htmlspecialchars($noticia['ultima_edicion_nombre']); ?></small> <!-- Nombre editor -->
+                            <?php endif; ?>
                         </time>
-                        
+
                         <!-- AUDITORÍA EDITOR -->
                         <?php if (!empty($noticia['ultima_edicion_usuario_nombre'])): ?>
                             <br>
@@ -79,7 +81,7 @@ $stmt->close();
                                 <?php echo htmlspecialchars($noticia['ultima_edicion_usuario_nombre']); ?>
                             </small>
                         <?php endif; ?>
-                        
+
                         <!-- TÍTULO H1 PRINCIPAL -->
                         <h1 class="erasmus_noticias_titulo">
                             <?php echo htmlspecialchars($noticia['titulo']); ?>
@@ -120,7 +122,7 @@ $stmt->close();
                         </a>
                     </nav>
                 </article>
-                
+
             <?php else: ?> <!-- NOTICIA NO ENCONTRADA -->
                 <article class="erasmus_noticias_error">
                     <i class="fas fa-globe"></i>
@@ -135,7 +137,7 @@ $stmt->close();
     </section>
 </main>
 
-<?php 
+<?php
 $conexion->close(); // CERRAR CONEXIÓN 
 include 'footer.php'; // FOOTER GLOBAL
 ?>

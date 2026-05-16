@@ -32,7 +32,7 @@ include 'conexion.php';
                     en la categoría de Siglo de Oro, con una escena de Bodas de Sangre de 
                     Federico García Lorca.
                 </h2>
-                <iframe width="700px" height="500px" src="https://www.youtube.com/embed/WnKzndreA0s?autoplay=1&mute=1" 
+                <iframe class="teatro_video" src="https://www.youtube.com/embed/WnKzndreA0s?autoplay=1&mute=1" 
                     title="Bodas de Sangre" frameborder="0" allow="autoplay" 
                     referrerpolicy="strict-origin-when-cross-origin" 
                     allowfullscreen></iframe>

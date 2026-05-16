@@ -12,6 +12,9 @@ $titulo_dashboard = isset($titulo_dashboard) ? $titulo_dashboard : 'Dashboard Ad
 ?>
 
 <!-- HEADER PRINCIPAL DASHBOARD - Reutilizable en todas las páginas admin -->
+<head>
+    <link rel="stylesheet" href="style_imane.css">
+</head>
 <div class="dashboard_inicio_header">
     <!-- SECCIÓN IZQUIERDA: Título + Icono del módulo actual -->
     <div class="dashboard_inicio_header_left">
@@ -31,7 +34,7 @@ $titulo_dashboard = isset($titulo_dashboard) ? $titulo_dashboard : 'Dashboard Ad
             <i class="fas fa-user dashboard_user_icon"></i>
             <!-- Rol del usuario con primera letra mayúscula -->
             <span class="dashboard_user_role">
-                <?php echo ucfirst(htmlspecialchars($_SESSION['usuario_rol'])); ?>
+                Bienvenido, <?php echo ucfirst(htmlspecialchars($_SESSION['usuario_nombre'])); ?>
             </span>
         </div>
         

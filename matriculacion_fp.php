@@ -43,6 +43,7 @@ include("conexion.php");
                                 {
                                     ?>
                                     <li class="lista_documentacion_fp_item">
+                                        <p class="erasmus_fecha"><?php echo $row['fecha_creacion']; ?></p>
                                         <h2 class="lista_documentacion_fp_item_titulo"><?php echo $row['titulo']; ?></h2>
                                         <p class="lista_documentacion_fp_item_texto">
                                             <?php echo $row['descripcion']; ?>

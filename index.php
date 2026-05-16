@@ -1,65 +1,64 @@
 <?php
-// INICIA SESIÓN SI NO ESTÁ ACTIVA - Verifica estado y evita warnings múltiples
+// 1. INICIO DE SESIÓN
+// Arranca la sesión si no está activa
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();  // Inicia sesión PHP solo si no existe
+    session_start();
 }
-?>
 
-<!-- INCLUYE HEADER COMPLETO - Navbar, breadcrumb, ArboledaBot (head.php) -->
-<?php include_once 'head.php'; ?>
+// 2. CONEXIÓN Y CABECERA
+include("conexion.php"); // Conecta con la base de datos
+include_once 'head.php'; // Carga la cabecera e iconos de la web
 
-<?php
-// CARGAR NOTIFICACIONES PUSH - Lee tabla BD para popups WhatsApp
-include("conexion.php");                                    // Conexión MySQLi
-$sql_notif = "SELECT * FROM notificaciones_push WHERE activo=1 ORDER BY fecha DESC LIMIT 10";  // Últimas 10 activas
-$result_notif = $conexion->query($sql_notif);               // Ejecuta consulta
-$notificaciones = [];                                       // Array vacío inicial
+// 3. OBTENER NOTIFICACIONES DESTACADAS
+// Busca hasta 5 noticias destacadas para los popups estilo WhatsApp
+$sql_notif = "SELECT id, titulo, contenido AS descripcion, fecha, enlace FROM noticias WHERE destacada = 1 ORDER BY fecha DESC LIMIT 5";
+$result_notif = $conexion->query($sql_notif);
+$notificaciones = [];
 
-// PROCESA RESULTADO - Convierte filas BD → array PHP
 if ($result_notif && $result_notif->num_rows > 0) {
-    while ($row = $result_notif->fetch_assoc()) {           // Itera cada fila
-        $notificaciones[] = $row;                           // Añade a array
+    while ($row = $result_notif->fetch_assoc()) {
+        $notificaciones[] = $row; // Guarda cada noticia destacada en la lista
     }
 }
-$conexion->close();                                         // Cierra conexión BD
 ?>
 
-<!-- HERO CARRUSEL - Imagen principal + título overlay (3 slides) -->
 <section id="inicio" class="indice_pagina_hero_carrusel">
-    <div class="indice_pagina_contenedor_carrusel">          <!-- Wrapper carrusel JS/CSS -->
-        <!-- SLIDE 1 - Imagen de fondo activa por defecto -->
+    <div class="indice_pagina_contenedor_carrusel">
         <div class="indice_pagina_imagen_carrusel indice_pagina_activa" style="background-image: url('img/instituto_back_1.jpg');"></div>
-        <!-- SLIDE 2 - Segunda imagen -->
         <div class="indice_pagina_imagen_carrusel" style="background-image: url('img/instituto_back_2.jpg');"></div>
-        <!-- SLIDE 3 - Tercera imagen -->
         <div class="indice_pagina_imagen_carrusel" style="background-image: url('img/instituto_back_3.jpg');"></div>
     </div>
-    <!-- TEXTO OVERLAY - Título hero sobre carrusel -->
     <div class="indice_pagina_contenido_hero">
         <h2 class="indice_pagina_titulo_hero">
-            <span class="indice_pagina_texto_hero_superior">BIENVENIDOS A NUESTRO CENTRO</span>  <!-- Línea superior -->
-            <span class="indice_pagina_texto_hero_principal">IES LA ARBOLEDA</span>              <!-- Título principal -->
-            <span class="indice_pagina_texto_hero_inferior">Alcorcón - Tu instituto de referencia</span> <!-- Subtítulo -->
+            <span class="indice_pagina_texto_hero_superior">BIENVENIDOS A NUESTRO CENTRO</span>
+            <span class="indice_pagina_texto_hero_principal">IES LA ARBOLEDA</span>
+            <span class="indice_pagina_texto_hero_inferior">Alcorcón - Tu instituto de referencia</span>
         </h2>
     </div>
 </section>
 
-<!-- ATAJOS "A UN CLIC" - 3 enlaces directos externos -->
+<section class="franja_imagenes_ancho">
+    <div class="franja_contenedor_flex">
+        <div class="franja_item_imagen"><img src="img/union_eu.jpeg" alt="Union Europea"></div>
+        <div class="franja_item_imagen"><img src="img/consejeria.png" alt="Comunidad de Madrid"></div>
+        <div class="franja_item_imagen"><img src="img/gobierno.png" alt="Gobierno de España"></div>
+        <div class="franja_item_imagen"><img src="img/eu2.jpg" alt="UE"></div>
+        <div class="franja_item_imagen"><img src="img/circulo.png" alt="Competencia Informática"></div>
+    </div>
+</section>
+
 <section class="indice_pagina_seccion_atajo">
     <div class="indice_pagina_contenedor_principal">
-        <h3 class="indice_pagina_titulo_atajo">A UN CLIC</h3>     <!-- Título sección -->
-        <div class="indice_pagina_grid_atajos">                  <!-- Grid CSS 3 columnas -->
-            <!-- AULA VIRTUAL - Enlace EducaMadrid -->
+        <h3 class="indice_pagina_titulo_atajo">A UN CLIC</h3>
+        <div class="indice_pagina_grid_atajos">
             <a href="https://aulavirtual33.educa.madrid.org/ies.laarboleda.alcorcon/" class="indice_pagina_tarjeta_atajo card-un-clic">
-                <div class="indice_pagina_icono_atajo"><i class="fas fa-graduation-cap"></i></div>  <!-- Icono FontAwesome -->
+                <div class="indice_pagina_icono_atajo"><i class="fas fa-graduation-cap"></i></div>
                 <h4 class="indice_pagina_titulo_atajo_card">Aula Virtual</h4>
             </a>
-            <!-- CORREO EDUCAMADRID - Email institucional -->
             <a href="https://correoweb.educa.madrid.org/" class="indice_pagina_tarjeta_atajo card-un-clic">
                 <div class="indice_pagina_icono_atajo"><i class="fas fa-envelope"></i></div>
                 <h4 class="indice_pagina_titulo_atajo_card">Correo educamadrid</h4>
             </a>
-            <!-- ROBLE/RAÍCES - Plataforma Comunidad Madrid -->
             <a href="https://raices.madrid.org/" class="indice_pagina_tarjeta_atajo card-un-clic">
                 <div class="indice_pagina_icono_atajo"><i class="fas fa-tree"></i></div>
                 <h4 class="indice_pagina_titulo_atajo_card">Roble/Raíces</h4>
@@ -68,113 +67,128 @@ $conexion->close();                                         // Cierra conexión 
     </div>
 </section>
 
-<!-- MAIN CONTENIDO - Secciones dinámicas -->
 <main>
-    <?php include("conexion.php"); ?>                          <!-- Reconexión BD para noticias -->
-    
     <section class="indice_pagina_contenedor_principal">
-        <!-- TÍTULO RELEVANTE -->
-         <a href="noticias_relevantes.php" class="indice_relevante_ahora_link">
+
+        <a href="relevanteahora.php" class="indice_relevante_ahora_link">
             <h2 class="indice_pagina_titulo_atajo">RELEVANTE AHORA</h2>
-         </a>
-        <div class="indice_pagina_grid_noticias"> <!-- Grid noticias fijas -->
+        </a>
+        <div class="indice_pagina_grid_noticias">
             <?php
-                $sql = "SELECT * FROM noticias WHERE destacada = 1 ORDER BY fecha DESC LIMIT 3";
-                $resultado = $conexion->query($sql);
-                if ($resultado && $resultado->num_rows > 0) {
-                    while ($fila = $resultado->fetch_assoc()) {
-            ?>
-                <a href="noticias_relevantes.php?id=<?php echo $fila['id']; ?>" class="indice_pagina_tarjeta_noticia card-un-clic">
-                    <img src="<?php echo $fila['imagen']; ?>" alt="<?php echo $fila['titulo']; ?>">
-                    <p class="indice_pagina_fecha_noticia"><?php echo date("d/m/Y", strtotime($fila["fecha"])); ?></p>
-                    <h4 class="indice_pagina_titulo_noticia"><?php echo htmlspecialchars($fila["titulo"]); ?></h4>
-                </a>
-            <?php
-                }  // Fin while noticias
-            }  // Fin if noticias
+            // Busca las últimas 3 noticias destacadas
+            $sql_destacadas = "SELECT * FROM noticias WHERE destacada = 1 ORDER BY fecha DESC LIMIT 3";
+            $res_destacadas = $conexion->query($sql_destacadas);
+            if ($res_destacadas && $res_destacadas->num_rows > 0) {
+                while ($fila = $res_destacadas->fetch_assoc()) {
+                    ?>
+                    <a href="noticia.php?id=<?php echo $fila['id']; ?>" class="indice_pagina_tarjeta_noticia card-un-clic">
+                        <img src="<?php echo htmlspecialchars($fila['imagen']); ?>" alt="Noticia">
+                        <p class="indice_pagina_fecha_noticia"><?php echo date('d/m/Y', strtotime($fila["fecha"])); ?></p>
+                        <h4 class="indice_pagina_titulo_noticia"><?php echo htmlspecialchars($fila["titulo"]); ?></h4>
+                    </a>
+                    <?php
+                }
+            }
             ?>
         </div>
 
-        <!-- ÚLTIMAS NOTICIAS - Dinámicas desde BD -->
-         <a href="ultimas_noticias.php" class="indice_relevante_ahora_link">
+        <a href="ultimasnoticias.php" class="indice_relevante_ahora_link">
             <h2 class="indice_pagina_titulo_atajo">ÚLTIMAS NOTICIAS</h2>
-         </a>
+        </a>
         <div class="indice_pagina_grid_noticias">
             <?php
-            $sql = "SELECT * FROM noticias ORDER BY fecha DESC LIMIT 6";  // Últimas 5 noticias
-            $resultado = $conexion->query($sql);                         // Ejecuta consulta
-            if ($resultado && $resultado->num_rows > 0) {                // Si hay resultados
-                while ($fila = $resultado->fetch_assoc()) {              // Itera cada noticia
-            ?>
-                <!-- TARJETA NOTICIA DINÁMICA -->
-                <div class="indice_pagina_tarjeta_noticia noticia-item">
-                    <?php if (!empty($fila["imagen"])): ?>                   <!-- IMAGEN OPCIONAL -->
-                        <img src="<?php echo htmlspecialchars($fila['imagen']); ?>" alt="Noticia">
-                    <?php endif; ?>
-                    <!-- FECHA FORMATEADA - "2026-03-17" → "17/03/2026" -->
-                    <p class="indice_pagina_fecha_noticia"><?php echo date("d/m/Y", strtotime($fila["fecha"])); ?></p>
-                    <!-- TÍTULO - Escapa HTML para seguridad -->
-                    <h4 class="indice_pagina_titulo_noticia"><?php echo htmlspecialchars($fila["titulo"]); ?></h4>
-                    <!-- CONTENIDO - Primer párrafo escapa HTML -->
-                    <p class="indice_pagina_contenido_noticia"><?php echo htmlspecialchars($fila["contenido"]); ?></p>
-                    <!-- ENLACE DETALLE - noticia.php?id=123 -->
-                    <a href="noticia.php?id=<?php echo $fila['id']; ?>" class="indice_pagina_boton_leer_mas">Leer más</a>
-                </div>
-            <?php
-                }  // Fin while noticias
-            } else {  // SIN NOTICIAS
-                echo '<p>No hay noticias disponibles por el momento.</p>';
+            // Busca las últimas 6 noticias publicadas
+            $sql_ultimas = "SELECT * FROM noticias ORDER BY fecha DESC LIMIT 6";
+            $res_ultimas = $conexion->query($sql_ultimas);
+            if ($res_ultimas && $res_ultimas->num_rows > 0) {
+                while ($fila = $res_ultimas->fetch_assoc()) {
+                    ?>
+                    <div class="indice_pagina_tarjeta_noticia noticia-item">
+                        <?php if (!empty($fila["imagen"])): ?>
+                            <img src="<?php echo htmlspecialchars($fila['imagen']); ?>" alt="Noticia">
+                        <?php endif; ?>
+                        <p class="indice_pagina_fecha_noticia"><?php echo date('d/m/Y', strtotime($fila["fecha"])); ?></p>
+                        <h4 class="indice_pagina_titulo_noticia"><?php echo htmlspecialchars($fila["titulo"]); ?></h4>
+                        <p class="indice_pagina_contenido_noticia">
+                            <?php echo htmlspecialchars(substr(strip_tags($fila["contenido"]), 0, 100)) . '...'; ?>
+                        </p>
+                        <a href="noticia.php?id=<?php echo $fila['id']; ?>" class="indice_pagina_boton_leer_mas">Leer más</a>
+                    </div>
+                    <?php
+                }
             }
-            $conexion->close();  // Cierra conexión BD
+            // Cierra la conexión a la base de datos
+            $conexion->close();
             ?>
         </div>
     </section>
 </main>
 
-<!-- CONTENEDOR NOTIFICACIONES -->
 <div id="notificaciones_whatsapp_container"></div>
 
-<!-- JS NOTIFICACIONES -->
 <script>
-const notificaciones = <?php echo json_encode($notificaciones); ?>;  // Convierte PHP array → JS JSON
+    // Pasa las noticias destacadas de PHP a JavaScript
+    const notificaciones = <?php echo json_encode($notificaciones); ?>;
 
-// FUNCIÓN: Crea popup individual
-function mostrarNotificacionWhatsApp(notif) {
-    const container = document.getElementById('notificaciones_whatsapp_container');  // Busca contenedor
-    const notifDiv = document.createElement('div');                                  // Crea div notificación
-    notifDiv.className = 'notificaciones_whatsapp_item';                             // Clase CSS
-    
-    // CLICK ENLACE - Abre URL si existe
-    if (notif.enlace) {
-        notifDiv.onclick = () => window.open(notif.enlace, '_blank');
-    }
-    
-    // HTML TEMPLATE - Estructura -like
-    
-    notifDiv.innerHTML = `
-        <div class="notificaciones_whatsapp_header">                           <!-- Header: avatar + título -->
-            <div class="notificaciones_whatsapp_avatar">${notif.titulo.charAt(0)}</div>  <!-- 1ª letra avatar -->
+    // Crea el popup estilo WhatsApp en la esquina de la pantalla
+    function mostrarNotificacionWhatsApp(notif) {
+        const container = document.getElementById('notificaciones_whatsapp_container');
+        const notifDiv = document.createElement('div');
+        notifDiv.className = 'notificaciones_whatsapp_item';
+
+        // Abre la noticia al hacer clic en la alerta
+        notifDiv.onclick = () => {
+            window.location.href = 'noticia.php?id=' + notif.id;
+        };
+
+        // Estructura HTML interna del popup flotante
+        notifDiv.innerHTML = `
+        <div class="notificaciones_whatsapp_header">
+            <div class="notificaciones_whatsapp_avatar">${notif.titulo.charAt(0)}</div>
             <div class="notificaciones_whatsapp_content">
-                <div class="notificaciones_whatsapp_titulo">${notif.titulo}</div>         <!-- Nombre remitente -->
-                <div class="notificaciones_whatsapp_time">${new Date(notif.fecha).toLocaleTimeString()}</div>  <!-- Hora local -->
+                <div class="notificaciones_whatsapp_titulo">${notif.titulo}</div>
+                <div class="notificaciones_whatsapp_time">${new Date(notif.fecha).toLocaleDateString()}</div>
             </div>
         </div>
-        <div class="notificaciones_whatsapp_descripcion">${notif.descripcion}</div>  <!-- Mensaje -->
+        <div class="notificaciones_whatsapp_descripcion">${notif.descripcion.substring(0, 80)}...</div>
     `;
-    
-    // INSERTA ARRIBA - Primera posición (más reciente arriba)
-    container.insertBefore(notifDiv, container.firstChild);
-    // AUTO-ELIMINA - 10 segundos después
-    setTimeout(() => notifDiv.remove(), 10000);
-}
 
-// MUESTRA 2 PRIMERAS - Con delay progresivo (0s, 2s)
-if (notificaciones.length > 0) {
-    notificaciones.slice(0, 2).forEach((notif, i) => {         // Primeras 2 notificaciones
-        setTimeout(() => mostrarNotificacionWhatsApp(notif), i * 2000);  // Delay 2s entre cada una
-    });
-}
+        container.insertBefore(notifDiv, container.firstChild);
+
+        // Oculta y borra el popup después de 8 segundos
+        setTimeout(() => {
+            notifDiv.style.opacity = '0';
+            notifDiv.style.transform = 'translateX(100px)';
+            notifDiv.style.transition = 'all 0.5s ease';
+            setTimeout(() => notifDiv.remove(), 500);
+        }, 8000);
+    }
+
+    // Lanza las alertas de una en una cada 3 segundos
+    if (notificaciones.length > 0) {
+        notificaciones.forEach((notif, i) => {
+            setTimeout(() => mostrarNotificacionWhatsApp(notif), i * 3000);
+        });
+    }
+
+    // CONTROL DEL CARRUSEL DE IMÁGENES
+    let indiceActual = 0;
+    const imagenes = document.querySelectorAll('.indice_pagina_imagen_carrusel');
+
+    // Cambia la imagen de fondo visible
+    function cambiarImagen() {
+        imagenes[indiceActual].classList.remove('indice_pagina_activa'); // Oculta la actual
+        indiceActual = (indiceActual + 1) % imagenes.length;            // Pasa a la siguiente
+        imagenes[indiceActual].classList.add('indice_pagina_activa');    // Muestra la nueva
+    }
+
+    // Ejecuta el cambio automático cada 4 segundos
+    if (imagenes.length > 0) {
+        setInterval(cambiarImagen, 4000);
+    }
 </script>
 
-<!-- FOOTER - Incluye copyright, redes, contacto -->
-<?php include 'footer.php'; ?>
+<?php 
+// Carga el pie de página global
+include 'footer.php'; 
+?>

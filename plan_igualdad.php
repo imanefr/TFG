@@ -22,7 +22,7 @@ include 'conexion.php';
 <main class="plan_igualdad_pagina">
     <section class="seccion-contenido">
         <div class="contenedor-max">
-            <img src="img/plan_igualdad.png" alt="Cabezera Plan de Igualdad">
+            <img src="img/plan_igualdad.png" alt="Cabezera Plan de Igualdad" class="plan_igualdad_cabezera">
             <h1 class="plan_igualdad_titulo">Plan de Igualdad</h1>
             <h2 class="plan_igualdad_subtitulo">El Plan de Igualdad del IES La Arboleda es un documento que establece las medidas necesarias para garantizar la igualdad de oportunidades entre hombres y mujeres en el ámbito educativo.</h2>
             <p class="plan_igualdad_texto">Puedes ver el Plan de Igualdad del IES La Arboleda aquí abajo: </p>

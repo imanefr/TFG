@@ -9,10 +9,9 @@ function primeras15Palabras($texto) {
 }
 
 // Consulta últimas 8 noticias Erasmus activas con editor
-$sql = "SELECT e.*, u.nombre as ultima_edicion_usuario_nombre
-        FROM erasmus_news e 
-        LEFT JOIN usuarios u ON e.ultima_edicion_usuario_id = u.id 
-        WHERE e.activo = 1 
+$sql = "SELECT e.*
+        FROM erasmus_news e
+        WHERE e.activo = 1
         ORDER BY e.fecha DESC LIMIT 8";
 $resultado = $conexion->query($sql);         // Ejecuta consulta
 $noticias = [];
@@ -60,8 +59,8 @@ while ($fila = $resultado->fetch_assoc()) { // Almacena todas las noticias
                                 <div class="erasmus_texto"> <!-- Contenido texto -->
                                     <p class="erasmus_fecha"> <!-- Fecha y editor -->
                                         <?php echo date('d/m/Y', strtotime($noticia['fecha'])); ?> <!-- Fecha formateada -->
-                                        <?php if (!empty($noticia['ultima_edicion_usuario_nombre'])): ?>
-                                            <br><small class="letra-666"><?php echo htmlspecialchars($noticia['ultima_edicion_usuario_nombre']); ?></small> <!-- Nombre editor -->
+                                        <?php if (!empty($noticia['ultima_edicion_nombre'])): ?>
+                                            <br><small class="letra-666"><?php echo htmlspecialchars($noticia['ultima_edicion_nombre']); ?></small> <!-- Nombre editor -->
                                         <?php endif; ?>
                                     </p>
 

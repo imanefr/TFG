@@ -9,9 +9,23 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 $titulo_dashboard = "Dashboard Erasmus"; // Título para header
-$is_admin = ($_SESSION['usuario_rol'] === 'admin'); // Solo admins gestionan
-// PROCESAR ACCIONES - CRUD completo (Crear, Leer, Actualizar, Eliminar)
-$mensaje = ''; // Variable para mensajes de éxito/error
+$is_admin = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor' || $_SESSION['usuario_rol'] === 'otro'); // PROCESAR ACCIONES
+
+$mensaje = isset($_GET['msj']) ? $_GET['msj'] : '';
+$nombre_profesor = $_SESSION['usuario_nombre'] ?? '';
+
+// Si no existe el nombre en sesión, lo busca en la tabla profesores
+if ($nombre_profesor === '') {
+    $stmt_nombre = $conexion->prepare("SELECT nombre FROM profesores WHERE usuario_id = ? LIMIT 1");
+    $stmt_nombre->bind_param("i", $_SESSION['usuario_id']);
+    $stmt_nombre->execute();
+    $res_nombre = $stmt_nombre->get_result();
+    if ($fila_nombre = $res_nombre->fetch_assoc()) {
+        $nombre_profesor = $fila_nombre['nombre'];
+    }
+    $stmt_nombre->close();
+}
+
 if ($_POST && isset($_POST['accion'])) {
     // Switch principal según acción del formulario
     switch ($_POST['accion']) {
@@ -21,8 +35,11 @@ if ($_POST && isset($_POST['accion'])) {
             $id = (int) $_POST['id']; // Convertir a entero (seguridad)
             $stmt = $conexion->prepare("DELETE FROM erasmus_news WHERE id = ?");
             $stmt->bind_param("i", $id); // Parámetro entero
-            if ($stmt->execute())
-                $mensaje = 'Noticia eliminada correctamente'; // Mensaje éxito
+            if ($stmt->execute()) {
+                // CAMBIO: Redirección para limpiar
+                header("Location: dashboard_erasmus.php?msj=Noticia eliminada correctamente");
+                exit;
+            }
             $stmt->close();
             break;
 
@@ -46,7 +63,6 @@ if ($_POST && isset($_POST['accion'])) {
                 $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp']; // Formatos permitidos
 
                 if (in_array($file_extension, $allowed)) {
-                    // Nombre único: erasmus_timestamp_random.ext
                     $new_filename = 'erasmus_' . time() . '_' . rand(1000, 9999) . '.' . $file_extension;
                     $upload_path = $upload_dir . $new_filename;
 
@@ -57,10 +73,13 @@ if ($_POST && isset($_POST['accion'])) {
             }
 
             // INSERTAR nueva noticia en base de datos
-            $stmt = $conexion->prepare("INSERT INTO erasmus_news (titulo, contenido, fecha, enlace, imagen, video, pdf, activo) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
-            $stmt->bind_param("sssssss", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf);
-            if ($stmt->execute())
-                $mensaje = 'Noticia añadida correctamente';
+            $stmt = $conexion->prepare("INSERT INTO erasmus_news (titulo, contenido, fecha, enlace, imagen, video, pdf, ultima_edicion_fecha, ultima_edicion_nombre, activo) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, 1)");
+            $stmt->bind_param("ssssssss", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf, $nombre_profesor);
+            if ($stmt->execute()) {
+                // CAMBIO: Redirección para resetear formulario
+                header("Location: dashboard_erasmus.php?msj=Noticia añadida correctamente");
+                exit;
+            }
             $stmt->close();
             break;
 
@@ -90,7 +109,6 @@ if ($_POST && isset($_POST['accion'])) {
 
                     if (move_uploaded_file($_FILES['imagen']['tmp_name'], $upload_path)) {
                         $imagen = $upload_path;
-                        // Eliminar imagen anterior
                         if (isset($_POST['imagen_existente']) && file_exists($_POST['imagen_existente'])) {
                             unlink($_POST['imagen_existente']); // Borrar archivo viejo
                         }
@@ -99,16 +117,14 @@ if ($_POST && isset($_POST['accion'])) {
             }
 
             // ACTUALIZAR noticia en base de datos
-            $stmt = $conexion->prepare("
-    UPDATE erasmus_news 
-    SET titulo=?, contenido=?, fecha=?, enlace=?, imagen=?, video=?, pdf=?, 
-        ultima_edicion_fecha=NOW(), ultima_edicion_usuario_id=? 
-    WHERE id=?
-");
-            $stmt->bind_param("ssssssssi", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf, $_SESSION['usuario_id'], $id);
+            $stmt = $conexion->prepare("UPDATE erasmus_news SET titulo=?, contenido=?, fecha=?, enlace=?, imagen=?, video=?, pdf=?, ultima_edicion_fecha=NOW(), ultima_edicion_nombre=? WHERE id=?");
+            $stmt->bind_param("ssssssssi", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf, $nombre_profesor, $id);
 
-            if ($stmt->execute())
-                $mensaje = 'Noticia actualizada correctamente';
+            if ($stmt->execute()) {
+                // CAMBIO: Redirección para limpiar modo edición
+                header("Location: dashboard_erasmus.php?msj=Noticia actualizada correctamente");
+                exit;
+            }
             $stmt->close();
             break;
     }
@@ -116,9 +132,8 @@ if ($_POST && isset($_POST['accion'])) {
 
 // CARGAR TODAS LAS NOTICIAS ACTIVAS CON AUDITORÍA
 $stmt = $conexion->prepare("
-    SELECT n.*, u.nombre AS ultima_edicion_usuario_nombre
+    SELECT n.*
     FROM erasmus_news n
-    LEFT JOIN usuarios u ON n.ultima_edicion_usuario_id = u.id
     WHERE n.activo = 1 
     ORDER BY n.fecha DESC
 "); // Más recientes primero
@@ -144,67 +159,35 @@ if (isset($_GET['editar'])) {
     $stmt->close();
 }
 ?>
-
-<!DOCTYPE html> <!-- Documento HTML5 -->
-<html lang="es"> <!-- Español para accesibilidad -->
-
-    <head>
-        <!-- Configuración básica página -->
-        <meta charset="UTF-8"> <!-- UTF-8 para ñ y acentos -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive móviles -->
-        <title>Gestión Erasmus+ - Dashboard Admin</title> <!-- Título pestaña -->
-
-        <!-- Recursos externos CDN -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> <!-- Iconos -->
-        <link rel="stylesheet" href="style_dashboard.css"> <!-- CSS personalizado -->
-    </head>
-
-    <body>
-        <!-- Contenedor principal dashboard Erasmus -->
-        <div class="dashboard_erasmus_container">
-
-            <!-- Header reutilizable con datos usuario -->
 <?php include 'dashboard_head.php'; ?>
 
-            <!-- RESTRICCION ACCESO - Solo administradores -->
-<?php if (!$is_admin): ?>
-                <div class="dashboard_erasmus_no_admin"> <!-- Mensaje bloqueo no-admin -->
-                    <i class="fas fa-lock"></i> <!-- Icono candado -->
-                    <h2>Solo administradores pueden gestionar el contenido</h2>
+<!DOCTYPE html> <html lang="es"> <head>
+        <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Gestión Erasmus+ - Dashboard Admin</title> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> <link rel="stylesheet" href="style_dashboard.css"> </head>
+    <body>
+        <div class="dashboard_erasmus_container">
+
+
+            <?php if (!$is_admin): ?>
+                <div class="dashboard_erasmus_no_admin"> <i class="fas fa-lock"></i> <h2>Solo administradores pueden gestionar el contenido</h2>
                 </div>
-<?php else: ?> <!-- Si ES admin, mostrar contenido -->
+            <?php else: ?> <?php if ($mensaje): ?> <div class="dashboard_erasmus_alert dashboard_erasmus_alert_success"> <?php echo htmlspecialchars($mensaje); ?> </div>
+                <?php endif; ?>
 
-                <!-- MENSAJE ÉXITO/ERROR -->
-    <?php if ($mensaje): ?> <!-- Solo si existe mensaje -->
-                    <div class="dashboard_erasmus_alert dashboard_erasmus_alert_success"> <!-- Alerta verde -->
-                    <?php echo htmlspecialchars($mensaje); ?> <!-- Mensaje seguro XSS -->
-                    </div>
-                    <?php endif; ?>
-
-                <!-- FORMULARIO PRINCIPAL - Nueva o editar noticia -->
                 <div class="dashboard_erasmus_seccion_form <?php echo $modo_edit ? 'dashboard_erasmus_modo_edit' : ''; ?>">
-                    <!-- Título dinámico según modo -->
                     <h2>
-    <?php if ($modo_edit): ?> <!-- MODO EDICIÓN -->
-                            <i class="fas fa-edit"></i> Editar Noticia (ID: <?php echo $noticia_edit['id']; ?>)
-                        <?php else: ?> <!-- MODO NUEVA -->
-                            <i class="fas fa-plus"></i> Nueva Noticia Erasmus+
+                        <?php if ($modo_edit): ?> <i class="fas fa-edit"></i> Editar Noticia (ID: <?php echo $noticia_edit['id']; ?>)
+                        <?php else: ?> <i class="fas fa-plus"></i> Nueva Noticia Erasmus+
                         <?php endif; ?>
                     </h2>
 
-                    <!-- Formulario con subida archivos -->
                     <form method="POST" class="dashboard_erasmus_form_grid" enctype="multipart/form-data">
 
-                        <!-- Campos ocultos según modo -->
-    <?php if ($modo_edit): ?> <!-- Edición: ID + imagen actual -->
-                            <input type="hidden" name="accion" value="editar">
+                        <?php if ($modo_edit): ?> <input type="hidden" name="accion" value="editar">
                             <input type="hidden" name="id" value="<?php echo $noticia_edit['id']; ?>">
                             <input type="hidden" name="imagen_existente" value="<?php echo htmlspecialchars($noticia_edit['imagen']); ?>">
-    <?php else: ?> <!-- Nueva: solo acción -->
-                            <input type="hidden" name="accion" value="nueva">
+                        <?php else: ?> <input type="hidden" name="accion" value="nueva">
                         <?php endif; ?>
 
-                        <!-- TÍTULO noticia (obligatorio) -->
                         <div class="dashboard_erasmus_form_group">
                             <label class="dashboard_erasmus_form_label">Título *</label>
                             <input type="text" name="titulo" class="dashboard_erasmus_form_input" required 
@@ -212,7 +195,12 @@ if (isset($_GET['editar'])) {
                                    placeholder="Ej: 2025-26 Becas Erasmus+">
                         </div>
 
-                        <!-- ENLACE externo opcional -->
+                        <div class="dashboard_erasmus_form_group">
+                            <label class="dashboard_erasmus_form_label">Fecha noticia *</label>
+                            <input type="date" name="fecha" class="dashboard_erasmus_form_input" required 
+                                   value="<?php echo $modo_edit ? $noticia_edit['fecha'] : date('Y-m-d'); ?>">
+                        </div>
+
                         <div class="dashboard_erasmus_form_group">
                             <label class="dashboard_erasmus_form_label">Enlace (opcional)</label>
                             <input type="url" name="enlace" class="dashboard_erasmus_form_input" 
@@ -220,21 +208,18 @@ if (isset($_GET['editar'])) {
                                    placeholder="https://site.educa.madrid.org/...">
                         </div>
 
-                        <!-- SUBIDA IMAGEN -->
                         <div class="dashboard_erasmus_form_group">
-    <?php if ($modo_edit && $noticia_edit['imagen']): ?> <!-- Mostrar imagen actual -->
-                                <label class="dashboard_erasmus_form_label">Imagen actual:</label>
+                            <?php if ($modo_edit && $noticia_edit['imagen']): ?> <label class="dashboard_erasmus_form_label">Imagen actual:</label>
                                 <div class="dashboard_erasmus_imagen_actual">
                                     <img src="<?php echo htmlspecialchars($noticia_edit['imagen']); ?>" alt="Imagen actual" class="dashboard_erasmus_imagen_actual_img">
                                     <p class="dashboard_erasmus_imagen_actual_nombre"><?php echo htmlspecialchars(basename($noticia_edit['imagen'])); ?></p>
                                 </div>
-    <?php endif; ?>
+                            <?php endif; ?>
                             <label class="dashboard_erasmus_form_label">Nueva Imagen (JPG, PNG, GIF, WEBP)</label>
                             <input type="file" name="imagen" class="dashboard_erasmus_form_input" accept="image/*">
                             <small class="dashboard_erasmus_small_text">Máx 5MB. Deja vacío para mantener la actual</small>
                         </div>
 
-                        <!-- VIDEO embebido opcional -->
                         <div class="dashboard_erasmus_form_group">
                             <label class="dashboard_erasmus_form_label">Video (opcional)</label>
                             <input type="url" name="video" class="dashboard_erasmus_form_input" 
@@ -242,7 +227,6 @@ if (isset($_GET['editar'])) {
                                    placeholder="https://youtube.com/...">
                         </div>
 
-                        <!-- ARCHIVO PDF opcional -->
                         <div class="dashboard_erasmus_form_group">
                             <label class="dashboard_erasmus_form_label">PDF (opcional)</label>
                             <input type="text" name="pdf" class="dashboard_erasmus_form_input" 
@@ -250,81 +234,67 @@ if (isset($_GET['editar'])) {
                                    placeholder="pdfs/documento.pdf">
                         </div>
 
-                        <!-- CONTENIDO principal (obligatorio, textarea grande) -->
                         <div class="dashboard_erasmus_form_group dashboard_erasmus_form_group_full">
                             <label class="dashboard_erasmus_form_label">Contenido *</label>
                             <textarea name="contenido" class="dashboard_erasmus_form_textarea" required><?php echo htmlspecialchars($modo_edit ? $noticia_edit['contenido'] : ($_POST['contenido'] ?? '')); ?></textarea>
                         </div>
 
-                        <!-- BOTONES acción -->
                         <div class="dashboard_erasmus_btn_group">
                             <button type="submit" class="dashboard_erasmus_btn dashboard_erasmus_btn_primary">
                                 <i class="fas fa-save"></i> <?php echo $modo_edit ? 'Actualizar' : 'Añadir'; ?> Noticia
                             </button>
+                            <?php if ($modo_edit): ?>
+                                <a href="dashboard_erasmus.php" style="text-decoration:none; background:#888;" class="dashboard_erasmus_btn">Cancelar</a>
+                            <?php endif; ?>
                         </div>
                     </form>
                 </div>
 
-                <!-- LISTADO COMPLETO noticias publicadas -->
                 <div class="dashboard_erasmus_seccion_lista">
                     <h2><i class="fas fa-list"></i> Noticias Publicadas (<?php echo count($noticias); ?>)</h2>
 
-    <?php if (!empty($noticias)): ?> <!-- Si hay noticias -->
-                        <div class="dashboard_erasmus_noticias_grid"> <!-- Grid responsive tarjetas -->
-                        <?php foreach ($noticias as $noticia): ?> <!-- Bucle cada noticia -->
-                                <div class="dashboard_erasmus_noticia_card"> <!-- Tarjeta individual -->
-
-            <?php if ($noticia['imagen']): ?> <!-- Si tiene imagen -->
-                                        <div class="dashboard_erasmus_noticia_imagen">
+                    <?php if (!empty($noticias)): ?> <div class="dashboard_erasmus_noticias_grid"> <?php foreach ($noticias as $noticia): ?> <div class="dashboard_erasmus_noticia_card"> <?php if ($noticia['imagen']): ?> <div class="dashboard_erasmus_noticia_imagen">
                                             <img src="<?php echo htmlspecialchars($noticia['imagen']); ?>" alt="<?php echo htmlspecialchars($noticia['titulo']); ?>">
                                         </div>
-            <?php endif; ?>
+                                    <?php endif; ?>
 
-                                    <!-- Título noticia -->
                                     <h3 class="dashboard_erasmus_noticia_titulo"><?php echo htmlspecialchars($noticia['titulo']); ?></h3>
 
-                                    <!-- Fecha + auditoría última edición -->
                                     <div class="dashboard_erasmus_noticia_fecha">
                                         <i class="fas fa-calendar"></i> <?php echo date('d/m/Y', strtotime($noticia['fecha'])); ?>
-            <?php if (!empty($noticia['ultima_edicion_usuario_nombre'])): ?>
+                                        <?php if (!empty($noticia['ultima_edicion_nombre'])): ?>
                                             <br>
                                             <small class="dashboard_erasmus_auditoria_text">
-                <?php echo htmlspecialchars($noticia['ultima_edicion_usuario_nombre']); ?> <!-- Quién editó -->
-                                            </small>
-                                            <?php endif; ?>
+                                                Editado por: <?php echo htmlspecialchars($noticia['ultima_edicion_nombre']); ?> </small>
+                                        <?php endif; ?>
                                     </div>
 
-                                    <!-- Preview contenido (150 primeros caracteres) -->
                                     <div class="dashboard_erasmus_noticia_contenido">
-            <?php echo htmlspecialchars(substr($noticia['contenido'], 0, 150)); ?>...
+                                        <?php echo htmlspecialchars(substr($noticia['contenido'], 0, 150)); ?>...
                                     </div>
 
-                                    <!-- Enlaces multimedia -->
                                     <div class="dashboard_erasmus_noticia_medios">
-            <?php if ($noticia['enlace']): ?>
+                                        <?php if ($noticia['enlace']): ?>
                                             <a href="<?php echo htmlspecialchars($noticia['enlace']); ?>" class="dashboard_erasmus_noticia_enlace" target="_blank">
                                                 <i class="fas fa-external-link-alt"></i> Ver completo
                                             </a>
-            <?php endif; ?>
+                                        <?php endif; ?>
                                         <?php if ($noticia['video']): ?>
                                             <a href="<?php echo htmlspecialchars($noticia['video']); ?>" class="dashboard_erasmus_noticia_video" target="_blank">
                                                 <i class="fas fa-video"></i> Video
                                             </a>
-            <?php endif; ?>
+                                        <?php endif; ?>
                                         <?php if ($noticia['pdf']): ?>
                                             <a href="<?php echo htmlspecialchars($noticia['pdf']); ?>" class="dashboard_erasmus_noticia_pdf" target="_blank">
                                                 <i class="fas fa-file-pdf"></i> PDF
                                             </a>
-            <?php endif; ?>
+                                        <?php endif; ?>
                                     </div>
 
-                                    <!-- BOTONES acción (editar/eliminar) -->
                                     <div class="dashboard_erasmus_acciones_botones">
-                                        <!-- Editar noticia -->
                                         <a href="?editar=<?php echo $noticia['id']; ?>" class="dashboard_erasmus_btn_small dashboard_erasmus_btn_editar">
                                             <i class="fas fa-edit"></i> Editar
                                         </a>
-                                        <!-- Eliminar con confirmación JavaScript -->
                                         <form class="dashboard_erasmus_form_inline" method="POST" onsubmit="return confirm('¿Eliminar esta noticia?')">
                                             <input type="hidden" name="accion" value="eliminar">
                                             <input type="hidden" name="id" value="<?php echo $noticia['id']; ?>">
@@ -333,25 +303,15 @@ if (isset($_GET['editar'])) {
                                             </button>
                                         </form>
                                     </div>
-                                </div> <!-- Fin tarjeta noticia -->
-        <?php endforeach; ?>
-                        </div> <!-- Fin grid noticias -->
-                        <?php else: ?> <!-- Si NO hay noticias -->
-                        <div class="dashboard_erasmus_vacio"> <!-- Estado vacío -->
-                            <i class="fas fa-plane"></i> <!-- Icono avión Erasmus -->
-                            <h3>No hay noticias Erasmus+</h3>
+                                </div> <?php endforeach; ?>
+                        </div> <?php else: ?> <div class="dashboard_erasmus_vacio"> <i class="fas fa-plane"></i> <h3>No hay noticias Erasmus+</h3>
                             <p>Añade la primera noticia con el formulario de arriba</p>
                         </div>
-    <?php endif; ?>
-                </div> <!-- Fin sección lista -->
-                <?php endif; ?> <!-- Fin restricción admin -->
-
-            <!-- BOTÓN VOLVER al dashboard principal -->
-            <form method="POST" action="dashboard.php" class="dashboard_universal_volver">
+                    <?php endif; ?>
+                </div> <?php endif; ?> <form method="POST" action="dashboard.php" class="dashboard_universal_volver">
                 <button type="submit" class="dashboard_universal_btn_volver">
                     <i class="fas fa-arrow-left"></i> Volver
                 </button>
             </form>
-        </div> <!-- Fin contenedor principal -->
-    </body>
+        </div> </body>
 </html>

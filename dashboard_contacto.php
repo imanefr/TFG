@@ -29,7 +29,7 @@ if (!isset($_SESSION['usuario_id'])) {
 $titulo_dashboard = "Dashboard Contacto";
 
 // Comprobar si usuario es admin (solo admins editan)
-$is_admin = ($_SESSION['usuario_rol'] === 'admin');
+$is_admin = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor' || $_SESSION['usuario_rol'] === 'otro');// PROCESAR ACCIONES
 
 
 // Preparar consulta SQL segura para 1 registro (id=1)
@@ -73,7 +73,8 @@ if ($_POST && isset($_POST['accion'])) {
     $stmt->close();
 }
 ?>
-
+ <!-- Header con datos usuario -->
+        <?php include 'dashboard_head.php'; ?>
 <!DOCTYPE html>
 <!-- Declara documento HTML5 -->
 
@@ -95,8 +96,7 @@ if ($_POST && isset($_POST['accion'])) {
 <body>
     <div class="dashboard_contacto_container">
         
-        <!-- Header con datos usuario -->
-        <?php include 'dashboard_head.php'; ?>
+       
 
         <!--  CONTROL DE PERMISOS - SOLO ADMIN  -->
         <?php if (!$is_admin): ?>
@@ -182,9 +182,9 @@ if ($_POST && isset($_POST['accion'])) {
 
         <!-- BOTÓN VOLVER -->
         <!-- Formulario para volver a dashboard anterior -->
-        <form method="POST" action="dashboard_secretaria.php" class="dashboard_universal_volver">
+        <form method="POST" action="dashboard.php" class="dashboard_universal_volver">
             <button type="submit" class="dashboard_universal_btn_volver">
-                <i class="fas fa-arrow-left"></i> Volver a Secretaría
+                <i class="fas fa-arrow-left"></i> Volver 
             </button>
         </form>
     </div> <!-- Fin contenedor principal -->

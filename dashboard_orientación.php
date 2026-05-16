@@ -8,7 +8,7 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 $titulo_dashboard = "Dashboard Orientación";
 
-$is_admin = ($_SESSION['usuario_rol'] === 'admin');
+$is_admin = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor' || $_SESSION['usuario_rol'] === 'otro');// PROCESAR ACCIONES
 
 // PROCESAR ACCIONES
 $mensaje = '';
@@ -140,7 +140,8 @@ if (isset($_GET['editar'])) {
     $stmt->close();
 }
 ?>
-
+<!-- HEADER -->
+        <?php include 'dashboard_head.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -152,8 +153,7 @@ if (isset($_GET['editar'])) {
 </head>
 <body>
     <div class="dashboard_erasmus_container">
-        <!-- HEADER -->
-        <?php include 'dashboard_head.php'; ?>
+        
 
         <?php if (!$is_admin): ?>
             <div class="dashboard_erasmus_no_admin">

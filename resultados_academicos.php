@@ -3,13 +3,12 @@
 require_once 'conexion.php';
 
 // Consulta SQL: selecciona resultados académicos activos ordenados
-$sql = "SELECT id, titulo, texto, imagen, orden 
+$sql = "SELECT id, titulo, texto, imagen, orden , ultima_edicion_nombre
         FROM resultados_academicos 
         WHERE activo = 1 
         ORDER BY orden ASC, id ASC";  // Orden personalizado + ID
 
 $resultado = $conexion->query($sql);  // Ejecuta consulta
-
 // Array para almacenar todos los resultados
 $resultados = [];
 if ($resultado) {
@@ -44,7 +43,7 @@ $conexion->close();
     <section class="seccion-contenido">
         <div class="contenedor-max">
             <h2 class="resultados_academicos_titulo">Nuestros Resultados 2023-2024</h2>
-            
+
             <?php if (!empty($resultados)): ?>  <!-- Si hay datos -->
                 <!-- Grid responsive de cards -->
                 <div class="resultados_academicos_grid">
@@ -55,15 +54,22 @@ $conexion->close();
                                  alt="<?php echo htmlspecialchars($res['titulo']); ?>" 
                                  class="resultados_academicos_imagen"
                                  onerror="this.style.display='none'; this.nextElementSibling.classList.remove('resultados_academicos_placeholder_hidden');">
-                            
+
                             <!-- Placeholder si imagen falla -->
                             <div class="resultados_academicos_placeholder resultados_academicos_placeholder_hidden">
                                 <i class="fas fa-image resultados_academicos_placeholder_icono"></i>
                             </div>
-                            
+
                             <!-- Contenido de la card -->
                             <h3 class="resultados_academicos_titulo_card"><?php echo htmlspecialchars($res['titulo']); ?></h3>
+                           
                             <p class="resultados_academicos_descripcion"><?php echo htmlspecialchars($res['texto']); ?></p>
+                             <?php if (!empty($res['ultima_edicion_nombre'])): ?>
+                                <br>
+                                <small class="letra-666">
+                                    <?php echo htmlspecialchars($res['ultima_edicion_nombre']); ?>
+                                </small> 
+                            <?php endif; ?><br>
                             <div class="resultados_academicos_anio">2023-2024</div>
                         </div>
                     <?php endforeach; ?>

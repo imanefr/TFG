@@ -7,7 +7,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$is_admin = ($_SESSION['usuario_rol'] === 'admin');
+$is_admin = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor' || $_SESSION['usuario_rol'] === 'otro');// PROCESAR ACCIONES
 
 $submenus_nuestro_centro = [
     ['enlace' => 'relevante_ahora.php', 'titulo' => 'Relevante Ahora', 'icono' => 'fas fa-bookmark', 'descripcion' => 'Lista, Crea, Actualiza o Elimina las noticias marcadas como relevantes.'],
@@ -19,6 +19,8 @@ $colores = ['relevante_ahora' => '#10B981', 'ultimas_noticias' => '#F59E0B'];
 // Título dinámico para el header global
 $titulo_dashboard = "Dashboard Inicio";
 ?>
+    <!-- HEADER GLOBAL -->
+        <?php include 'dashboard_head.php'; ?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -32,9 +34,7 @@ $titulo_dashboard = "Dashboard Inicio";
 <body>
     <div class="dashboard_nuestro_centro_container">
         
-        <!-- HEADER GLOBAL -->
-        <?php include 'dashboard_head.php'; ?>
-
+    
 
         <?php if (!$is_admin): ?>
             <div class="dashboard_nuestro_centro_no_admin">

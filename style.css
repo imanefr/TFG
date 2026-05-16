@@ -17,7 +17,8 @@
     --sombra-nav: 0 2px 6px rgba(0,0,0,0.15);
 
     /* Tipografía */
-    --fuente-base: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --fuente-base: system-ui, -apple-system, 
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 /* Reset y base */
@@ -43,284 +44,7 @@ body {
     color: #666;
 }
 
-/* ==========================================================================
-   HEADER Y NAVEGACIÓN - COMPLETO Y HOMOGÉNEO
-   ========================================================================== */
 
-/* HEADER PRINCIPAL */
-.header_pagina_header_top {
-    background: var(--blanco);
-    border-bottom: 1px solid var(--gris-suave);
-}
-
-.header_pagina_header_contenido {
-    max-width: 1150px;
-    margin: 0 auto;
-    padding: 0.8rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.header_pagina_header_logo {
-    height: 70px;
-    width: auto;
-}
-
-.header_pagina_header_texto h1 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.2rem;
-    color: var(--gris-texto);
-}
-
-.header_pagina_header_texto p {
-    font-size: 0.9rem;
-    color: var(--gris-medio);
-    margin: 0;
-}
-
-/* BARRA PRINCIPAL - VERDE PRINCIPAL */
-.header_pagina_barra_menu {
-    background: var(--verde-principal);
-    box-shadow: var(--sombra-nav);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header_pagina_menu_contenedor {
-    max-width: 1150px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-/* ÍTEMS PRINCIPALES DEL MENÚ */
-.header_pagina_item_menu {
-    position: relative;
-    padding: 0.9rem 0;
-    font-size: 0.93rem;
-    color: var(--blanco);
-    text-decoration: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    white-space: nowrap;
-    transition: all 0.25s ease;
-}
-
-.header_pagina_item_menu::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0.25rem;
-    width: 0;
-    height: 2px;
-    background: var(--blanco);
-    border-radius: 999px;
-    transition: width 0.25s ease-out;
-}
-
-.header_pagina_item_menu:hover::after,
-.header_pagina_item_menu.activo::after {
-    width: 70%;
-}
-
-.header_pagina_item_menu:hover {
-    color: var(--blanco);
-}
-
-/* ÍCONO DESPLEGABLE */
-.header_pagina_icono_desplegable {
-    font-size: 0.7rem;
-    opacity: 0.9;
-    transition: transform 0.25s ease;
-}
-
-.header_pagina_desplegable:hover .header_pagina_icono_desplegable {
-    transform: rotate(180deg);
-}
-
-.header_pagina_desplegable {
-    position: relative;
-}
-
-/* ==========================================================================
-   SUBMENÚS DESPLEGABLES - COMPLETAMENTE HOMOGÉNEOS
-   ========================================================================== */
-
-/* SUBMENÚ PRINCIPAL */
-.header_pagina_submenu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    min-width: 260px;
-    max-width: 280px;
-    background: var(--verde-oscuro, #2d5a2d);
-    border-radius: 8px;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
-    margin-top: 0px;
-    padding: 8px 0;
-    overflow: visible;
-    z-index: 1000;
-    font-size: 0.9rem;
-}
-
-.header_pagina_desplegable:hover>.header_pagina_submenu {
-    display: block;
-}
-
-/* ÍTEMS DEL SUBMENÚ (NIVELES 1) */
-.header_pagina_submenu_titulo {
-    display: block;
-    padding: 12px 20px;
-    color: #e8f5e8;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    position: relative;
-    transition: all 0.25s ease;
-    white-space: nowrap;
-}
-
-.header_pagina_submenu_titulo:last-child {
-    border-bottom: none;
-}
-
-.header_pagina_submenu_titulo:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    padding-left: 28px;
-    box-shadow: inset 3px 0 0 rgba(255, 255, 255, 0.3);
-}
-
-/* TÍTULOS DESPLEGABLES (Padres de submenús anidados) */
-.header_pagina_titulo_desplegable {
-    font-weight: 600;
-    background: rgba(255, 255, 255, 0.08) !important;
-    border-left: 4px solid var(--verde-muy-claro, #4a9a4a);
-}
-
-.header_pagina_titulo_desplegable:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-    box-shadow: inset 4px 0 0 var(--blanco) !important;
-}
-
-/* SUBMENÚS ANIDADOS (NIVELES 2) */
-.header_pagina_submenu_item_desplegable {
-    position: relative;
-}
-
-.header_pagina_submenu_anidado {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 100%;
-    min-width: 240px;
-    background: var(--verde-principal);
-    margin: 0;
-    padding-bottom: 4px;
-    border-left: none;
-    border: 3px solid var(--verde-oscuro);
-    border-top: 3px solid var(--verde-muy-claro, #4a9a4a);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
-    overflow: hidden;
-    animation: fadeInSubmenu 0.2s ease-out;
-    text-align: center;
-    z-index: 1001;
-}
-
-.header_pagina_submenu_item_desplegable:hover > .header_pagina_submenu_anidado {
-    display: block;
-}
-
-@keyframes fadeInSubmenu {
-    from {
-        opacity: 0;
-        transform: translateY(-5px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.header_pagina_submenu_anidado .header_pagina_submenu_titulo {
-    padding: 10px 20px !important;
-    font-size: 0.88rem;
-    background: transparent !important;
-    color: var(--blanco) !important;
-    border-bottom: none !important;
-    border-radius: 0;
-    transition: all 0.3s ease;
-}
-
-.header_pagina_submenu_anidado .header_pagina_submenu_titulo:hover {
-    background: rgba(255, 255, 255, 0.25) !important;
-    box-shadow: inset 4px 0 0 var(--verde-principal) !important;
-    transform: scale(1.05);
-}
-
-/* BOTÓN HÁMBURGUEZ MÓVIL */
-.header_pagina_nav_toggle {
-    margin-left: auto;
-    background: none;
-    border: 1px solid rgba(255,255,255,0.3);
-    color: var(--blanco);
-    font-size: 1.2rem;
-    padding: 0.4rem 0.8rem;
-    border-radius: 999px;
-    cursor: pointer;
-    display: none;
-    transition: all 0.25s ease;
-}
-
-.header_pagina_nav_toggle:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: var(--blanco);
-}
-
-/* BREADCRUMB */
-.header_pagina_seccion_breadcrumb {
-    background: var(--blanco);
-    padding: 1rem 0;
-    box-shadow: var(--sombra-suave);
-    margin-bottom: 1rem;
-}
-
-.header_pagina_contenedor_max {
-    max-width: 1150px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-}
-
-.header_pagina_breadcrumb_nav {
-    display: flex;
-    align-items: center;
-    font-size: 0.85rem;
-    color: var(--gris-medio);
-}
-
-.header_pagina_breadcrumb_link {
-    color: var(--gris-medio);
-    text-decoration: none;
-    transition: color 0.25s ease;
-}
-
-.header_pagina_breadcrumb_link:hover,
-.header_pagina_breadcrumb_link.activo {
-    color: var(--verde-principal);
-    font-weight: 500;
-}
-
-.header_pagina_breadcrumb_separador {
-    margin: 0 0.6rem;
-    color: var(--gris-suave);
-}
 
 
 /* ==========================================================================
@@ -572,6 +296,67 @@ body {
     transform: translateX(3px);
 }
 
+
+/* CONTENEDOR PRINCIPAL */
+.franja_imagenes_ancho {
+    width: 100%;
+    background-color: #ffffff !important;
+    margin: 0;
+    padding: 15px 0;
+    box-sizing: border-box;
+}
+
+/* CONTENEDOR FLEX */
+.franja_contenedor_flex {
+    display: flex !important;
+    flex-direction: row;
+    justify-content: center; /* Centra el conjunto de logos */
+    align-items: center;
+    flex-wrap: nowrap; /* FUERZA a que sigan en una sola fila siempre */
+    gap: 10px; /* Un poco de separación mínima entre logos */
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* LAS CAJAS DE LAS IMÁGENES */
+.franja_item_imagen {
+    flex: 0 1 auto; /* Permite que la caja se encoja si es necesario */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* LAS IMÁGENES (CONTROL DE TAMAÑO) */
+.franja_item_imagen img {
+    height: 70px; /* Tamaño en ordenador */
+    width: auto;
+    max-width: 100%; /* No deja que la imagen se salga de su sitio */
+    display: block;
+    object-fit: contain;
+}
+
+/* --- MODO MÓVIL --- */
+@media (max-width: 768px) {
+    .franja_imagenes_ancho {
+        padding: 10px 5px; /* Menos margen en móvil */
+    }
+
+    .franja_contenedor_flex {
+        gap: 5px; /* Menos espacio entre logos para que quepan todos */
+    }
+
+    .franja_item_imagen img {
+        height: 35px; /* EN EL MÓVIL SE VEN A LA MITAD DE TAMAÑO */
+    }
+}
+
+/* PARA MÓVILES MUY PEQUEÑOS */
+@media (max-width: 400px) {
+    .franja_item_imagen img {
+        height: 25px; /* Todavía más pequeñas si la pantalla es minúscula */
+    }
+}
 /* ==========================================================================
    RESPONSIVE DESIGN - ACTUALIZADO
    ========================================================================== */
@@ -584,6 +369,8 @@ body {
         max-width: 95%;
         padding: 2rem 1rem;
         margin: 0 0.5rem;
+            text-align: center;
+
     }
 
     .indice_pagina_texto_hero_superior {
@@ -793,15 +580,84 @@ body {
 }
 
 
+/* CONTENEDOR PRINCIPAL BLANCO */
+#emCommonFooter {
+    background-color: #ffffff !important;
+    border-top: 4px solid #138b3c;
+    padding: 15px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#emCommonFooterContent {
+    max-width: 95%; /* Para que no pegue a los bordes de la pantalla */
+    margin: 0 auto;
+}
+
+#emCommonFooterCopyright {
+    display: flex;
+    justify-content: space-between; /* ESTO ENVÍA EL TEXTO A LA IZQUIERDA Y LOGOS A LA DERECHA */
+    align-items: center;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: #333;
+}
+
+/* Estilo para los textos de la izquierda */
+.emTextoIzquierda {
+    display: flex;
+    align-items: center;
+}
+
+.emTextoIzquierda a {
+    color: #333;
+    text-decoration: none;
+}
+
+.emTextoIzquierda a:hover {
+    text-decoration: underline;
+}
+
+/* Separadores guion */
+.emCommonFooterSep {
+    margin: 0 8px;
+    color: #666;
+}
+
+/* GRUPO DE LOGOS A LA DERECHA */
+#emCommonFooterLogos {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#emCommonFooterLogos img {
+    height: 35px;
+    width: auto;
+    display: block;
+}
+
+/* RESPONSIVE: Si la pantalla es pequeña, se apilan al centro */
+@media (max-width: 1024px) {
+    #emCommonFooterCopyright {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    .emTextoIzquierda {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
 /* ==========================================================================
-   HEADER UNIVERSAL (MÁS COMPACTO)
+   HEADER UNIVERSAL
    ========================================================================== */
 
 .seccion-hero-universal {
     background-color: #fafafa;
-    margin-bottom: 1rem;
-    padding: 2rem 3rem 4rem;
-    max-width: 1200px;        /* Límites el ancho máximo */
+    padding: 2rem 3rem 0;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -1194,7 +1050,7 @@ body {
    ========================================================================== */
 
 .resultados_academicos_pagina {
-    padding: 2rem 3rem 4rem;
+    padding: 0 3rem 4rem;
     max-width: 1000px;
     margin: 0 auto;
 }
@@ -2049,10 +1905,11 @@ body {
 
 .erasmus_fecha {
     font-size: 0.85rem;
-    color: var(--verde-principal);
+    color: var(--verde-oscuro);
     font-weight: 600;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
+    width: fit-content;
 }
 
 .erasmus_titulo_item {
@@ -3444,89 +3301,88 @@ body {
 
 
 /* ==========================================================================
-   NOTIFICACIONES 
+   NOTIFICACIONES PREMIUM - CONTROL DE VISIBILIDAD POR DISPOSITIVO
    ========================================================================== */
 
 #notificaciones_whatsapp_container {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 350px;
-    max-height: 500px;
-    overflow-y: auto;
+    bottom: 30px; /* Abajo */
+    right: 30px;  /* Derecha */
+    width: 380px;
+    max-height: 80vh;
     z-index: 10000;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: column-reverse; /* Nuevas abajo, viejas arriba */
+    gap: 15px;
+    pointer-events: none;
+    overflow: visible;
 }
 
 .notificaciones_whatsapp_item {
-    background: linear-gradient(145deg, #25D366, #128C7E);
-    border-radius: 18px;
-    padding: 18px;
-    box-shadow: 0 12px 35px rgba(37, 211, 102, 0.4);
-    animation: notificaciones_slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    max-width: 350px;
-    border-bottom: 4px solid #075E54;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255,255,255,0.2);
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    animation: notificaciones_slideInRight 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    /* Sin hover por petición anterior */
 }
 
-.notificaciones_whatsapp_item:hover {
-    transform: translateX(-8px) scale(1.02);
-    box-shadow: 0 20px 45px rgba(37, 211, 102, 0.5);
+/* Línea lateral estilo WhatsApp */
+.notificaciones_whatsapp_item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    background: #25D366;
 }
 
+/* Estructura interna (Avatar, Título, etc.) */
 .notificaciones_whatsapp_header {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 10px;
 }
 
 .notificaciones_whatsapp_avatar {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, #fff, #f0f0f0);
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    color: #25D366;
-    font-size: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.notificaciones_whatsapp_content {
-    display: flex;
-    flex-direction: column;
-}
-
-.notificaciones_whatsapp_titulo {
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-
-.notificaciones_whatsapp_time {
-    font-size: 12px;
-    color: rgba(255,255,255,0.8);
-    font-weight: 500;
-}
-
-.notificaciones_whatsapp_descripcion {
     color: white;
-    font-size: 15px;
-    line-height: 1.45;
-    font-weight: 400;
+    font-weight: bold;
 }
 
+/* ==========================================================================
+   RESPONSIVE: DESAPARECER EN MÓVIL
+   ========================================================================== */
+
+@media (max-width: 767px) {
+    /* Ocultamos el contenedor completo en pantallas menores a 768px */
+    #notificaciones_whatsapp_container {
+        display: none !important;
+    }
+}
+
+/* Para Tablet y Ordenador (768px en adelante) el display flex se mantiene activo */
+@media (min-width: 768px) {
+    #notificaciones_whatsapp_container {
+        display: flex;
+    }
+}
+
+/* ANIMACIÓN */
 @keyframes notificaciones_slideInRight {
-    from { transform: translateX(120%); opacity: 0; }
+    from { transform: translateX(110%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }
-
 /* ==========================================================================
    MATRICULACIÓN ESO
    ========================================================================== */
@@ -3663,7 +3519,7 @@ body {
     text-align: center;
     margin-top: 2rem;
     padding: 25px 45px 25px 45px;
-    width: fit-content;
+    width: 50%;
     margin-left: auto;
     margin-right: auto;
     border: 1px solid var(--verde-principal);
@@ -3672,11 +3528,37 @@ body {
     background-color: var(--blanco);
 }
 
+@media (max-width: 768px) {
+    .horario-secretaria {
+        width: 90%;
+    }
+}
+
+.horario-secretaria a 
+{
+    color: var(--verde-principal);
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .horario-secretaria a {
+        font-size: 1rem;
+    }
+}
+
+.horario-secretaria a:hover {
+    color: var(--verde-oscuro);
+    transform: translateY(-2px) scale(1.05);
+}
+
 .documentacion-necesaria-eso {
     text-align: center;
     margin-top: 2rem;
     padding: 25px 45px 25px 45px;
-    width: 50%;
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
     border-radius: 12px;
@@ -3706,7 +3588,7 @@ body {
 
 .lista_documentacion_eso {
     text-align: left;
-    padding: 5px 45px 5px 45px;
+    padding: 5px 55px 5px 55px;
     margin-top: 15px;
     list-style-type: none;
     display: flex;
@@ -5192,6 +5074,17 @@ body {
     box-shadow: var(--sombra-suave);
 }
 
+.teatro_video
+{
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
 .teatro_pdf_iframe {
     border: none; 
     border-radius: 12px; 
@@ -5273,6 +5166,16 @@ body {
     padding: 2rem 3rem 4rem;
     max-width: 1000px;
     margin: 0 auto;
+}
+
+.plan_igualdad_cabezera
+{
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .plan_igualdad_item
@@ -5906,3 +5809,6 @@ body {
         padding-right: 1.5rem;
     }
 }
+
+
+

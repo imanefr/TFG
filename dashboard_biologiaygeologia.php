@@ -6,7 +6,7 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
 }
-$titulo_dashboard = "Dashboard Otros Trámites";
+$titulo_dashboard = "Dashboard Biología y Geología";
 
 $is_admin = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor' || $_SESSION['usuario_rol'] === 'otro');// PROCESAR ACCIONES
 
@@ -16,7 +16,7 @@ if ($_POST && isset($_POST['accion'])) {
     switch ($_POST['accion']) {
         case 'eliminar':
             $id = (int) $_POST['id'];
-            $stmt = $conexion->prepare("DELETE FROM otros_tramites WHERE id = ?");
+            $stmt = $conexion->prepare("DELETE FROM departamentos WHERE dept_id = 3 && id = ?");
             $stmt->bind_param("i", $id);
             if ($stmt->execute())
                 $mensaje = 'Sección eliminada correctamente';
@@ -53,7 +53,7 @@ if ($_POST && isset($_POST['accion'])) {
                 }
             }
 
-            $stmt = $conexion->prepare("INSERT INTO otros_tramites (titulo, texto, link, texto_link, imagen, video, pdf, fecha_publicacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conexion->prepare("INSERT INTO departamentos (titulo_seccion, texto_seccion, link, texto_link, imagen, video, pdf, fecha_publicacion, dept_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 3)");
             $stmt->bind_param("ssssssss", $titulo, $texto, $enlace, $texto_enlace, $imagen, $video, $pdf, $fecha);
             if ($stmt->execute())
                 $mensaje = 'Noticia añadida correctamente';
@@ -96,10 +96,10 @@ if ($_POST && isset($_POST['accion'])) {
 
             // ACTUALIZAR noticia existente
             $stmt = $conexion->prepare("
-                UPDATE otros_tramites 
-                SET titulo=?, texto=?, fecha_publicacion=?, link=?, texto_link=?, imagen=?, video=?, pdf=?,
+                UPDATE departamentos 
+                SET titulo_seccion=?, texto_seccion=?, fecha_publicacion=?, link=?, texto_link=?, imagen=?, video=?, pdf=?,
                     ultima_edicion_usuario_id=?, ultima_edicion_fecha=NOW()
-                WHERE id=?
+                WHERE id=? && dept_id = 3
             ");
             $stmt->bind_param("ssssssssii", $titulo, $texto, $fecha, $enlace, $texto_enlace, $imagen, $video, $pdf, $_SESSION['usuario_id'], $id);
             if ($stmt->execute())
@@ -112,8 +112,9 @@ if ($_POST && isset($_POST['accion'])) {
 // CARGAR NOTICIAS CON NOMBRE DEL USUARIO - CONSULTA CORREGIDA ✅
 $stmt = $conexion->prepare("
     SELECT n.*, u.nombre AS ultima_edicion_usuario_nombre
-    FROM otros_tramites n
+    FROM departamentos n
     LEFT JOIN usuarios u ON n.ultima_edicion_usuario_id = u.id
+    WHERE n.dept_id = 3
     ORDER BY n.fecha_publicacion DESC
 ");
 
@@ -130,7 +131,7 @@ $modo_edit = false;
 $noticia_edit = null;
 if (isset($_GET['editar'])) {
     $id_edit = (int) $_GET['editar'];
-    $stmt = $conexion->prepare("SELECT * FROM otros_tramites WHERE id = ?");
+    $stmt = $conexion->prepare("SELECT * FROM departamentos WHERE id = ?");
     $stmt->bind_param("i", $id_edit);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -139,20 +140,20 @@ if (isset($_GET['editar'])) {
     $stmt->close();
 }
 ?>
-<!-- HEADER -->
+  <!-- HEADER -->
         <?php include 'dashboard_head.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión Otros Trámites - Dashboard Admin</title>
+    <title>Gestión Actividades Extraescolares - Dashboard Admin</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style_dashboard.css">
 </head>
 <body>
     <div class="dashboard_erasmus_container">
-        
+      
 
         <?php if (!$is_admin): ?>
             <div class="dashboard_erasmus_no_admin">
@@ -262,7 +263,7 @@ if (isset($_GET['editar'])) {
                                         <img src="<?php echo htmlspecialchars($noticia['imagen']); ?>" alt="<?php echo htmlspecialchars($noticia['titulo']); ?>">
                                     </div>
                                 <?php endif; ?>
-                                <h3 class="dashboard_erasmus_noticia_titulo"><?php echo htmlspecialchars($noticia['titulo']); ?></h3>
+                                <h3 class="dashboard_erasmus_noticia_titulo"><?php echo htmlspecialchars($noticia['titulo_seccion']); ?></h3>
                                 <div class="dashboard_erasmus_noticia_fecha">
                                     <i class="fas fa-calendar"></i> <?php echo date('d/m/Y', strtotime($noticia['fecha_publicacion'])); ?>
                                     <?php if (!empty($noticia['ultima_edicion_usuario_nombre'])): ?>
@@ -274,11 +275,11 @@ if (isset($_GET['editar'])) {
                                 </div>
 
                                 <div class="dashboard_erasmus_noticia_contenido">
-                                    <?php echo htmlspecialchars(substr($noticia['texto'], 0, 150)); ?>...
+                                    <?php echo htmlspecialchars(substr($noticia['texto_seccion'], 0, 150)); ?>...
                                 </div>
                                 <div class="dashboard_erasmus_noticia_medios">
                                     <?php if ($noticia['link']): ?>
-                                        <a href="solicitud_otros_tramites.php" class="dashboard_erasmus_noticia_enlace">
+                                        <a href="info_departamento.php?id=3" class="dashboard_erasmus_noticia_enlace">
                                             <i class="fas fa-external-link-alt"></i> Ver completo
                                         </a>
                                     <?php endif; ?>
@@ -320,7 +321,7 @@ if (isset($_GET['editar'])) {
 
         <form method="POST" action="dashboard.php" class="dashboard_universal_volver">
             <button type="submit" class="dashboard_universal_btn_volver">
-                <i class="fas fa-arrow-left"></i> Volver a Secretaría
+                <i class="fas fa-arrow-left"></i> Volver
             </button>
         </form>
     </div>

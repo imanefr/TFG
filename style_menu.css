@@ -1,0 +1,452 @@
+:root {
+    /* Colores principales */
+    --verde-principal: #138b3c;
+    --verde-oscuro: #0b5c28;
+    --verde-muy-claro: #22c55e;
+
+    /* Colores de texto y fondos */
+    --gris-texto: #222222;
+    --gris-medio: #6b7280;
+    --gris-suave: #e5e7eb;
+    --blanco: #ffffff;
+    --fondo-principal: #fafafa;
+
+    /* Sombras */
+    --sombra-suave: 0 8px 18px rgba(0,0,0,0.06);
+    --sombra-fuerte: 0 12px 24px rgba(0,0,0,0.12);
+    --sombra-nav: 0 2px 6px rgba(0,0,0,0.15);
+
+    /* Tipografía */
+    --fuente-base: system-ui, -apple-system, 
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Reset y base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--fuente-base);
+    background: var(--fondo-principal);
+    color: var(--gris-texto);
+    line-height: 1.6;
+}
+
+.icono_universal {
+    font-size: 3.5rem;
+    color: var(--verde-principal);
+}
+
+.letra-666{
+    color: #666;
+}
+
+/* ==========================================================================
+   HEADER Y NAVEGACIÓN - COMPLETO Y HOMOGÉNEO
+   ========================================================================== */
+
+/* HEADER PRINCIPAL */
+.header_pagina_header_top {
+    background: var(--blanco);
+    border-bottom: 1px solid var(--gris-suave);
+}
+
+.header_pagina_header_contenido {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header_pagina_header_logo {
+    height: 70px;
+    width: auto;
+}
+
+.header_pagina_header_texto h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: var(--gris-texto);
+}
+
+.header_pagina_header_texto p {
+    font-size: 0.9rem;
+    color: var(--gris-medio);
+    margin: 0;
+}
+
+/* BARRA PRINCIPAL - VERDE PRINCIPAL */
+.header_pagina_barra_menu {
+    background: var(--verde-principal);
+    box-shadow: var(--sombra-nav);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* Ocultamos botones de control móvil por defecto en Escritorio */
+.header_pagina_barra_menu > .header_pagina_nav_toggle {
+    display: none !important;
+}
+
+/* ==========================================================================
+   NIVELES DE MENÚ EN ESCRITORIO (Pantallas grandes > 992px)
+   ========================================================================== */
+@media (min-width: 993px) {
+    .header_pagina_menu_contenedor {
+        max-width: 1150px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    /* ÍTEMS PRINCIPALES DEL MENÚ */
+    .header_pagina_item_menu,
+    .header_pagina_menu_contenedor > a {
+        position: relative;
+        padding: 0.9rem 0;
+        font-size: 0.93rem;
+        color: var(--blanco);
+        text-decoration: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        white-space: nowrap;
+        transition: all 0.25s ease;
+    }
+
+    .header_pagina_item_menu::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0.25rem;
+        width: 0;
+        height: 2px;
+        background: var(--blanco);
+        border-radius: 999px;
+        transition: width 0.25s ease-out;
+    }
+
+    .header_pagina_item_menu:hover::after,
+    .header_pagina_item_menu.activo::after {
+        width: 70%;
+    }
+
+    .header_pagina_desplegable {
+        position: relative;
+    }
+
+    /* SUBMENÚ PRINCIPAL (NIVEL 2) */
+    .header_pagina_submenu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 260px;
+        max-width: 280px;
+        background: var(--verde-oscuro);
+        border-radius: 8px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        margin-top: 0px;
+        padding: 8px 0;
+        overflow: visible;
+        z-index: 1000;
+        font-size: 0.9rem;
+    }
+
+    .header_pagina_desplegable:hover > .header_pagina_submenu {
+        display: block;
+    }
+
+    /* ÍTEMS DEL SUBMENÚ */
+    .header_pagina_submenu_titulo,
+    .header_pagina_submenu a {
+        display: block;
+        padding: 12px 20px;
+        color: #e8f5e8;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        position: relative;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+    }
+
+    .header_pagina_submenu_titulo:last-child,
+    .header_pagina_submenu a:last-child {
+        border-bottom: none;
+    }
+
+    .header_pagina_submenu_titulo:hover,
+    .header_pagina_submenu a:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        padding-left: 28px;
+        box-shadow: inset 3px 0 0 rgba(255, 255, 255, 0.3);
+    }
+
+    /* TÍTULOS DESPLEGABLES (Padres de submenús anidados) */
+    .header_pagina_titulo_desplegable {
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border-left: 4px solid var(--verde-muy-claro, #4a9a4a);
+    }
+
+    .header_pagina_titulo_desplegable:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        box-shadow: inset 4px 0 0 var(--blanco) !important;
+    }
+
+    /* SUBMENÚS ANIDADOS (NIVELES 3) */
+    .header_pagina_submenu_item_desplegable {
+        position: relative;
+    }
+
+    .header_pagina_submenu_anidado {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 100%;
+        min-width: 240px;
+        background: var(--verde-principal);
+        margin: 0;
+        padding-bottom: 4px;
+        border: 3px solid var(--verde-oscuro);
+        border-top: 3px solid var(--verde-muy-claro, #4a9a4a);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        animation: fadeInSubmenu 0.2s ease-out;
+        z-index: 1001;
+    }
+
+    .header_pagina_submenu_item_desplegable:hover > .header_pagina_submenu_anidado {
+        display: block;
+    }
+
+    .header_pagina_submenu_anidado .header_pagina_submenu_titulo {
+        padding: 10px 20px !important;
+        font-size: 0.88rem;
+        background: transparent !important;
+        color: var(--blanco) !important;
+        border-bottom: none !important;
+        border-radius: 0;
+        transition: all 0.3s ease;
+    }
+
+    .header_pagina_submenu_anidado .header_pagina_submenu_titulo:hover {
+        background: rgba(255, 255, 255, 0.25) !important;
+        box-shadow: inset 4px 0 0 var(--verde-principal) !important;
+        transform: scale(1.05);
+    }
+
+    /* ÍCONO DESPLEGABLE ROTACIÓN */
+    .header_pagina_icono_desplegable {
+        font-size: 0.7rem;
+        opacity: 0.9;
+        transition: transform 0.25s ease;
+    }
+
+    .header_pagina_desplegable:hover .header_pagina_icono_desplegable {
+        transform: rotate(180deg);
+    }
+}
+
+/* ==========================================================================
+   MAQUETACIÓN Y DESPLEGABLES PARA DISPOSITIVOS MÓVILES (<= 992px)
+   ========================================================================== */
+@media (max-width: 992px) {
+    
+    /* Fondo general del bloque de navegación abierto */
+    .header_pagina_barra_menu.open {
+        background: var(--verde-principal) !important;
+        min-height: 100vh;
+    }
+
+    /* Botón X superior */
+    .header_pagina_barra_menu > .header_pagina_nav_toggle {
+        display: block !important;
+        background: var(--verde-principal) !important;
+        border: none;
+        color: var(--blanco) !important;
+        font-size: 1.8rem;
+        padding: 1.2rem 24px; /* Sincronizado con el margen lateral de 24px */
+        cursor: pointer;
+        width: 100%;
+        text-align: left;
+        box-sizing: border-box;
+        font-weight: bold;
+        z-index: 9999 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Contenedor vertical de los enlaces */
+    .header_pagina_barra_menu .header_pagina_menu_contenedor {
+        display: none; 
+        flex-direction: column;
+        background: var(--verde-principal) !important;
+        width: 100%;
+        padding: 0 !important;
+        box-sizing: border-box;
+    }
+
+    .header_pagina_barra_menu.open .header_pagina_menu_contenedor {
+        display: flex !important;
+    }
+
+    /* --- NIVEL 1: ALINEACIÓN PERFECTA (Inicio, Departamentos, Erasmus+, etc.) --- */
+    .header_pagina_menu_contenedor > a.header_pagina_item_menu {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 16px 24px !important; /* Margen exacto de 24px a la izquierda para alineación impecable */
+        color: var(--blanco) !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important; /* Letras consistentes y profesionales */
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+        box-sizing: border-box;
+    }
+
+    /* --- NIVEL 1: DISPARADORES CON SUBMENÚ (Nuestro centro, Secretaría...) --- */
+    .header_pagina_desplegable {
+        display: block !important;
+        width: 100%;
+        position: static !important; /* Resetea herencias flotantes */
+        box-sizing: border-box;
+    }
+
+    .header_pagina_desplegable_trigger {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 16px 24px !important; /* Margen de 24px idéntico a 'Inicio' */
+        color: var(--blanco) !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+        box-sizing: border-box;
+        user-select: none;
+    }
+
+    /* Rotación de flechas Nivel 1 */
+    .header_pagina_desplegable.abierto > .header_pagina_desplegable_trigger .header_pagina_icono_desplegable {
+        transform: rotate(180deg);
+    }
+
+    /* --- NIVEL 2: CONTENEDOR INTERNO (Avisos, Matriculación, AMPA...) --- */
+    .header_pagina_submenu {
+        display: none;
+        flex-direction: column;
+        width: 100% !important;
+        position: static !important; /* Fuerza flujo vertical natural */
+        background: rgba(0, 0, 0, 0.1) !important; /* Fondo sutil uniforme */
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .header_pagina_desplegable.abierto > .header_pagina_submenu {
+        display: flex !important;
+    }
+
+    /* Elementos de Nivel 2 */
+    .header_pagina_submenu a,
+    .header_pagina_submenu .header_pagina_submenu_titulo {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        width: 100% !important;
+        padding: 14px 24px 14px 44px !important; /* Margen de 44px (24px base + 20px sangría) */
+        color: #e8f5e8 !important;
+        font-size: 1.02rem !important;
+        font-weight: 600 !important;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-sizing: border-box;
+        background: transparent !important; /* Elimina cualquier residuo flotante */
+        position: relative;
+    }
+
+    /* --- NIVEL 3: CONTENEDORES ANIDADOS (Matriculación ESO, Bachillerato...) --- */
+    .header_pagina_submenu_item_desplegable {
+        display: block !important;
+        width: 100% !important;
+        position: static !important;
+        padding: 0 !important;
+        box-sizing: border-box;
+    }
+
+    .header_pagina_submenu_anidado {
+        display: none;
+        flex-direction: column;
+        width: 100% !important;
+        position: static !important;
+        background: rgba(0, 0, 0, 0.15) !important; /* Capa interna ligeramente más oscura */
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        box-sizing: border-box;
+    }
+
+    /* Apertura de Nivel 3 */
+    .header_pagina_submenu_item_desplegable.abierto_anidado > .header_pagina_submenu_anidado {
+        display: flex !important;
+    }
+
+    /* Rotación de flecha interna Nivel 2 */
+    .header_pagina_submenu_item_desplegable.abierto_anidado > .header_pagina_submenu_titulo .header_pagina_icono_desplegable {
+        transform: rotate(180deg);
+    }
+
+    /* Enlaces finales del Nivel 3 */
+    .header_pagina_submenu_anidado a {
+        display: flex !important;
+        width: 100% !important;
+        padding: 13px 24px 13px 64px !important; /* Margen de 64px (44px + 20px segunda sangría) */
+        font-size: 0.98rem !important;
+        color: #d1ebd1 !important;
+        font-weight: 500 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        background: transparent !important;
+    }
+
+    /* --- HOVERS GLOBALES --- */
+    .header_pagina_submenu a:hover,
+    .header_pagina_submenu_anidado a:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: var(--blanco) !important;
+    }
+
+    .header_pagina_icono_desplegable {
+        margin-left: auto;
+        opacity: 0.8;
+        font-size: 0.8rem;
+        transition: transform 0.2s ease;
+        display: inline-block;
+    }
+}
+
+/* Animación opcional para escritorio */
+@keyframes fadeInSubmenu {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

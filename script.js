@@ -1,37 +1,73 @@
-// ESPERA DOM CARGADO - Ejecuta cuando HTML completo (sin esperar imágenes/CSS)
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // === MENÚ HAMBURGUESA MÓVIL ===
-    // Captura elementos menú móvil
-    const navegacionPrincipal = document.querySelector('.navegacion-principal');  // Menú principal desktop/móvil
-    const botonMovil = document.querySelector('.boton-menu-movil');              // ☰ botón hamburguesa
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. CONTROL DEL MENÚ MÓVIL GENERAL
+    const navToggle = document.querySelector(".header_pagina_nav_toggle"); 
+    const barraMenu = document.querySelector(".header_pagina_barra_menu");
 
-    // Evento CLICK hamburguesa - Abre/cierra menú responsive
-    if (botonMovil) {  // Verifica botón existe en DOM
-        botonMovil.addEventListener('click', () => {
-            // Toggle clase 'abierto' → muestra/oculta menú con CSS transform/opacidad
-            navegacionPrincipal.classList.toggle('abierto');
+    if (navToggle && barraMenu) {
+        navToggle.addEventListener("click", () => {
+            barraMenu.classList.toggle("open");
+            
+            if (barraMenu.classList.contains("open")) {
+                navToggle.innerHTML = "✕";
+            } else {
+                navToggle.innerHTML = "☰";
+            }
         });
     }
 
-    // === CARRUSEL AUTOMÁTICO HERO ===
-    let carruselIndex = 0;  // Índice imagen actual (0 = primera)
-    const imagenes = document.querySelectorAll('.imagen-carrusel');  // Array todas imágenes carrusel
+    // 2. CONTROL DEL NIVEL 2 (Nuestro Centro, Secretaría, Oferta...)
+    const triggersNivel2 = document.querySelectorAll(".header_pagina_desplegable_trigger");
 
-    // FUNCIÓN: Muestra imagen específica quitando clase activa de todas
-    function mostrarImagen(index) {
-        imagenes.forEach(img => img.classList.remove('activa'));  // Quita 'activa' de TODAS
-        imagenes[index].classList.add('activa');                  // Añade 'activa' SOLO a actual
-    }
+    triggersNivel2.forEach(trigger => {
+        trigger.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const padre = trigger.closest(".header_pagina_desplegable");
+            
+            if (padre) {
+                // Cerramos otros menús del mismo nivel (Efecto acordeón)
+                document.querySelectorAll(".header_pagina_desplegable").forEach(item => {
+                    if (item !== padre) item.classList.remove("abierto");
+                });
 
-    // FUNCIÓN: Avanza carrusel (cíclico: fin → inicio)
-    function siguienteImagen() {
-        carruselIndex = (carruselIndex + 1) % imagenes.length;  // +1 módulo total = cíclico
-        mostrarImagen(carruselIndex);                            // Muestra nueva imagen
-    }
+                padre.classList.toggle("abierto");
+            }
+        });
+    });
 
-    // INICIA CARRUSEL - Cada 2.5 segundos si hay imágenes
-    if (imagenes.length > 0) {
-        setInterval(siguienteImagen, 2500);  // 2500ms = 2.5s entre slides
-    }
+    // 3. CONTROL DEL NIVEL 3 (Matriculación, Convalidación, etc.) - ¡REPARADO!
+    // Seleccionamos toda la barra contenedora del título de nivel 3
+    const contenedoresNivel3 = document.querySelectorAll(".header_pagina_contenedor_titulo_nivel3");
+
+    contenedoresNivel3.forEach(contenedorClick => {
+        contenedorClick.addEventListener("click", (e) => {
+            // Buscamos si el clic viene de un enlace <a> real con un enlace válido
+            const enlace = e.target.closest("a");
+            
+            // Si es un enlace real y NO apunta a "#", dejamos que navegue normalmente
+            if (enlace && enlace.getAttribute("href") !== "#") {
+                return; 
+            }
+
+            // Si es un enlace con "#" o se hizo clic en la flecha/contenedor, controlamos el despliegue
+            e.preventDefault();
+            e.stopPropagation(); // Evita que se cierre el menú superior (Secretaría)
+
+            const contenedorPadreNivel3 = contenedorClick.closest(".header_pagina_submenu_item_desplegable");
+            
+            if (contenedorPadreNivel3) {
+                // Cerrar otros submenús de nivel 3 en el mismo bloque para evitar solapamientos
+                const hermanos = contenedorPadreNivel3.parentElement.querySelectorAll(".header_pagina_submenu_item_desplegable");
+                hermanos.forEach(hermano => {
+                    if (hermano !== contenedorPadreNivel3) {
+                        hermano.classList.remove("abierto_anidado");
+                    }
+                });
+
+                // Alternamos la clase para mostrar/ocultar el submenú anidado
+                contenedorPadreNivel3.classList.toggle("abierto_anidado");
+            }
+        });
+    });
 });

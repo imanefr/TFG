@@ -6,11 +6,13 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
 }
+
 $titulo_dashboard = "Dashboard Blog";
 
-$is_admin = ($_SESSION['usuario_rol'] === 'admin');
+$is_admin = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor' || $_SESSION['usuario_rol'] === 'otro'); // Permitir acceso a alumnos para crear noticias pendientes
+$is_alumno = ($_SESSION['usuario_rol'] === 'alumno');
 
-// PROCESAR ACCIONES
+// PROCESAR ACCIONES - ADMIN/PROFESOR SOLO
 $mensaje = '';
 if ($_POST && isset($_POST['accion'])) {
     switch ($_POST['accion']) {
@@ -32,7 +34,7 @@ if ($_POST && isset($_POST['accion'])) {
             $imagen = isset($_POST['imagen_existente']) ? trim($_POST['imagen_existente']) : '';
             $video = trim($_POST['video']);
             $pdf = trim($_POST['pdf']);
-            // $nombre = $_SESSION['usuario_nombre'];
+            $aprobado = $is_admin ? 1 : 0;
 
             // SUBIDA DE IMAGEN
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
@@ -53,10 +55,11 @@ if ($_POST && isset($_POST['accion'])) {
                 }
             }
 
-            $stmt = $conexion->prepare("INSERT INTO blog (titulo, texto, link, texto_link, imagen, video, pdf, fecha_publicacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssssss", $titulo, $texto, $enlace, $texto_enlace, $imagen, $video, $pdf, $fecha);
-            if ($stmt->execute())
-                $mensaje = 'Noticia añadida correctamente';
+            $stmt = $conexion->prepare("INSERT INTO blog (titulo, texto, link, texto_link, imagen, video, pdf, fecha_publicacion, aprobado, ultima_edicion_usuario_id, ultima_edicion_fecha, ultima_publicacion_usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
+            $stmt->bind_param("ssssssssiis", $titulo, $texto, $enlace, $texto_enlace, $imagen, $video, $pdf, $fecha, $aprobado, $_SESSION['usuario_id'], $_SESSION['usuario_id']);
+            if ($stmt->execute()) {
+                $mensaje = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor') ? 'Noticia añadida correctamente' : 'Noticia añadida correctamente (pendiente de aprobación)';
+            }
             $stmt->close();
             break;
 
@@ -106,6 +109,14 @@ if ($_POST && isset($_POST['accion'])) {
                 $mensaje = 'Noticia actualizada correctamente';
             $stmt->close();
             break;
+
+        case 'aprobar':
+            $id = (int) $_POST['id'];
+            $stmt = $conexion->prepare("UPDATE blog SET aprobado = 1 WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            if ($stmt->execute())
+                $mensaje = 'Noticia aprobada correctamente';
+            $stmt->close();
     }
 }
 
@@ -139,7 +150,8 @@ if (isset($_GET['editar'])) {
     $stmt->close();
 }
 ?>
-
+ <!-- HEADER -->
+        <?php include 'dashboard_head.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -151,13 +163,12 @@ if (isset($_GET['editar'])) {
 </head>
 <body>
     <div class="dashboard_erasmus_container">
-        <!-- HEADER -->
-        <?php include 'dashboard_head.php'; ?>
+       
 
-        <?php if (!$is_admin): ?>
+        <?php if (!$is_admin && !$is_alumno): ?>
             <div class="dashboard_erasmus_no_admin">
                 <i class="fas fa-lock"></i>
-                <h2>Solo administradores pueden gestionar el contenido</h2>
+                <h2>Solo personas autorizadas pueden ver/gestionar el contenido</h2>
             </div>
         <?php else: ?>
 
@@ -293,18 +304,40 @@ if (isset($_GET['editar'])) {
                                         </a>
                                     <?php endif; ?>
                                 </div>
-                                <div class="dashboard_erasmus_acciones_botones">
-                                    <a href="?editar=<?php echo $noticia['id']; ?>" class="dashboard_erasmus_btn_small dashboard_erasmus_btn_editar">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-                                    <form method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar esta noticia?')">
-                                        <input type="hidden" name="accion" value="eliminar">
-                                        <input type="hidden" name="id" value="<?php echo $noticia['id']; ?>">
-                                        <button type="submit" class="dashboard_erasmus_btn_small dashboard_erasmus_btn_delete">
-                                            <i class="fas fa-trash"></i> Eliminar
-                                        </button>
-                                    </form>
-                                </div>
+
+                                <?php if($noticia['aprobado'] == 0): ?>
+                                    <div class="dashboard_erasmus_noticia_pendiente">
+                                        <i class="fas fa-hourglass-half"></i> Pendiente de aprobación
+                                    </div>
+                                <?php else: ?>
+                                    <div class="dashboard_erasmus_noticia_aprobada">
+                                        <i class="fas fa-check"></i> Aprobada
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <?php if (!$is_alumno): ?>
+                                    <div class="dashboard_erasmus_acciones_botones">
+                                        <a href="?editar=<?php echo $noticia['id']; ?>" class="dashboard_erasmus_btn_small dashboard_erasmus_btn_editar">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <form method="POST" style="display: inline;" onsubmit="return confirm('¿Eliminar esta noticia?')">
+                                            <input type="hidden" name="accion" value="eliminar">
+                                            <input type="hidden" name="id" value="<?php echo $noticia['id']; ?>">
+                                            <button type="submit" class="dashboard_erasmus_btn_small dashboard_erasmus_btn_delete">
+                                                <i class="fas fa-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                        <?php if($noticia['aprobado'] == 0): ?>
+                                            <form method="POST" style="display: inline;" onsubmit="return confirm('¿Aprobar esta noticia?')">
+                                                <input type="hidden" name="accion" value="aprobar">
+                                                <input type="hidden" name="id" value="<?php echo $noticia['id']; ?>">
+                                                <button type="submit" class="dashboard_erasmus_btn_small dashboard_erasmus_btn_approve">
+                                                    <i class="fas fa-check"></i> Aprobar
+                                                </button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
                     </div>

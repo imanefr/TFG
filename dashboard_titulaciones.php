@@ -7,7 +7,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$is_admin = ($_SESSION['usuario_rol'] === 'admin');
+$is_admin = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor' || $_SESSION['usuario_rol'] === 'otro');// PROCESAR ACCIONES
 
 $submenus_nuestro_centro = [
     ['enlace' => 'solicitud_titulo_eso.php', 'titulo' => 'ESO', 'icono' => 'fas fa-graduation-cap', 'descripcion' => 'Ve todas las publicaciones relacionadas a la titulación de estudiantes de la ESO.'],
@@ -20,7 +20,8 @@ $colores = ['eso' => '#10B981', 'bachillerato' => '#06B6D4', 'formacion_profesio
 // Título dinámico para el header global
 $titulo_dashboard = "Dashboard Titulaciones";
 ?>
-
+<!-- HEADER GLOBAL -->
+        <?php include 'dashboard_head.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -32,11 +33,6 @@ $titulo_dashboard = "Dashboard Titulaciones";
 </head>
 <body>
     <div class="dashboard_nuestro_centro_container">
-        
-        <!-- HEADER GLOBAL -->
-        <?php include 'dashboard_head.php'; ?>
-
-
         <?php if (!$is_admin): ?>
             <div class="dashboard_nuestro_centro_no_admin">
                 <i class="fas fa-lock" style="font-size: 4rem; color: var(--morado-claro); margin-bottom: 1rem;"></i>

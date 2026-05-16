@@ -1,0 +1,99 @@
+/* ==========================================================================
+DASHBOARD EDITAR USUARIOS
+   ========================================================================== */
+
+.dashboard_editar_usuarios_container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: var(--fuente-base);
+    background: var(--fondo-principal);
+    min-height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.dashboard_editar_usuarios_card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    font-family: var(--fuente-base);
+}
+
+.dashboard_editar_usuarios_card_header h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--gris-texto);
+}
+
+.dashboard_editar_usuarios_form_group {
+    margin-bottom: 1.5rem;
+}
+
+.dashboard_editar_usuarios_form_label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--gris-texto);
+}
+
+.dashboard_editar_usuarios_form_input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--gris-suave);
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.dashboard_editar_usuarios_form_input_readonly {
+    background: #f3f4f6;
+    color: var(--gris-medio);
+    cursor: not-allowed;
+}
+
+.dashboard_editar_usuarios_form_help_text {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--gris-medio);
+    font-size: 0.85rem;
+}
+
+.dashboard_editar_usuarios_status_box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.dashboard_editar_usuarios_btn_guardar {
+    background: var(--verde-principal);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.3s;
+}
+
+.dashboard_editar_usuarios_btn_guardar:hover {
+    background: var(--verde-oscuro);
+}
+
+/* Clases de estado dinámicas (controladas por JS) */
+.dashboard_editar_usuarios_text_success {
+    color: var(--verde-principal);
+    font-weight: bold;
+}
+
+.dashboard_editar_usuarios_text_danger {
+    color: #b91c1c;
+    font-weight: bold;
+}

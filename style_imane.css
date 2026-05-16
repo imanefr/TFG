@@ -1,0 +1,671 @@
+/* ==========================================================================
+   ESTILOS DASHBOARD - VERSIÓN 3 COLUMNAS (ULTRA COMPACTO)
+   ========================================================================== */
+
+:root {
+    --bg-main: #f6f4ff;
+    --white: #ffffff;
+    --text-dark: #3a3a5e;
+    --text-light: #8a8aab;
+    --btn-bg: #ebedfa;
+    --btn-text: #4e557a;
+    
+    /* Paleta de colores */
+    --red: #ff5e5e;
+    --green: #27ae60;
+    --orange: #f39c12;
+    --blue: #2980b9;
+    --purple: #8e44ad;
+    --purple-dark: #6b358a;
+    --pink: #d81b60;
+}
+
+
+body {
+    background-color: var(--bg-main);
+    font-size: 14px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* HEADER */
+
+.dashboard_inicio_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2rem;
+    padding: 2rem;
+    border-bottom: 2px solid var(--verde-principal);
+    background-color: var(--white);
+    border: 2px solid var(--purple);
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 815px) {
+    .dashboard_inicio_header {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* TÍTULO DASHBOARD ADMINISTRATIVO */
+
+.dashboard_inicio_saludo {
+    font-size: 2.5rem;
+    color: var(--purple);
+    margin: 0;
+    font-weight: 700;
+}
+
+@media (max-width: 815px) {
+    .dashboard_inicio_saludo {
+        font-size: 2rem;
+    }
+}
+
+/* INFO USUARIO Y LOGOUT */
+
+.dashboard_inicio_header_right {
+    display: flex;
+    gap: 20px;
+}
+
+@media (max-width: 815px) {
+    .dashboard_inicio_header_right {
+        margin-top: 20px;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* INFO USUARIO */
+
+.dashboard_user_simple {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@media (max-width: 815px) {
+    .dashboard_user_simple {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+.dashboard_user_icon {
+    font-size: 1.5rem;
+    color: var(--purple);
+}
+
+@media (max-width: 815px) {
+    .dashboard_user_icon {
+        font-size: 1.2rem;
+    }
+}
+
+.dashboard_user_role {
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+@media (max-width: 815px) {
+    .dashboard_user_role {
+        font-size: 1.2rem;
+    }
+}
+
+/* BOTÓN LOGOUT */
+
+.dashboard_logout_text {
+    background: var(--purple);
+    color: var(--white);
+    border: none;
+    padding: 0.9rem 1.8rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    transition: background 0.25s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 815px) {
+    .dashboard_logout_text {
+        font-size: 1.2rem;
+    }
+}
+
+.dashboard_logout_text i {
+    font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+    .dashboard_logout_text i {
+        font-size: 0.5rem;
+    }
+}
+
+/* ------------------------- */
+.dashboard_logout_text:hover {
+    background: var(--red);
+    transform: translateY(-2px);
+}
+
+/* CONTENEDOR PRINCIPAL */
+.dashboard-wrapper {
+    width: 100%;
+    max-width: 90%; /* Ajuste para que las 3 columnas no se estiren demasiado */
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* GRID ORGANIZADO EN 3 COLUMNAS */
+.grid-secciones {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* FORZA LAS 3 COLUMNAS */
+    gap: 20px; /* Espacio entre cuadros */
+    width: 100%;
+}
+
+/* ESTILO DE LAS CARDS - TAMAÑO PEQUEÑO */
+.card-seccion {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 5%;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    position: relative;
+    border: 1px solid #eef0f7;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+}
+
+.card-seccion:hover {
+    transform: translateY(-3px);
+}
+
+.card-seccion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    border-radius: 16px 16px 0 0;
+}
+
+/* ICONO CENTRAL */
+.card-icon {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 8px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+/* TÍTULOS Y TEXTO */
+.card-title {
+    font-size: 2rem;
+    color: var(--text-dark);
+    margin: 5px 0 2px 0;
+    font-weight: 700;
+}
+
+.card-desc {
+    color: var(--text-light);
+    font-size: 1.2rem;
+    line-height: 0;
+    margin-bottom: 12px;
+}
+
+/* LISTADO DE SUBSECCIONES CON SCROLL INTERNO */
+/* Esto permite que la sección de Departamentos no se haga gigante */
+.subsecciones-list {
+    max-height: 275px;
+    overflow-y: auto;
+    padding-right: 5px;
+    text-align: left;
+}
+
+/* Scroll interno minimalista */
+.subsecciones-list::-webkit-scrollbar {
+    width: 3px;
+}
+.subsecciones-list::-webkit-scrollbar-thumb {
+    background: #e0e0f0;
+    border-radius: 10px;
+}
+
+.item-sub {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #f3f3f9;
+}
+
+.sub-name {
+    display: block;
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+    color: #444466;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* BOTONES PEQUEÑOS */
+.btn-group {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-dash {
+    flex: 1;
+    padding: 6px 4px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--btn-text);
+    background: var(--btn-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+}
+
+.btn-dash:hover {
+    background: #5d46e8;
+    color: white;
+}
+
+/* COLORES DINÁMICOS */
+.card-red::before, .card-red .card-icon { background-color: var(--red); }
+.card-green::before, .card-green .card-icon { background-color: var(--green); }
+.card-orange::before, .card-orange .card-icon { background-color: var(--orange); }
+.card-blue::before, .card-blue .card-icon { background-color: var(--blue); }
+.card-purple::before, .card-purple .card-icon { background-color: var(--purple); }
+.card-pink::before, .card-pink .card-icon { background-color: var(--pink); }
+
+/* RESPONSIVE: Ajuste para tablets y móviles */
+@media (max-width: 900px) {
+    .grid-secciones {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas medianas */
+    }
+}
+
+@media (max-width: 600px) {
+    .grid-secciones {
+        grid-template-columns: 1fr; /* 1 columna en móviles */
+    }
+    .dashboard-wrapper {
+        margin: 10px auto;
+    }
+}
+
+
+/* editar_personal.css */
+
+/* Todas las reglas comienzan con el prefijo solicitado */
+.editar_personal_php .form-container { 
+    max-width: 600px; 
+    margin: 2rem auto; 
+    background: white; 
+    padding: 2rem; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    font-family: 'Segoe UI', sans-serif; 
+}
+
+.editar_personal_php .form-group { 
+    margin-bottom: 1.5rem; 
+}
+
+.editar_personal_php .form-group label { 
+    display: block; 
+    margin-bottom: 0.5rem; 
+    font-weight: 600; 
+    color: #333; 
+}
+
+.editar_personal_php .form-control { 
+    width: 100%; 
+    padding: 0.8rem; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    font-size: 1rem; 
+    box-sizing: border-box; 
+    outline-color: #8b5cf6; 
+}
+
+.editar_personal_php .btn-submit { 
+    background: #8b5cf6; 
+    color: white; 
+    border: none; 
+    padding: 1rem 2rem; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: 600; 
+    width: 100%; 
+    transition: all 0.3s ease; 
+    font-size: 1rem; 
+}
+
+.editar_personal_php .btn-submit:hover { 
+    background: #7c3aed; 
+    transform: translateY(-1px); 
+}
+
+.editar_personal_php .alerta { 
+    padding: 1rem; 
+    border-radius: 8px; 
+    margin-bottom: 1.5rem; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+
+.editar_personal_php .alerta-success { 
+    background: #dcfce7; 
+    color: #166534; 
+    border: 1px solid #bbf7d0; 
+}
+
+.editar_personal_php .alerta-error { 
+    background: #fee2e2; 
+    color: #991b1b; 
+    border: 1px solid #fecaca; 
+}
+
+
+            
+/* usuarios_profesores_alta.php */
+
+/* Alertas y Mensajes */
+.card_alert_success_custom {
+    background: #dcfce7;
+    color: #166534;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #bbf7d0;
+    margin-bottom: 20px;
+}
+
+.btn_ver_usuarios_custom {
+    text-decoration: none;
+    padding: 10px 15px;
+    display: inline-block;
+    border-radius: 5px;
+}
+
+.card_alert_error_custom {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #fecaca;
+    margin-bottom: 20px;
+}
+
+/* Paso 1: Buscador y Filtros */
+.buscador_docente_flex {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.input_search_custom {
+    /* Corregido el 'flex:1' que estaba inline */
+    flex: 1 1 0%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.btn_search_custom {
+    padding: 10px 20px;
+    background: #8b5cf6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Paso 1: Grid de Selección de Docentes */
+.profesor_grid_layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.label_profesor_card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nombre_prof_block {
+    display: block;
+}
+
+.dni_prof_color {
+    color: #666;
+}
+
+.btn_submit_full {
+    width: 100%;
+    padding: 12px;
+    background: #8b5cf6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Paso 2: Formulario de Configuración */
+.row_doble_flex {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.group_alta_flex1 {
+    /* Corregido el 'flex:1' que estaba inline */
+    flex: 1 1 0%;
+}
+
+.label_alta_bold {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.input_alta_full {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.group_alta_mb {
+    margin-bottom: 15px;
+}
+
+/* Sección de Accesos/Módulos */
+.contenedor_accesos_estilo {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.label_alta_bold_mb {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.accesos_grid_layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+}
+
+.acceso_wrapper_layout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+/* Botonera inferior */
+.botones_footer_flex {
+    display: flex;
+    gap: 10px;
+}
+
+.btn_cancelar_layout {
+    /* Corregido el 'flex:1' que estaba inline */
+    flex: 1 1 0%;
+    text-align: center;
+    padding: 12px;
+    background: #e5e7eb;
+    color: #374151;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.btn_finalizar_layout {
+    /* Corregido el 'flex:2' que estaba inline */
+    flex: 2 1 0%;
+    padding: 12px;
+    background: #10b981;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+
+/* ==========================================================================
+DASHBOARD EDITAR USUARIOS
+   ========================================================================== */
+
+.dashboard_editar_usuarios_container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: var(--fuente-base);
+    background: var(--fondo-principal);
+    min-height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.dashboard_editar_usuarios_card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    font-family: var(--fuente-base);
+}
+
+.dashboard_editar_usuarios_card_header h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--gris-texto);
+}
+
+.dashboard_editar_usuarios_form_group {
+    margin-bottom: 1.5rem;
+}
+
+.dashboard_editar_usuarios_form_label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--gris-texto);
+}
+
+.dashboard_editar_usuarios_form_input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--gris-suave);
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.dashboard_editar_usuarios_form_input_readonly {
+    background: #f3f4f6;
+    color: var(--gris-medio);
+    cursor: not-allowed;
+}
+
+.dashboard_editar_usuarios_form_help_text {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--gris-medio);
+    font-size: 0.85rem;
+}
+
+.dashboard_editar_usuarios_status_box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.dashboard_editar_usuarios_btn_guardar {
+    background: var(--verde-principal);
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.3s;
+}
+
+.dashboard_editar_usuarios_btn_guardar:hover {
+    background: var(--verde-oscuro);
+}
+
+/* Clases de estado dinámicas (controladas por JS) */
+.dashboard_editar_usuarios_text_success {
+    color: var(--verde-principal);
+    font-weight: bold;
+}
+
+.dashboard_editar_usuarios_text_danger {
+    color: #b91c1c;
+    font-weight: bold;
+}

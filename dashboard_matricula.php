@@ -8,7 +8,7 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 $titulo_dashboard = "Gestión de Matriculación";
-$is_admin = ($_SESSION['usuario_rol'] === 'admin');
+$is_admin = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor' || $_SESSION['usuario_rol'] === 'otro');// PROCESAR ACCIONES
 
 // ✅ MANEJAR ELIMINAR
 if (isset($_GET['eliminar'])) {
@@ -97,7 +97,8 @@ function obtenerMatriculas($conexion) {
 $matriculas = obtenerMatriculas($conexion);
 $conexion->close();
 ?>
-
+<!-- HEADER -->
+        <?php include 'dashboard_head.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -109,8 +110,7 @@ $conexion->close();
 </head>
 <body>
     <div class="dashboard_matricula_container">
-        <!-- HEADER -->
-        <?php include 'dashboard_head.php'; ?>
+        
 
         <?php if (!$is_admin): ?>
             <div class="dashboard_matricula_no_admin">
@@ -229,7 +229,7 @@ $conexion->close();
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="dashboard_secretaria.php" class="dashboard_universal_volver">
+        <form method="POST" action="dashboard.php" class="dashboard_universal_volver">
             <button type="submit" class="dashboard_universal_btn_volver">
                 <i class="fas fa-arrow-left"></i> Volver a Secretaría
             </button>
