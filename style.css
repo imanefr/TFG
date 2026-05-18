@@ -637,6 +637,45 @@ body {
     width: auto;
     display: block;
 }
+header_pagina_breadcrumb_nav {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--gris-medio);
+}
+
+.header_pagina_breadcrumb_link {
+    color: var(--gris-medio);
+    text-decoration: none;
+    transition: color 0.25s ease;
+}
+
+.header_pagina_breadcrumb_link:hover,
+.header_pagina_breadcrumb_link.activo {
+    color: var(--verde-principal);
+    font-weight: 500;
+}
+
+.header_pagina_breadcrumb_separador {
+    margin: 0 0.6rem;
+    color: var(--gris-suave);
+}
+
+/* BREADCRUMB */
+
+.header_pagina_seccion_breadcrumb {
+    background: var(--blanco);
+    padding: 1rem 0;
+    box-shadow: var(--sombra-suave);
+    margin-bottom: 1rem;
+}
+
+.header_pagina_contenedor_max {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
 .header_pagina_breadcrumb_nav {
     display: flex;
     align-items: center;
@@ -660,6 +699,26 @@ body {
     margin: 0 0.6rem;
     color: var(--gris-suave);
 }
+
+/* Fuerza la aparición del contenedor cuando está abierto */
+.header_pagina_barra_menu.open .header_pagina_menu_contenedor {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Asegura que el botón hamburguesa sea lo más importante de la capa */
+.header_pagina_nav_toggle {
+    z-index: 9999 !important;
+    display: block !important;
+}
+
+/* El contenedor del menú debe estar debajo de la barra para no tapar el botón */
+.header_pagina_menu_contenedor {
+    position: relative;
+    top: 0;
+}
+
 /* RESPONSIVE: Si la pantalla es pequeña, se apilan al centro */
 @media (max-width: 1024px) {
     #emCommonFooterCopyright {
