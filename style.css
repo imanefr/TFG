@@ -637,7 +637,29 @@ body {
     width: auto;
     display: block;
 }
+.header_pagina_breadcrumb_nav {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--gris-medio);
+}
 
+.header_pagina_breadcrumb_link {
+    color: var(--gris-medio);
+    text-decoration: none;
+    transition: color 0.25s ease;
+}
+
+.header_pagina_breadcrumb_link:hover,
+.header_pagina_breadcrumb_link.activo {
+    color: var(--verde-principal);
+    font-weight: 500;
+}
+
+.header_pagina_breadcrumb_separador {
+    margin: 0 0.6rem;
+    color: var(--gris-suave);
+}
 /* RESPONSIVE: Si la pantalla es pequeña, se apilan al centro */
 @media (max-width: 1024px) {
     #emCommonFooterCopyright {
