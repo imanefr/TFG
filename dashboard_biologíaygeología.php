@@ -8,7 +8,7 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 $titulo_dashboard = "Dashboard Biología y Geología";
 
-$is_admin = ($_SESSION['usuario_rol'] === 'admin');
+$is_admin = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor' || $_SESSION['usuario_rol'] === 'otro');// PROCESAR ACCIONES
 
 // PROCESAR ACCIONES
 $mensaje = '';
@@ -53,8 +53,9 @@ if ($_POST && isset($_POST['accion'])) {
                 }
             }
 
-            $stmt = $conexion->prepare("INSERT INTO departamentos (titulo_seccion, texto_seccion, link, texto_link, imagen, video, pdf, fecha_publicacion, dept_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 3)");
-            $stmt->bind_param("ssssssss", $titulo, $texto, $enlace, $texto_enlace, $imagen, $video, $pdf, $fecha);
+            $stmt = $conexion->prepare("INSERT INTO departamentos (titulo_seccion, texto_seccion, link, texto_link, imagen, video, pdf, fecha_publicacion, dept_id, ultima_edicion_fecha, ultima_edicion_usuario_nombre) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 3, NOW(), ?)");
+            $stmt->bind_param("sssssssss", $titulo, $texto, $enlace, $texto_enlace, $imagen, $video, $pdf, $fecha, $_SESSION['usuario_nombre']);
             if ($stmt->execute())
                 $mensaje = 'Noticia añadida correctamente';
             $stmt->close();
@@ -98,10 +99,10 @@ if ($_POST && isset($_POST['accion'])) {
             $stmt = $conexion->prepare("
                 UPDATE departamentos 
                 SET titulo_seccion=?, texto_seccion=?, fecha_publicacion=?, link=?, texto_link=?, imagen=?, video=?, pdf=?,
-                    ultima_edicion_usuario_id=?, ultima_edicion_fecha=NOW()
+                    ultima_edicion_usuario_nombre=?, ultima_edicion_fecha=NOW()
                 WHERE id=? && dept_id = 3
             ");
-            $stmt->bind_param("ssssssssii", $titulo, $texto, $fecha, $enlace, $texto_enlace, $imagen, $video, $pdf, $_SESSION['usuario_id'], $id);
+            $stmt->bind_param("sssssssssi", $titulo, $texto, $fecha, $enlace, $texto_enlace, $imagen, $video, $pdf, $_SESSION['usuario_nombre'], $id);
             if ($stmt->execute())
                 $mensaje = 'Noticia actualizada correctamente';
             $stmt->close();
@@ -111,9 +112,8 @@ if ($_POST && isset($_POST['accion'])) {
 
 // CARGAR NOTICIAS CON NOMBRE DEL USUARIO - CONSULTA CORREGIDA ✅
 $stmt = $conexion->prepare("
-    SELECT n.*, u.nombre AS ultima_edicion_usuario_nombre
+    SELECT n.*
     FROM departamentos n
-    LEFT JOIN usuarios u ON n.ultima_edicion_usuario_id = u.id
     WHERE n.dept_id = 3
     ORDER BY n.fecha_publicacion DESC
 ");
@@ -140,7 +140,8 @@ if (isset($_GET['editar'])) {
     $stmt->close();
 }
 ?>
-
+  <!-- HEADER -->
+        <?php include 'dashboard_head.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -152,8 +153,7 @@ if (isset($_GET['editar'])) {
 </head>
 <body>
     <div class="dashboard_erasmus_container">
-        <!-- HEADER -->
-        <?php include 'dashboard_head.php'; ?>
+      
 
         <?php if (!$is_admin): ?>
             <div class="dashboard_erasmus_no_admin">
@@ -189,7 +189,7 @@ if (isset($_GET['editar'])) {
                     <div class="dashboard_erasmus_form_group">
                         <label class="dashboard_erasmus_form_label">Título *</label>
                         <input type="text" name="titulo" class="dashboard_erasmus_form_input" required 
-                               value="<?php echo htmlspecialchars($modo_edit ? $noticia_edit['titulo'] : ($_POST['titulo'] ?? '')); ?>"
+                               value="<?php echo htmlspecialchars($modo_edit ? $noticia_edit['titulo_seccion'] : ($_POST['titulo'] ?? '')); ?>"
                                placeholder="Ej: Listado Admisiones 2025-26">
                     </div>
 
@@ -240,7 +240,7 @@ if (isset($_GET['editar'])) {
                     
                     <div class="dashboard_erasmus_form_group" style="grid-column: 1 / -1;">
                         <label class="dashboard_erasmus_form_label">Contenido *</label>
-                        <textarea name="texto" class="dashboard_erasmus_form_textarea" required><?php echo htmlspecialchars($modo_edit ? $noticia_edit['texto'] : ($_POST['contenido'] ?? '')); ?></textarea>
+                        <textarea name="texto" class="dashboard_erasmus_form_textarea" required><?php echo htmlspecialchars($modo_edit ? $noticia_edit['texto_seccion'] : ($_POST['contenido'] ?? '')); ?></textarea>
                     </div>
 
                     <div class="dashboard_erasmus_btn_group">
@@ -319,7 +319,7 @@ if (isset($_GET['editar'])) {
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="dashboard_departamentos.php" class="dashboard_universal_volver">
+        <form method="POST" action="dashboard.php" class="dashboard_universal_volver">
             <button type="submit" class="dashboard_universal_btn_volver">
                 <i class="fas fa-arrow-left"></i> Volver
             </button>

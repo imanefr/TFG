@@ -53,8 +53,8 @@ if ($_POST && isset($_POST['accion'])) {
                 }
             }
 
-            $stmt = $conexion->prepare("INSERT INTO titulo_eso (titulo, texto, link, texto_link, imagen, video, pdf, fecha_publicacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssssss", $titulo, $texto, $enlace, $texto_enlace, $imagen, $video, $pdf, $fecha);
+            $stmt = $conexion->prepare("INSERT INTO orientacion (titulo, texto, link, texto_enlace, imagen, video, pdf, fecha_publicacion, ultima_edicion_fecha, ultima_edicion_usuario_nombre) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
+            $stmt->bind_param("sssssssss", $titulo, $texto, $enlace, $texto_enlace, $imagen, $video, $pdf, $fecha, $_SESSION['usuario_nombre']);
             if ($stmt->execute())
                 $mensaje = 'Noticia añadida correctamente';
             $stmt->close();
@@ -97,11 +97,11 @@ if ($_POST && isset($_POST['accion'])) {
             // ACTUALIZAR noticia existente
             $stmt = $conexion->prepare("
                 UPDATE orientacion 
-                SET titulo=?, texto=?, fecha_publicacion=?, link=?, texto_link=?, imagen=?, video=?, pdf=?,
-                    ultima_edicion_usuario_id=?, ultima_edicion_fecha=NOW()
+                SET titulo=?, texto=?, fecha_publicacion=?, link=?, texto_enlace=?, imagen=?, video=?, pdf=?,
+                    ultima_edicion_usuario_nombre=?, ultima_edicion_fecha=NOW()
                 WHERE id=?
             ");
-            $stmt->bind_param("ssssssssii", $titulo, $texto, $fecha, $enlace, $texto_enlace, $imagen, $video, $pdf, $_SESSION['usuario_id'], $id);
+            $stmt->bind_param("sssssssssi", $titulo, $texto, $fecha, $enlace, $texto_enlace, $imagen, $video, $pdf, $_SESSION['usuario_nombre'], $id);
             if ($stmt->execute())
                 $mensaje = 'Noticia actualizada correctamente';
             $stmt->close();
@@ -111,9 +111,8 @@ if ($_POST && isset($_POST['accion'])) {
 
 // CARGAR NOTICIAS CON NOMBRE DEL USUARIO - CONSULTA CORREGIDA ✅
 $stmt = $conexion->prepare("
-    SELECT n.*, u.nombre AS ultima_edicion_usuario_nombre
+    SELECT n.*
     FROM orientacion n
-    LEFT JOIN usuarios u ON n.ultima_edicion_usuario_id = u.id
     ORDER BY n.fecha_publicacion DESC
 ");
 
@@ -201,10 +200,10 @@ if (isset($_GET['editar'])) {
                     <div class="dashboard_erasmus_form_group">
                         <label class="dashboard_erasmus_form_label">Enlace (opcional)</label>
                         <input type="text" name="texto_enlace" class="dashboard_erasmus_form_input" 
-                               value="<?php echo htmlspecialchars($modo_edit ? $noticia_edit['texto_link'] : ($_POST['texto_enlace'] ?? '')); ?>"
+                               value="<?php echo htmlspecialchars($modo_edit ? ($noticia_edit['texto_enlace'] ?? '') : ($_POST['texto_enlace'] ?? '')); ?>"
                                placeholder="Texto del enlace">
                         <input type="url" name="enlace" class="dashboard_erasmus_form_input" 
-                               value="<?php echo htmlspecialchars($modo_edit ? $noticia_edit['link'] : ($_POST['enlace'] ?? '')); ?>"
+                               value="<?php echo htmlspecialchars($modo_edit ? $noticia_edit['link'] : ($_POST['link'] ?? '')); ?>"
                                placeholder="https://site.educa.madrid.org/...">
                     </div>
 
