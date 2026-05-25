@@ -6,7 +6,7 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
 }
-$titulo_dashboard = "Dashboard Erasmus";
+$titulo_dashboard = "Dashboard Noticias";
 
 $is_admin = ($_SESSION['usuario_rol'] === 'admin' || $_SESSION['usuario_rol'] === 'profesor' || $_SESSION['usuario_rol'] === 'otro');// PROCESAR ACCIONES
 
@@ -16,7 +16,7 @@ if ($_POST && isset($_POST['accion'])) {
     switch ($_POST['accion']) {
         case 'eliminar':
             $id = (int) $_POST['id'];
-            $stmt = $conexion->prepare("DELETE FROM erasmus_news WHERE id = ?");
+            $stmt = $conexion->prepare("DELETE FROM noticias WHERE id = ?");
             $stmt->bind_param("i", $id);
             if ($stmt->execute())
                 $mensaje = 'Noticia eliminada correctamente';
@@ -51,8 +51,8 @@ if ($_POST && isset($_POST['accion'])) {
                 }
             }
 
-            $stmt = $conexion->prepare("INSERT INTO erasmus_news (titulo, contenido, fecha, enlace, imagen, video, pdf, activo) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
-            $stmt->bind_param("sssssss", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf);
+            $stmt = $conexion->prepare("INSERT INTO noticias (titulo, contenido, fecha, enlace, imagen, video, pdf, ultima_edicion_usuario_nombre) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssss", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf, $_SESSION['usuario_nombre']);
             if ($stmt->execute())
                 $mensaje = 'Noticia añadida correctamente';
             $stmt->close();
@@ -93,12 +93,12 @@ if ($_POST && isset($_POST['accion'])) {
 
             // ACTUALIZAR noticia existente
             $stmt = $conexion->prepare("
-                UPDATE erasmus_news 
+                UPDATE noticias 
                 SET titulo=?, contenido=?, fecha=?, enlace=?, imagen=?, video=?, pdf=?, 
-                    ultima_edicion_fecha=NOW(), ultima_edicion_usuario_id=?
+                    ultima_edicion_fecha=NOW(), ultima_edicion_usuario_nombre=?
                 WHERE id=?
             ");
-            $stmt->bind_param("ssssssii", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf, $_SESSION['usuario_id'], $id);
+            $stmt->bind_param("ssssssssi", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf, $_SESSION['usuario_nombre'], $id);
             if ($stmt->execute())
                 $mensaje = 'Noticia actualizada correctamente';
             $stmt->close();
@@ -108,10 +108,8 @@ if ($_POST && isset($_POST['accion'])) {
 
 // CARGAR NOTICIAS CON NOMBRE DEL USUARIO - CONSULTA CORREGIDA ✅
 $stmt = $conexion->prepare("
-    SELECT n.*, u.nombre AS ultima_edicion_usuario_nombre
-    FROM erasmus_news n
-    LEFT JOIN usuarios u ON n.ultima_edicion_usuario_id = u.id
-    WHERE n.activo = 1 
+    SELECT n.*
+    FROM noticias n 
     ORDER BY n.fecha DESC
 ");
 $stmt->execute();
@@ -127,7 +125,7 @@ $modo_edit = false;
 $noticia_edit = null;
 if (isset($_GET['editar'])) {
     $id_edit = (int) $_GET['editar'];
-    $stmt = $conexion->prepare("SELECT * FROM erasmus_news WHERE id = ? AND activo = 1");
+    $stmt = $conexion->prepare("SELECT * FROM noticias WHERE id = ?");
     $stmt->bind_param("i", $id_edit);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -170,7 +168,7 @@ if (isset($_GET['editar'])) {
                     <?php if ($modo_edit): ?>
                         <i class="fas fa-edit"></i> Editar Noticia (ID: <?php echo $noticia_edit['id']; ?>)
                     <?php else: ?>
-                        <i class="fas fa-plus"></i> Nueva Noticia Erasmus+
+                        <i class="fas fa-plus"></i> Nueva Noticia
                     <?php endif; ?>
                 </h2>
                 <form method="POST" class="dashboard_erasmus_form_grid" enctype="multipart/form-data">

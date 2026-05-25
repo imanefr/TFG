@@ -52,8 +52,8 @@ if ($_POST && isset($_POST['accion'])) {
                 }
             }
 
-            $stmt = $conexion->prepare("INSERT INTO noticias (titulo, contenido, fecha, enlace, imagen, video, pdf, destacada) VALUES (?, ?, ?, ?, ?, ?, ?, 1)");
-            $stmt->bind_param("sssssss", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf);
+            $stmt = $conexion->prepare("INSERT INTO noticias (titulo, contenido, fecha, enlace, imagen, video, pdf, destacada, ultima_edicion_usuario_nombre) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?)");
+            $stmt->bind_param("ssssssss", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf, $_SESSION['usuario_nombre']);
             if ($stmt->execute())
                 $mensaje = 'Noticia añadida correctamente';
             $stmt->close();
@@ -95,11 +95,11 @@ if ($_POST && isset($_POST['accion'])) {
             // ACTUALIZAR noticia existente
             $stmt = $conexion->prepare("
                 UPDATE noticias 
-                SET titulo=?, contenido=?, fecha=?, enlace=?, imagen=?, video=?, pdf=?, 
-                    ultima_edicion_usuario_id=?, ultima_edicion_fecha=NOW()
+                SET titulo=?, contenido=?, fecha=?, enlace=?, imagen=?, video=?, pdf=?
+                , ultima_edicion_usuario_nombre=?, ultima_edicion_fecha=NOW()
                 WHERE id=?
             ");
-            $stmt->bind_param("ssssssiis", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf, $_SESSION['usuario_id'], $id);
+            $stmt->bind_param("ssssssssi", $titulo, $contenido, $fecha, $enlace, $imagen, $video, $pdf, $_SESSION['usuario_nombre'], $id);
             if ($stmt->execute())
                 $mensaje = 'Noticia actualizada correctamente';
             $stmt->close();
@@ -109,9 +109,8 @@ if ($_POST && isset($_POST['accion'])) {
 
 // CARGAR NOTICIAS CON NOMBRE DEL USUARIO - CONSULTA CORREGIDA ✅
 $stmt = $conexion->prepare("
-    SELECT n.*, u.nombre AS ultima_edicion_usuario_nombre
+    SELECT n.*
     FROM noticias n
-    LEFT JOIN usuarios u ON n.ultima_edicion_usuario_id = u.id
     WHERE n.destacada = 1
     ORDER BY n.fecha DESC
 ");

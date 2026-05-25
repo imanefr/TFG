@@ -23,7 +23,7 @@ if ($_POST && isset($_POST['accion'])) {
             $stmt->close();
             break;
 
-        case 'nueva':
+       case 'nueva':
             $titulo = trim($_POST['titulo']);
             $texto = trim($_POST['texto']);
             $fecha = $_POST['fecha'];
@@ -32,7 +32,6 @@ if ($_POST && isset($_POST['accion'])) {
             $imagen = isset($_POST['imagen_existente']) ? trim($_POST['imagen_existente']) : '';
             $video = trim($_POST['video']);
             $pdf = trim($_POST['pdf']);
-            // $nombre = $_SESSION['usuario_nombre'];
 
             // SUBIDA DE IMAGEN
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
@@ -54,7 +53,10 @@ if ($_POST && isset($_POST['accion'])) {
             }
 
             $stmt = $conexion->prepare("INSERT INTO orientacion (titulo, texto, link, texto_enlace, imagen, video, pdf, fecha_publicacion, ultima_edicion_fecha, ultima_edicion_usuario_nombre) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
+            
+            // "sssssssss" -> Son 9 strings en total
             $stmt->bind_param("sssssssss", $titulo, $texto, $enlace, $texto_enlace, $imagen, $video, $pdf, $fecha, $_SESSION['usuario_nombre']);
+            
             if ($stmt->execute())
                 $mensaje = 'Noticia añadida correctamente';
             $stmt->close();
@@ -71,7 +73,7 @@ if ($_POST && isset($_POST['accion'])) {
             $video = trim($_POST['video']);
             $pdf = trim($_POST['pdf']);
 
-            // SUBIDA DE IMAGEN NUEVA (reemplaza la anterior)
+            // SUBIDA DE IMAGEN NUEVA
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
                 $upload_dir = 'img/';
                 if (!is_dir($upload_dir))
@@ -86,7 +88,6 @@ if ($_POST && isset($_POST['accion'])) {
 
                     if (move_uploaded_file($_FILES['imagen']['tmp_name'], $upload_path)) {
                         $imagen = $upload_path;
-                        // Eliminar imagen anterior si existe
                         if (isset($_POST['imagen_existente']) && file_exists($_POST['imagen_existente'])) {
                             unlink($_POST['imagen_existente']);
                         }
@@ -94,14 +95,17 @@ if ($_POST && isset($_POST['accion'])) {
                 }
             }
 
-            // ACTUALIZAR noticia existente
+            
             $stmt = $conexion->prepare("
                 UPDATE orientacion 
                 SET titulo=?, texto=?, fecha_publicacion=?, link=?, texto_enlace=?, imagen=?, video=?, pdf=?,
                     ultima_edicion_usuario_nombre=?, ultima_edicion_fecha=NOW()
                 WHERE id=?
             ");
+            
+            // "sssssssssi" -> 9 strings y 1 entero al final (el ID de la fila)
             $stmt->bind_param("sssssssssi", $titulo, $texto, $fecha, $enlace, $texto_enlace, $imagen, $video, $pdf, $_SESSION['usuario_nombre'], $id);
+            
             if ($stmt->execute())
                 $mensaje = 'Noticia actualizada correctamente';
             $stmt->close();
@@ -109,7 +113,6 @@ if ($_POST && isset($_POST['accion'])) {
     }
 }
 
-// CARGAR NOTICIAS CON NOMBRE DEL USUARIO - CONSULTA CORREGIDA ✅
 $stmt = $conexion->prepare("
     SELECT n.*
     FROM orientacion n
