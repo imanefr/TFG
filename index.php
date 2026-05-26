@@ -11,7 +11,7 @@ include_once 'head.php'; // Carga la cabecera e iconos de la web
 
 // 3. OBTENER NOTIFICACIONES DESTACADAS
 // Busca hasta 5 noticias destacadas para los popups estilo WhatsApp
-$sql_notif = "SELECT id, titulo, contenido AS descripcion, fecha, enlace FROM noticias WHERE destacada = 1 ORDER BY fecha DESC LIMIT 5";
+$sql_notif = "SELECT id, titulo, contenido AS descripcion, fecha, enlace FROM noticias ORDER BY fecha DESC LIMIT 2";
 $result_notif = $conexion->query($sql_notif);
 $notificaciones = [];
 

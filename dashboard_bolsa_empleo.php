@@ -53,7 +53,8 @@ if ($_POST && isset($_POST['accion'])) {
                 }
             }
 
-            $stmt = $conexion->prepare("INSERT INTO bolsa_empleo (titulo, texto, link, texto_link, imagen, video, pdf, fecha_publicacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conexion->prepare("INSERT INTO bolsa_empleo (titulo, texto, link, texto_link, imagen, video, pdf, fecha_publicacion, ultima_edicion_fecha) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
             $stmt->bind_param("ssssssss", $titulo, $texto, $enlace, $texto_enlace, $imagen, $video, $pdf, $fecha);
             if ($stmt->execute())
                 $mensaje = 'Noticia añadida correctamente';
@@ -98,10 +99,10 @@ if ($_POST && isset($_POST['accion'])) {
             $stmt = $conexion->prepare("
                 UPDATE bolsa_empleo 
                 SET titulo=?, texto=?, fecha_publicacion=?, link=?, texto_link=?, imagen=?, video=?, pdf=?,
-                    ultima_edicion_usuario_id=?, ultima_edicion_fecha=NOW()
+                    ultima_edicion_usuario_nombre=?, ultima_edicion_fecha=NOW()
                 WHERE id=?
             ");
-            $stmt->bind_param("ssssssssii", $titulo, $texto, $fecha, $enlace, $texto_enlace, $imagen, $video, $pdf, $_SESSION['usuario_id'], $id);
+            $stmt->bind_param("sssssssssi", $titulo, $texto, $fecha, $enlace, $texto_enlace, $imagen, $video, $pdf, $_SESSION['usuario_nombre'], $id);
             if ($stmt->execute())
                 $mensaje = 'Noticia actualizada correctamente';
             $stmt->close();
@@ -111,9 +112,8 @@ if ($_POST && isset($_POST['accion'])) {
 
 // CARGAR NOTICIAS CON NOMBRE DEL USUARIO - CONSULTA CORREGIDA ✅
 $stmt = $conexion->prepare("
-    SELECT n.*, u.nombre AS ultima_edicion_usuario_nombre
+    SELECT n.*
     FROM bolsa_empleo n
-    LEFT JOIN usuarios u ON n.ultima_edicion_usuario_id = u.id
     ORDER BY n.fecha_publicacion DESC
 ");
 

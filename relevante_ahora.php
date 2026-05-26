@@ -9,9 +9,8 @@ function primeras15Palabras($texto) {
 }
 
 // Consulta noticias Erasmus (últimas 8) con imagen
-$sql = "SELECT r.*, u.nombre as ultima_edicion_usuario_nombre
+$sql = "SELECT r.*
         FROM noticias r 
-        LEFT JOIN usuarios u ON r.ultima_edicion_usuario_id = u.id 
         WHERE r.destacada = 1
         ORDER BY r.fecha DESC LIMIT 8";
 
