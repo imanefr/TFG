@@ -70,7 +70,7 @@ if ($result_notif && $result_notif->num_rows > 0) {
 <main>
     <section class="indice_pagina_contenedor_principal">
 
-        <a href="relevanteahora.php" class="indice_relevante_ahora_link">
+        <a href="relevante_ahora.php" class="indice_relevante_ahora_link">
             <h2 class="indice_pagina_titulo_atajo">RELEVANTE AHORA</h2>
         </a>
         <div class="indice_pagina_grid_noticias">
@@ -92,7 +92,7 @@ if ($result_notif && $result_notif->num_rows > 0) {
             ?>
         </div>
 
-        <a href="ultimasnoticias.php" class="indice_relevante_ahora_link">
+        <a href="ultimas_noticias.php" class="indice_relevante_ahora_link">
             <h2 class="indice_pagina_titulo_atajo">ÚLTIMAS NOTICIAS</h2>
         </a>
         <div class="indice_pagina_grid_noticias">
